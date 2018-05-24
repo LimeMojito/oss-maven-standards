@@ -15,13 +15,14 @@
   ~    limitations under the License.
   ~
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>oss-maven-standards</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>java-development</artifactId>
@@ -29,11 +30,11 @@
 
     <properties>
         <coverage.line.ratio>0.90</coverage.line.ratio>
-        <coverage.exclude.pattern.1 />
-        <coverage.exclude.pattern.2 />
-        <coverage.exclude.pattern.3 />
-        <coverage.exclude.pattern.4 />
-        <coverage.exclude.pattern.5 />
+        <coverage.exclude.pattern.1/>
+        <coverage.exclude.pattern.2/>
+        <coverage.exclude.pattern.3/>
+        <coverage.exclude.pattern.4/>
+        <coverage.exclude.pattern.5/>
 
         <version.checkstyle>6.16.1</version.checkstyle>
         <version.maven-surefire-plugin>2.20.1</version.maven-surefire-plugin>
@@ -124,7 +125,7 @@
                                     <requireJavaVersion>
                                         <version>[1.8.0-45,)</version>
                                     </requireJavaVersion>
-                                    <DependencyConvergence />
+                                    <DependencyConvergence/>
                                     <bannedDependencies>
                                         <excludes>
                                             <exclude>org.hamcrest:hamcrest-all</exclude>
@@ -142,7 +143,7 @@
                     <configuration>
                         <archive>
                             <manifest>
-                                <addDefaultSpecificationEntries />
+                                <addDefaultSpecificationEntries/>
                             </manifest>
                         </archive>
                     </configuration>
@@ -266,7 +267,7 @@
             <dependency>
                 <groupId>com.limemojito.oss.standards</groupId>
                 <artifactId>library</artifactId>
-                <version>1.0.0</version>
+                <version>1.0.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
