@@ -142,8 +142,6 @@
                         <useReleaseProfile>false</useReleaseProfile>
                         <releaseProfiles>release</releaseProfiles>
                         <goals>deploy</goals>
-                        <!-- we use a separate cmd line push so we don't narf vcs on release failures -->
-                        <pushChanges>false</pushChanges>
                     </configuration>
                 </plugin>
             </plugins>
