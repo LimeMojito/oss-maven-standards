@@ -25,11 +25,17 @@
     <packaging>pom</packaging>
 
     <properties>
+        <!-- Overridden by build server -->
+        <build.number>LOCAL</build.number>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <!-- Overridden by build server -->
-        <build.number>LOCAL</build.number>
+        <!-- Because DRY -->
+        <bitbucket.url>https://bitbucket.org/limemojito/oss-maven-standards</bitbucket.url>
+        <git.url>git@bitbucket.org:limemojito/oss-maven-standards.git</git.url>
+        <scm.url>scm:git:${git.url}</scm.url>
+        <lime.website.url>https://www.limemojito.com</lime.website.url>
 
         <version.checkstyle>6.16.1</version.checkstyle>
         <version.java>1.8</version.java>
@@ -47,7 +53,7 @@
     <description>A set of maven poms that allow us to use an agile development methodology when we build our apps. Checkstyle, unit test, coverage,
         etc are all built into the build.
     </description>
-    <url>https://bitbucket.org/limemojito/oss-maven-standards</url>
+    <url>${bitbucket.url}</url>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -62,7 +68,7 @@
             <email>sales@limemojito.com</email>
             <timezone>+10</timezone>
             <organization>Lime Mojito Pty Ltd</organization>
-            <organizationUrl>https://www.limemojito.com/</organizationUrl>
+            <organizationUrl>${lime.website.url}</organizationUrl>
             <roles>
                 <role>developer</role>
             </roles>
@@ -70,12 +76,12 @@
     </developers>
     <issueManagement>
         <system>Bitbucket</system>
-        <url>https://bitbucket.org/limemojito/oss-maven-standards/issues</url>
+        <url>${bitbucket.url}/issues</url>
     </issueManagement>
 
     <organization>
         <name>Lime Mojito Pty Ltd</name>
-        <url>https://www.limemojito.com</url>
+        <url>${lime.website.url}</url>
     </organization>
 
     <distributionManagement>
@@ -90,8 +96,9 @@
     </distributionManagement>
 
     <scm>
-        <connection>scm:git:git@bitbucket.org:limemojito/oss-maven-standards.git</connection>
-        <developerConnection>scm:git:git@bitbucket.org:limemojito/oss-maven-standards.git</developerConnection>
+        <connection>${scm.url}</connection>
+        <developerConnection>${scm.url}</developerConnection>
+        <url>${bitbucket.url}</url>
         <tag>master</tag>
     </scm>
 
