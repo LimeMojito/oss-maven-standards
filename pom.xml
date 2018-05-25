@@ -37,6 +37,42 @@
         <version.spring.boot>1.5.2.RELEASE</version.spring.boot>
     </properties>
 
+    <modules>
+        <module>library</module>
+        <module>java-development</module>
+        <module>jar-development</module>
+    </modules>
+
+    <name>Lime Mojito OSS Development Standard Build</name>
+    <description>A set of maven poms that allow us to use an agile development methodology when we build our apps. Checkstyle, unit test, coverage,
+        etc are all built into the build.
+    </description>
+    <url>https://bitbucket.org/limemojito/oss-maven-standards</url>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>Lime Mojito Pty Ltd</id>
+            <name>Development Group</name>
+            <email>sales@limemojito.com</email>
+            <timezone>+10</timezone>
+            <organization>Lime Mojito Pty Ltd</organization>
+            <organizationUrl>https://www.limemojito.com/</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
+    <issueManagement>
+        <system>Bitbucket</system>
+        <url>https://bitbucket.org/limemojito/oss-maven-standards/issues</url>
+    </issueManagement>
+
     <organization>
         <name>Lime Mojito Pty Ltd</name>
         <url>https://www.limemojito.com</url>
@@ -55,6 +91,7 @@
 
     <scm>
         <connection>scm:git:git@bitbucket.org:limemojito/oss-maven-standards.git</connection>
+        <developerConnection>scm:git:git@bitbucket.org:limemojito/oss-maven-standards.git</developerConnection>
         <tag>master</tag>
     </scm>
 
@@ -105,15 +142,12 @@
                         <useReleaseProfile>false</useReleaseProfile>
                         <releaseProfiles>release</releaseProfiles>
                         <goals>deploy</goals>
+                        <!-- we use a separate cmd line push so we don't narf vcs on release failures -->
+                        <pushChanges>false</pushChanges>
                     </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
     </build>
 
-    <modules>
-        <module>library</module>
-        <module>java-development</module>
-        <module>jar-development</module>
-    </modules>
 </project>
