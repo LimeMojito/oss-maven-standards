@@ -33,7 +33,7 @@
         <!-- Because DRY -->
         <bitbucket.url>https://bitbucket.org/limemojito/oss-maven-standards</bitbucket.url>
         <git.url>git@bitbucket.org:limemojito/oss-maven-standards.git</git.url>
-        <scm.url>scm:git:${git.url}</scm.url>
+        <lime.scm.url>scm:git:${git.url}</lime.scm.url>
         <lime.website.url>https://www.limemojito.com</lime.website.url>
 
         <version.checkstyle>6.16.1</version.checkstyle>
@@ -95,8 +95,8 @@
     </distributionManagement>
 
     <scm>
-        <connection>${scm.url}</connection>
-        <developerConnection>${scm.url}</developerConnection>
+        <connection>${lime.scm.url}</connection>
+        <developerConnection>${lime.scm.url}</developerConnection>
         <url>${bitbucket.url}</url>
         <tag>master</tag>
     </scm>
