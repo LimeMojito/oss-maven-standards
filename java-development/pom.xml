@@ -28,6 +28,8 @@
     <packaging>pom</packaging>
 
     <properties>
+        <checkstyle.url>http://standards.limemojito.com/oss-checkstyle.xml</checkstyle.url>
+
         <coverage.line.ratio>0.90</coverage.line.ratio>
         <coverage.exclude.pattern.1 />
         <coverage.exclude.pattern.2 />
@@ -82,7 +84,7 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <configLocation>http://standards.limemojito.com/oss-checkstyle.xml</configLocation>
+                        <configLocation>${checkstyle.url}</configLocation>
                         <encoding>UTF-8</encoding>
                         <consoleOutput>true</consoleOutput>
                         <failsOnError>true</failsOnError>
