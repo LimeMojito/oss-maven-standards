@@ -109,6 +109,10 @@
                         <target>${version.java}</target>
                         <compilerArgs>
                             <compilerArg>-Xlint:all</compilerArg>
+                            <!-- Due to spurious warnings with Lombok -->
+                            <compilerArg>-Xlint:-processing</compilerArg>
+                            <!-- Serialization is rare now.  IDE assistance covers most situations -->
+                            <compilerArg>-Xlint:-serial</compilerArg>
                             <compilerArg>-Werror</compilerArg>
                         </compilerArgs>
                         <showWarnings>true</showWarnings>
