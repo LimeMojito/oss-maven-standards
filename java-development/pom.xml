@@ -15,7 +15,8 @@
   ~    limitations under the License.
   ~
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -29,26 +30,28 @@
 
     <properties>
         <coverage.line.ratio>0.90</coverage.line.ratio>
-        <coverage.exclude.pattern.1 />
-        <coverage.exclude.pattern.2 />
-        <coverage.exclude.pattern.3 />
-        <coverage.exclude.pattern.4 />
-        <coverage.exclude.pattern.5 />
+        <coverage.exclude.pattern.1/>
+        <coverage.exclude.pattern.2/>
+        <coverage.exclude.pattern.3/>
+        <coverage.exclude.pattern.4/>
+        <coverage.exclude.pattern.5/>
 
         <version.maven-surefire-plugin>2.22.2</version.maven-surefire-plugin>
 
         <version.java>11</version.java>
 
         <coverage.line.ratio>0.95</coverage.line.ratio>
-        <coverage.exclude.pattern.1 />
-        <coverage.exclude.pattern.2 />
-        <coverage.exclude.pattern.3 />
-        <coverage.exclude.pattern.4 />
-        <coverage.exclude.pattern.5 />
+        <coverage.exclude.pattern.1/>
+        <coverage.exclude.pattern.2/>
+        <coverage.exclude.pattern.3/>
+        <coverage.exclude.pattern.4/>
+        <coverage.exclude.pattern.5/>
 
         <maven.compiler.source>${version.java}</maven.compiler.source>
         <maven.compiler.target>${version.java}</maven.compiler.target>
         <maven-checkstyle-plugin.configLocation>http://standards.limemojito.com/oss-checkstyle.xml</maven-checkstyle-plugin.configLocation>
+
+        <lombok.outputDirectory>${project.build.directory}/generated-sources/delombok</lombok.outputDirectory>
     </properties>
 
     <profiles>
@@ -140,7 +143,7 @@
                                     <requireJavaVersion>
                                         <version>[1.11.3,)</version>
                                     </requireJavaVersion>
-                                    <DependencyConvergence />
+                                    <DependencyConvergence/>
                                     <bannedDependencies>
                                         <excludes>
                                             <exclude>org.hamcrest:hamcrest-all</exclude>
@@ -167,6 +170,22 @@
                     </configuration>
                 </plugin>
                 <plugin>
+                    <groupId>org.projectlombok</groupId>
+                    <artifactId>lombok-maven-plugin</artifactId>
+                    <version>1.18.20.0</version>
+                    <executions>
+                        <execution>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>delombok</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${lombok.outputDirectory}</outputDirectory>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>3.4.0</version>
                     <executions>
@@ -175,6 +194,9 @@
                                 <goal>jar</goal>
                             </goals>
                             <phase>verify</phase>
+                            <configuration>
+                                <sourcepath>${lombok.outputDirectory}</sourcepath>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
