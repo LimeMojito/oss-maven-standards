@@ -107,8 +107,15 @@
             <properties>
                 <checkstyle.skip>true</checkstyle.skip>
                 <enforcer.skip>true</enforcer.skip>
+                <gpg.skip>true</gpg.skip>
                 <jacoco.skip>true</jacoco.skip>
                 <skipTests>true</skipTests>
+            </properties>
+        </profile>
+        <profile>
+            <id>dev-build</id>
+            <properties>
+                <gpg.skip>true</gpg.skip>
             </properties>
         </profile>
     </profiles>
