@@ -179,6 +179,13 @@
                     <groupId>org.projectlombok</groupId>
                     <artifactId>lombok-maven-plugin</artifactId>
                     <version>1.18.20.0</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${version.lombok}</version>
+                        </dependency>
+                    </dependencies>
                     <executions>
                         <execution>
                             <phase>generate-sources</phase>
@@ -201,7 +208,7 @@
                             </goals>
                             <phase>verify</phase>
                             <configuration>
-                                <sourcepath>${lombok.outputDirectory}</sourcepath>
+                                <sourcepath>${lombok.outputDirectory}:${project.build.sourceDirectory}</sourcepath>
                             </configuration>
                         </execution>
                     </executions>
