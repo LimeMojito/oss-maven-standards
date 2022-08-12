@@ -41,6 +41,11 @@
         <dependencies>
             <!-- BOM - note that import order is specific for overrides -->
             <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${version.lombok}</version>
+            </dependency>
+            <dependency>
                 <!-- Jackson -->
                 <groupId>com.fasterxml.jackson</groupId>
                 <artifactId>jackson-bom</artifactId>
