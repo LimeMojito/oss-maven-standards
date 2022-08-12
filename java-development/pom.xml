@@ -188,11 +188,12 @@
                     </dependencies>
                     <executions>
                         <execution>
-                            <phase>generate-sources</phase>
+                            <phase>verify</phase>
                             <goals>
                                 <goal>delombok</goal>
                             </goals>
                             <configuration>
+                                <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
                                 <outputDirectory>${lombok.outputDirectory}</outputDirectory>
                             </configuration>
                         </execution>
