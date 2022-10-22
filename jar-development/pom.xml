@@ -44,50 +44,6 @@
                         </archive>
                     </configuration>
                 </plugin>
-                <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                    <version>${spring.boot.version}</version>
-                    <executions>
-                        <execution>
-                            <id>make-jar</id>
-                            <goals>
-                                <goal>repackage</goal>
-                            </goals>
-                            <phase>package</phase>
-                        </execution>
-                        <execution>
-                            <id>start-boot</id>
-                            <goals>
-                                <goal>start</goal>
-                            </goals>
-                            <phase>pre-integration-test</phase>
-                            <configuration>
-                                <!-- 120 second start with 500ms waits -->
-                                <wait>500</wait>
-                                <maxAttempts>240</maxAttempts>
-                                <skip>${skipTests}</skip>
-                                <profiles>test,integration-test</profiles>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>stop-boot</id>
-                            <goals>
-                                <goal>stop</goal>
-                            </goals>
-                            <phase>post-integration-test</phase>
-                            <configuration>
-                                <skip>${skipTests}</skip>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>build-info</id>
-                            <goals>
-                                <goal>build-info</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
