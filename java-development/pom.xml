@@ -15,14 +15,13 @@
   ~    limitations under the License.
   ~
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>oss-maven-standards</artifactId>
-        <version>2.6.0-SNAPSHOT</version>
+        <version>2.6.0</version>
     </parent>
 
     <artifactId>java-development</artifactId>
@@ -30,22 +29,22 @@
 
     <properties>
         <coverage.line.ratio>0.90</coverage.line.ratio>
-        <coverage.exclude.pattern.1/>
-        <coverage.exclude.pattern.2/>
-        <coverage.exclude.pattern.3/>
-        <coverage.exclude.pattern.4/>
-        <coverage.exclude.pattern.5/>
+        <coverage.exclude.pattern.1 />
+        <coverage.exclude.pattern.2 />
+        <coverage.exclude.pattern.3 />
+        <coverage.exclude.pattern.4 />
+        <coverage.exclude.pattern.5 />
 
         <version.maven-surefire-plugin>2.22.2</version.maven-surefire-plugin>
 
         <java.version>11</java.version>
 
         <coverage.line.ratio>0.95</coverage.line.ratio>
-        <coverage.exclude.pattern.1/>
-        <coverage.exclude.pattern.2/>
-        <coverage.exclude.pattern.3/>
-        <coverage.exclude.pattern.4/>
-        <coverage.exclude.pattern.5/>
+        <coverage.exclude.pattern.1 />
+        <coverage.exclude.pattern.2 />
+        <coverage.exclude.pattern.3 />
+        <coverage.exclude.pattern.4 />
+        <coverage.exclude.pattern.5 />
 
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -124,24 +123,24 @@
                             </goals>
                             <configuration>
                                 <target unless="${skipTests}">
-                                    <property name="composeLocation" value=""/>
+                                    <property name="composeLocation" value="" />
                                     <fail message="Docker compose for localstack missing from ${localstack.compose.location}.">
                                         <condition>
                                             <not>
                                                 <resourceexists>
-                                                    <file file="${localstack.compose.location}"/>
+                                                    <file file="${localstack.compose.location}" />
                                                 </resourceexists>
                                             </not>
                                         </condition>
                                     </fail>
                                     <echo level="info">Starting Localstack</echo>
                                     <exec executable="docker-compose" dir="${project.basedir}/src/test/docker" searchpath="true" spawn="true">
-                                        <arg value="up"/>
+                                        <arg value="up" />
                                     </exec>
                                     <echo level="info">Waiting for combined services available</echo>
                                     <waitfor maxwait="2" maxwaitunit="minute">
                                         <!-- wait for endpoint to be up -->
-                                        <http url="http://localhost:4566" errorsBeginAt="405"/>
+                                        <http url="http://localhost:4566" errorsBeginAt="405" />
                                     </waitfor>
                                 </target>
                             </configuration>
@@ -157,7 +156,7 @@
                                 <target unless="${skipTests}">
                                     <echo level="info">Stopping Localstack</echo>
                                     <exec executable="docker-compose" dir="${project.basedir}/src/test/docker" searchpath="true">
-                                        <arg value="down"/>
+                                        <arg value="down" />
                                     </exec>
                                 </target>
                             </configuration>
@@ -240,7 +239,7 @@
                                     <requireJavaVersion>
                                         <version>[1.11.3,)</version>
                                     </requireJavaVersion>
-                                    <DependencyConvergence/>
+                                    <DependencyConvergence />
                                     <bannedDependencies>
                                         <excludes>
                                             <exclude>org.hamcrest:hamcrest-all</exclude>
@@ -380,7 +379,7 @@
             <dependency>
                 <groupId>com.limemojito.oss.standards</groupId>
                 <artifactId>library</artifactId>
-                <version>2.6.0-SNAPSHOT</version>
+                <version>2.6.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
