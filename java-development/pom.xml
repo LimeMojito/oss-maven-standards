@@ -15,13 +15,14 @@
   ~    limitations under the License.
   ~
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>oss-maven-standards</artifactId>
-        <version>2.5.2-SNAPSHOT</version>
+        <version>2.6.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>java-development</artifactId>
@@ -29,28 +30,32 @@
 
     <properties>
         <coverage.line.ratio>0.90</coverage.line.ratio>
-        <coverage.exclude.pattern.1 />
-        <coverage.exclude.pattern.2 />
-        <coverage.exclude.pattern.3 />
-        <coverage.exclude.pattern.4 />
-        <coverage.exclude.pattern.5 />
+        <coverage.exclude.pattern.1/>
+        <coverage.exclude.pattern.2/>
+        <coverage.exclude.pattern.3/>
+        <coverage.exclude.pattern.4/>
+        <coverage.exclude.pattern.5/>
 
         <version.maven-surefire-plugin>2.22.2</version.maven-surefire-plugin>
 
-        <version.java>11</version.java>
+        <java.version>11</java.version>
 
         <coverage.line.ratio>0.95</coverage.line.ratio>
-        <coverage.exclude.pattern.1 />
-        <coverage.exclude.pattern.2 />
-        <coverage.exclude.pattern.3 />
-        <coverage.exclude.pattern.4 />
-        <coverage.exclude.pattern.5 />
+        <coverage.exclude.pattern.1/>
+        <coverage.exclude.pattern.2/>
+        <coverage.exclude.pattern.3/>
+        <coverage.exclude.pattern.4/>
+        <coverage.exclude.pattern.5/>
 
-        <maven.compiler.source>${version.java}</maven.compiler.source>
-        <maven.compiler.target>${version.java}</maven.compiler.target>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven-checkstyle-plugin.configLocation>http://standards.limemojito.com/oss-checkstyle.xml</maven-checkstyle-plugin.configLocation>
 
+        <localstack.compose.location>${project.basedir}/src/test/docker/docker-compose.yml</localstack.compose.location>
         <lombok.outputDirectory>${project.build.directory}/generated-sources/delombok</lombok.outputDirectory>
+
+        <!-- This can be disabled by profile - suggest fast-build -->
+        <skipTests>false</skipTests>
     </properties>
 
     <profiles>
@@ -64,11 +69,101 @@
                 <skipTests>true</skipTests>
             </properties>
         </profile>
+        <profile>
+            <id>release-profile</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.4.1</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                                <phase>verify</phase>
+                                <configuration>
+                                    <sourcepath>${lombok.outputDirectory}:${project.build.sourceDirectory}</sourcepath>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <!-- we use antrun to manage localstack compose -->
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>3.1.0</version>
+                    <executions>
+                        <execution>
+                            <id>Start Localstack</id>
+                            <phase>pre-integration-test</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <configuration>
+                                <target unless="${skipTests}">
+                                    <property name="composeLocation" value=""/>
+                                    <fail message="Docker compose for localstack missing from ${localstack.compose.location}.">
+                                        <condition>
+                                            <not>
+                                                <resourceexists>
+                                                    <file file="${localstack.compose.location}"/>
+                                                </resourceexists>
+                                            </not>
+                                        </condition>
+                                    </fail>
+                                    <echo level="info">Starting Localstack</echo>
+                                    <exec executable="docker-compose" dir="${project.basedir}/src/test/docker" searchpath="true" spawn="true">
+                                        <arg value="up"/>
+                                    </exec>
+                                    <echo level="info">Waiting for combined services available</echo>
+                                    <waitfor maxwait="2" maxwaitunit="minute">
+                                        <!-- wait for endpoint to be up -->
+                                        <http url="http://localhost:4566" errorsBeginAt="405"/>
+                                    </waitfor>
+                                </target>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>Stop Localstack</id>
+                            <!-- We run this slightly later so boot shuts down before docker -->
+                            <phase>install</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <configuration>
+                                <target unless="${skipTests}">
+                                    <echo level="info">Stopping Localstack</echo>
+                                    <exec executable="docker-compose" dir="${project.basedir}/src/test/docker" searchpath="true">
+                                        <arg value="down"/>
+                                    </exec>
+                                </target>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
                 <plugin>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>3.1.2</version>
@@ -76,7 +171,7 @@
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>${version.checkstyle}</version>
+                            <version>${checkstyle.version}</version>
                             <exclusions>
                                 <!--  MCHECKSTYLE-156  -->
                                 <exclusion>
@@ -106,8 +201,8 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.10.1</version>
                     <configuration>
-                        <source>${version.java}</source>
-                        <target>${version.java}</target>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
                         <compilerArgs>
                             <compilerArg>-Xlint:all</compilerArg>
                             <!-- Due to spurious warnings with Lombok -->
@@ -123,14 +218,10 @@
                             <annotationProcessorPath>
                                 <groupId>org.projectlombok</groupId>
                                 <artifactId>lombok</artifactId>
-                                <version>${version.lombok}</version>
+                                <version>${lombok.version}</version>
                             </annotationProcessorPath>
                         </annotationProcessorPaths>
                     </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-deploy-plugin</artifactId>
-                    <version>2.8.2</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-enforcer-plugin</artifactId>
@@ -149,7 +240,7 @@
                                     <requireJavaVersion>
                                         <version>[1.11.3,)</version>
                                     </requireJavaVersion>
-                                    <DependencyConvergence />
+                                    <DependencyConvergence/>
                                     <bannedDependencies>
                                         <excludes>
                                             <exclude>org.hamcrest:hamcrest-all</exclude>
@@ -162,28 +253,14 @@
                     </executions>
                 </plugin>
                 <plugin>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.2.0</version>
-                    <configuration>
-                        <archive>
-                            <manifest>
-                                <addDefaultEntries>true</addDefaultEntries>
-                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                                <addBuildEnvironmentEntries>true</addBuildEnvironmentEntries>
-                            </manifest>
-                        </archive>
-                    </configuration>
-                </plugin>
-                <plugin>
                     <groupId>org.projectlombok</groupId>
                     <artifactId>lombok-maven-plugin</artifactId>
-                    <version>1.18.20.0</version>
+                    <version>${lombok.maven.version}</version>
                     <dependencies>
                         <dependency>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>${version.lombok}</version>
+                            <version>${lombok.version}</version>
                         </dependency>
                     </dependencies>
                     <executions>
@@ -200,32 +277,20 @@
                     </executions>
                 </plugin>
                 <plugin>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.4.0</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                            <phase>verify</phase>
-                            <configuration>
-                                <sourcepath>${lombok.outputDirectory}:${project.build.sourceDirectory}</sourcepath>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>3.2.1</version>
-                    <executions>
-                        <execution>
-                            <id>attach-sources</id>
-                            <phase>verify</phase>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.2.0</version>
+                    <configuration>
+                        <propertiesEncoding>ISO-8859-1</propertiesEncoding>
+                        <nonFilteredFileExtensions>
+                            <nonFilteredFileExtension>bi5</nonFilteredFileExtension>
+                            <nonFilteredFileExtension>dll</nonFilteredFileExtension>
+                            <nonFilteredFileExtension>doc</nonFilteredFileExtension>
+                            <nonFilteredFileExtension>exe</nonFilteredFileExtension>
+                            <nonFilteredFileExtension>so</nonFilteredFileExtension>
+                            <nonFilteredFileExtension>xls</nonFilteredFileExtension>
+                            <nonFilteredFileExtension>zip</nonFilteredFileExtension>
+                        </nonFilteredFileExtensions>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
@@ -235,29 +300,14 @@
                         <!--suppress MavenModelInspection -->
                         <argLine>${argLine}</argLine>
                     </configuration>
-                    <executions>
-                        <execution>
-                            <id>unit-test</id>
-                            <phase>test</phase>
-                            <goals>
-                                <goal>test</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                 </plugin>
                 <plugin>
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>${version.maven-surefire-plugin}</version>
-                    <executions>
-                        <execution>
-                            <id>integration-test</id>
-                            <goals>
-                                <goal>integration-test</goal>
-                                <goal>verify</goal>
-                            </goals>
-                            <phase>integration-test</phase>
-                        </execution>
-                    </executions>
+                    <configuration>
+                        <!-- as Lombok generated classes are NOT seen by boot -->
+                        <classesDirectory>${project.build.outputDirectory}</classesDirectory>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
@@ -330,7 +380,7 @@
             <dependency>
                 <groupId>com.limemojito.oss.standards</groupId>
                 <artifactId>library</artifactId>
-                <version>2.5.2-SNAPSHOT</version>
+                <version>2.6.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

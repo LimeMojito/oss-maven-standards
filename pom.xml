@@ -15,12 +15,13 @@
   ~    limitations under the License.
   ~
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.limemojito.oss.standards</groupId>
     <artifactId>oss-maven-standards</artifactId>
-    <version>2.5.2-SNAPSHOT</version>
+    <version>2.6.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -36,11 +37,12 @@
         <lime.scm.url>scm:git:${git.url}</lime.scm.url>
         <lime.website.url>https://www.limemojito.com</lime.website.url>
 
-        <version.checkstyle>10.3.2</version.checkstyle>
-        <version.java>11</version.java>
+        <checkstyle.version>10.3.2</checkstyle.version>
+        <java.version>11</java.version>
         <!-- This has both library and build implications -->
-        <version.spring.boot>2.7.2</version.spring.boot>
-        <version.lombok>1.18.24</version.lombok>
+        <spring.boot.version>2.7.5</spring.boot.version>
+        <lombok.version>1.18.24</lombok.version>
+        <lombok.maven.version>1.18.20.0</lombok.maven.version>
     </properties>
 
     <modules>
@@ -57,7 +59,7 @@
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -104,68 +106,71 @@
 
     <profiles>
         <profile>
+            <id>release-profile</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.2.1</version>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.4.1</version>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.13</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>fast-build</id>
             <properties>
                 <checkstyle.skip>true</checkstyle.skip>
                 <enforcer.skip>true</enforcer.skip>
-                <gpg.skip>true</gpg.skip>
                 <jacoco.skip>true</jacoco.skip>
                 <skipTests>true</skipTests>
-            </properties>
-        </profile>
-        <profile>
-            <id>dev-build</id>
-            <properties>
-                <gpg.skip>true</gpg.skip>
             </properties>
         </profile>
     </profiles>
 
     <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-gpg-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-release-plugin</artifactId>
-            </plugin>
-        </plugins>
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <artifactId>maven-gpg-plugin</artifactId>
-                    <version>3.0.1</version>
-                    <executions>
-                        <execution>
-                            <id>sign-artifacts</id>
-                            <phase>verify</phase>
-                            <goals>
-                                <goal>sign</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.sonatype.plugins</groupId>
-                    <artifactId>nexus-staging-maven-plugin</artifactId>
-                    <version>1.6.13</version>
-                    <extensions>true</extensions>
-                    <configuration>
-                        <serverId>ossrh</serverId>
-                        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                        <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                    </configuration>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.8.2</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-release-plugin</artifactId>
                     <version>2.5.3</version>
                     <configuration>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
-                        <useReleaseProfile>false</useReleaseProfile>
+                        <useReleaseProfile>true</useReleaseProfile>
                         <releaseProfiles>release</releaseProfiles>
                         <goals>deploy</goals>
                     </configuration>
