@@ -198,9 +198,8 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
-                        <source>${java.version}</source>
-                        <target>${java.version}</target>
-                        <!-- note maven.compiler.release.version is set for cross compiling -->
+                        <!-- note using release option on JDK 9+ -->
+                        <release>${java.version}</release>
                         <compilerArgs>
                             <compilerArg>-Xlint:all</compilerArg>
                             <!-- Due to spurious warnings with Lombok -->
