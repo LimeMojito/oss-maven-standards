@@ -228,11 +228,23 @@
                         <!-- OSS takes forever to publish global for dependents, deploy to closed source repo on build -->
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-deploy-plugin</artifactId>
-                        <configuration>
-                            <altDeploymentRepository>
-                                lime-release::https://artifactory.nonprod.limemojito.com/artifactory/libs-release-local
-                            </altDeploymentRepository>
-                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>release-to-lime</id>
+                                <configuration>
+                                    <altReleaseDeploymentRepository>
+                                        lime-release::https://artifactory.nonprod.limemojito.com/artifactory/libs-release-local
+                                    </altReleaseDeploymentRepository>
+                                    <altSnapshotDeploymentRepository>
+                                        lime-snapshot::https://artifactory.nonprod.limemojito.com/artifactory/libs-snapshot-local
+                                    </altSnapshotDeploymentRepository>
+                                </configuration>
+                                <goals>
+                                    <goal>deploy</goal>
+                                </goals>
+                                <phase>deploy</phase>
+                            </execution>
+                        </executions>
                     </plugin>
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
@@ -241,7 +253,6 @@
                         <configuration>
                             <serverId>ossrh</serverId>
                             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
                         </configuration>
                     </plugin>
                 </plugins>
