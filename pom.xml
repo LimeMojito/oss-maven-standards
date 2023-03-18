@@ -15,7 +15,8 @@
   ~    limitations under the License.
   ~
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.limemojito.oss.standards</groupId>
@@ -35,6 +36,7 @@
         <git.url>git@bitbucket.org:limemojito/oss-maven-standards.git</git.url>
         <lime.scm.url>scm:git:${git.url}</lime.scm.url>
         <lime.website.url>https://www.limemojito.com</lime.website.url>
+        <staging.nexus.url>https://oss.sonatype.org/</staging.nexus.url>
 
         <checkstyle.version>10.9.1</checkstyle.version>
         <java.version>11</java.version>
@@ -87,11 +89,11 @@
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <url>${staging.nexus.url}/content/repositories/snapshots</url>
         </snapshotRepository>
         <repository>
             <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <url>${staging.nexus.url}/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
 
@@ -160,7 +162,10 @@
                     <artifactId>maven-release-plugin</artifactId>
                     <version>2.5.3</version>
                     <configuration>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <useReleaseProfile>false</useReleaseProfile>
                         <releaseProfiles>release</releaseProfiles>
+                        <goals>deploy</goals>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -189,9 +194,23 @@
                     <version>1.18.20.0</version>
                 </plugin>
                 <plugin>
+                    <!-- These projects are configured for "vanilla" maven plugins as this nexus one replaces deploy tasks.  Due to the
+                    very slow release to central and propagation multi releases take a very long time to deploy if they are independent.  We work around
+                    this by deploying to the closed source repository in a release, followed by the "manual" release via an explicit call to
+                    the nexus staging plugin:
+                      mvn release:perform
+                      ...
+                      cd target/checkout
+                      mvn nexus-staging:release
+                     -->
                     <groupId>org.sonatype.plugins</groupId>
                     <artifactId>nexus-staging-maven-plugin</artifactId>
                     <version>1.6.13</version>
+                    <configuration>
+                        <serverId>ossrh</serverId>
+                        <nexusUrl>${staging.nexus.url}</nexusUrl>
+                        <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -222,37 +241,6 @@
                                 </goals>
                             </execution>
                         </executions>
-                    </plugin>
-                    <plugin>
-                        <!-- OSS takes forever to publish global for dependents, deploy to closed source repo on build -->
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>release-to-lime</id>
-                                <configuration>
-                                    <altReleaseDeploymentRepository>
-                                        lime-release::https://artifactory.nonprod.limemojito.com/artifactory/libs-release-local
-                                    </altReleaseDeploymentRepository>
-                                    <altSnapshotDeploymentRepository>
-                                        lime-snapshot::https://artifactory.nonprod.limemojito.com/artifactory/libs-snapshot-local
-                                    </altSnapshotDeploymentRepository>
-                                </configuration>
-                                <goals>
-                                    <goal>deploy</goal>
-                                </goals>
-                                <phase>deploy</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>
