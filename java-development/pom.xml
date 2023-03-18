@@ -250,27 +250,34 @@
                     </executions>
                 </plugin>
                 <plugin>
-                    <groupId>org.projectlombok</groupId>
-                    <artifactId>lombok-maven-plugin</artifactId>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version>
-                        </dependency>
-                    </dependencies>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <configuration>
+                        <!-- as Lombok generated classes are NOT seen by boot -->
+                        <classesDirectory>${project.build.outputDirectory}</classesDirectory>
+                    </configuration>
                     <executions>
                         <execution>
-                            <phase>verify</phase>
                             <goals>
-                                <goal>delombok</goal>
+                                <goal>integration-test</goal>
+                                <goal>verify</goal>
                             </goals>
-                            <configuration>
-                                <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-                                <outputDirectory>${lombok.outputDirectory}</outputDirectory>
-                            </configuration>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <addDefaultEntries>true</addDefaultEntries>
+                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                <addBuildEnvironmentEntries>true</addBuildEnvironmentEntries>
+                            </manifest>
+                        </archive>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -295,14 +302,6 @@
                         <!-- Include set arglines such as jacoco -->
                         <!--suppress MavenModelInspection -->
                         <argLine>${argLine}</argLine>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-failsafe-plugin</artifactId>
-                    <configuration>
-                        <!-- as Lombok generated classes are NOT seen by boot -->
-                        <classesDirectory>${project.build.outputDirectory}</classesDirectory>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -355,6 +354,29 @@
                                         </limits>
                                     </rule>
                                 </rules>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.projectlombok</groupId>
+                    <artifactId>lombok-maven-plugin</artifactId>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <executions>
+                        <execution>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>delombok</goal>
+                            </goals>
+                            <configuration>
+                                <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                                <outputDirectory>${lombok.outputDirectory}</outputDirectory>
                             </configuration>
                         </execution>
                     </executions>
