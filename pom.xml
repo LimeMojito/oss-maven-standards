@@ -227,7 +227,7 @@
                         <artifactId>maven-deploy-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>release-to-lime</id>
+                                <id>default-deploy</id>
                                 <configuration>
                                     <altReleaseDeploymentRepository>
                                         lime-release::https://artifactory.nonprod.limemojito.com/artifactory/libs-release-local
@@ -240,6 +240,30 @@
                                     <goal>deploy</goal>
                                 </goals>
                                 <phase>deploy</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <!--
+                        A custom configuration of the nexus staging plugin so it does NOT display maven-deploy-plugin as we want to use that to get
+                        to the lime repository.  Nexus publish is very, very slow globally so we want it in lime local first.
+                         -->
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.13</version>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>${staging.nexus.url}/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>nexus-deploy</id>
+                                <phase>deploy</phase>
+                                <!-- By default, this is the phase deploy goal will bind to -->
+                                <goals>
+                                    <goal>deploy</goal>
+                                </goals>
                             </execution>
                         </executions>
                     </plugin>
