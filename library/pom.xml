@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright 2018 Lime Mojito Pty Ltd
+  ~ Copyright 2011-2023 Lime Mojito Pty Ltd
   ~
   ~    Licensed under the Apache License, Version 2.0 (the "License");
   ~    you may not use this file except in compliance with the License.
@@ -15,7 +15,8 @@
   ~    limitations under the License.
   ~
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>library</artifactId>
@@ -24,87 +25,116 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>oss-maven-standards</artifactId>
-        <version>2.6.2-SNAPSHOT</version>
+        <version>2.7.0-SNAPSHOT</version>
     </parent>
 
     <properties>
-        <version.aws.sdk>1.12.326</version.aws.sdk>
-        <version.hamcrest>1.3</version.hamcrest>
-        <version.jackson>2.13.4</version.jackson>
-        <!-- Note that spring boot version is held in parent as it has build implications too -->
-        <version.spring.cloud>2021.0.4</version.spring.cloud>
-        <version.awspring.cloud>2.4.2</version.awspring.cloud>
+        <!-- Potential overrides if you want a different BOM SDK version -->
+        <version.aws.sdk>1.12.429</version.aws.sdk>
+        <version.aws.sdk2>2.20.26</version.aws.sdk2>
+        <version.jackson>2.14.2</version.jackson>
+        <!-- Note that spring boot version is held in parent as it has build implications for these versions -->
+        <version.spring.cloud>2021.0.6</version.spring.cloud>
+        <version.awspring.cloud>2.4.4</version.awspring.cloud>
+        <!-- only use properties for a multi artefact fix.  Prefer BOM over individuals -->
+        <version.hamcrest>2.2</version.hamcrest>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-            <!-- BOM - note that import order is specific for overrides -->
+            <!-- ==========================================================
+                 Imports and dependency corrections.  FIFO
+                 ========================================================== -->
             <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>jsr305</artifactId>
+                <version>3.0.2</version>
+            </dependency>
+            <dependency>
+                <!-- Caffeine versus wiremock -->
+                <groupId>com.google.errorprone</groupId>
+                <artifactId>error_prone_annotations</artifactId>
+                <version>2.18.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains</groupId>
+                <artifactId>annotations</artifactId>
+                <version>24.0.1</version>
+            </dependency>
+            <dependency>
+                <!-- The great log4j2 zero day fix -->
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-bom</artifactId>
+                <version>2.20.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <!-- Guava secure -->
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava-bom</artifactId>
+                <version>31.1-jre</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <!-- Required for AWS eventing -->
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>2.12.2</version>
+            </dependency>
+            <!-- Dependency corrections and non BOM imports -->
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>1.2.11</version>
             </dependency>
             <dependency>
                 <!-- Jackson -->
                 <groupId>com.fasterxml.jackson</groupId>
                 <artifactId>jackson-bom</artifactId>
-                <version>${version.jackson}</version>
+                <version>2.14.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <!-- AWS SDK -->
-                <groupId>com.amazonaws</groupId>
-                <artifactId>aws-java-sdk-bom</artifactId>
-                <version>${version.aws.sdk}</version>
-                <type>pom</type>
-                <scope>import</scope>
+                <!-- Springdoc -> Spring Data conflict -->
+                <groupId>io.github.classgraph</groupId>
+                <artifactId>classgraph</artifactId>
+                <version>4.8.157</version>
             </dependency>
             <dependency>
-                <!-- Import dependency management from AWS Spring Cloud -->
-                <groupId>io.awspring.cloud</groupId>
-                <artifactId>spring-cloud-aws-dependencies</artifactId>
-                <version>${version.awspring.cloud}</version>
-                <type>pom</type>
-                <scope>import</scope>
+                <!-- legacy -->
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>2.5</version>
             </dependency>
             <dependency>
-                <!-- Import dependency management from Spring Cloud -->
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${version.spring.cloud}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <!-- Import dependency management from Spring Boot -->
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring.boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <!-- Dependency corrections and non BOM imports -->
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>31.1-jre</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.ben-manes.caffeine</groupId>
-                <artifactId>caffeine</artifactId>
-                <version>3.1.1</version>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.13.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.9</version>
+                <version>3.12.0</version>
             </dependency>
             <dependency>
-                <groupId>com.github.tomakehurst</groupId>
-                <artifactId>wiremock</artifactId>
-                <version>2.27.2</version>
+                <groupId>org.awaitility</groupId>
+                <artifactId>awaitility</artifactId>
+                <version>4.2.0</version>
+            </dependency>
+            <dependency>
+                <!-- Sec vulnerability -->
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>1.70</version>
+            </dependency>
+            <dependency>
+                <!-- caffeine versus wiremock -->
+                <groupId>org.checkerframework</groupId>
+                <artifactId>checker-qual</artifactId>
+                <version>3.32.0</version>
             </dependency>
             <dependency>
                 <groupId>org.hamcrest</groupId>
@@ -122,24 +152,132 @@
                 <version>4.6.1</version>
             </dependency>
             <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.13.2</version>
+                <!-- legacy -->
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.core</artifactId>
+                <version>6.0.0</version>
             </dependency>
             <dependency>
-                <groupId>org.assertj</groupId>
-                <artifactId>assertj-core</artifactId>
-                <version>3.23.1</version>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm</artifactId>
+                <version>9.4</version>
             </dependency>
             <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
-                <version>2.5</version>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-ui</artifactId>
+                <version>1.6.15</version>
             </dependency>
             <dependency>
-                <groupId>com.google.code.findbugs</groupId>
-                <artifactId>jsr305</artifactId>
-                <version>3.0.2</version>
+                <!-- Sec vulnerability -->
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.15</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.11.0</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>1.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>caffeine</artifactId>
+                <version>3.1.5</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.tomakehurst</groupId>
+                <artifactId>wiremock</artifactId>
+                <version>2.27.2</version>
+                <exclusions>
+                    <!-- Fix to force as wiremock has some confused internal dependencies -->
+                    <exclusion>
+                        <groupId>org.ow2.asm</groupId>
+                        <artifactId>asm</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>servlet-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <!-- Security vulnerability -->
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>1.33</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>dynamodb-lock-client</artifactId>
+                <version>1.2.0</version>
+            </dependency>
+            <dependency>
+                <!-- AWS SDK V1-->
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-java-sdk-bom</artifactId>
+                <version>1.12.428</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <!-- AWS SDK V2-->
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>2.20.26</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- AWS Lambda -->
+            <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-lambda-java-core</artifactId>
+                <version>1.2.2</version>
+            </dependency>
+            <dependency>
+                <!-- Spring Boot -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <!-- Note that spring boot version is held in parent as it has build implications too -->
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <!-- Spring Cloud -->
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>2021.0.6</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <!-- Spring Cloud AWS -->
+                <groupId>io.awspring.cloud</groupId>
+                <artifactId>spring-cloud-aws-dependencies</artifactId>
+                <version>2.4.4</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- CDK builds and libraries -->
+            <dependency>
+                <groupId>software.amazon.awscdk</groupId>
+                <artifactId>aws-cdk-lib</artifactId>
+                <version>2.69.0</version>
+            </dependency>
+            <dependency>
+                <groupId>software.constructs</groupId>
+                <artifactId>constructs</artifactId>
+                <version>10.1.278</version>
+            </dependency>
+            <dependency>
+                <groupId>software.amazon.jsii</groupId>
+                <artifactId>jsii-runtime</artifactId>
+                <version>1.78.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
