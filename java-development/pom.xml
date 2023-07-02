@@ -28,36 +28,6 @@
     <artifactId>java-development</artifactId>
     <packaging>pom</packaging>
 
-    <properties>
-        <coverage.line.ratio>0.90</coverage.line.ratio>
-        <coverage.exclude.pattern.1/>
-        <coverage.exclude.pattern.2/>
-        <coverage.exclude.pattern.3/>
-        <coverage.exclude.pattern.4/>
-        <coverage.exclude.pattern.5/>
-
-        <coverage.line.ratio>0.95</coverage.line.ratio>
-        <coverage.exclude.pattern.1/>
-        <coverage.exclude.pattern.2/>
-        <coverage.exclude.pattern.3/>
-        <coverage.exclude.pattern.4/>
-        <coverage.exclude.pattern.5/>
-
-        <!-- Compiler configuration assuming JDK 11 or higher -->
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
-        <maven.compiler.release.version>${java.version}</maven.compiler.release.version>
-
-        <maven-checkstyle-plugin.configLocation>http://standards.limemojito.com/oss-checkstyle.xml
-        </maven-checkstyle-plugin.configLocation>
-
-        <localstack.compose.location>${project.basedir}/src/test/docker/docker-compose.yml</localstack.compose.location>
-        <lombok.outputDirectory>${project.build.directory}/generated-sources/delombok</lombok.outputDirectory>
-
-        <!-- This can be disabled by profile - suggest fast-build -->
-        <skipTests>false</skipTests>
-    </properties>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -70,6 +40,39 @@
         </dependencies>
     </dependencyManagement>
 
+    <properties>
+        <coverage.line.ratio>0.95</coverage.line.ratio>
+        <coverage.exclude.pattern.1/>
+        <coverage.exclude.pattern.2/>
+        <coverage.exclude.pattern.3/>
+        <coverage.exclude.pattern.4/>
+        <coverage.exclude.pattern.5/>
+
+        <!-- Compiler configuration assuming JDK 11 or higher -->
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven.compiler.release.version>${java.version}</maven.compiler.release.version>
+
+        <!--suppress HttpUrlsUsage -->
+        <maven-checkstyle-plugin.configLocation>http://standards.limemojito.com/oss-checkstyle.xml
+        </maven-checkstyle-plugin.configLocation>
+
+        <!-- For internal build use only -->
+        <coverage.exclude.build.pattern.1/>
+        <coverage.exclude.build.pattern.2/>
+        <coverage.exclude.build.pattern.3/>
+        <coverage.exclude.build.pattern.4/>
+        <coverage.exclude.build.pattern.5/>
+
+        <localstack.compose.location>${project.basedir}/src/test/docker/docker-compose.yml</localstack.compose.location>
+        <lombok.outputDirectory>${project.build.directory}/generated-sources/delombok</lombok.outputDirectory>
+
+        <!-- This can be disabled by profile - suggest fast-build -->
+        <skipTests>false</skipTests>
+        <skipITs>false</skipITs>
+        <lime.fast-build>false</lime.fast-build>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -81,24 +84,10 @@
             <artifactId>spring-boot-starter-logging</artifactId>
         </dependency>
 
+        <!-- Test Dependencies -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-library</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -112,6 +101,19 @@
                     <!-- we use antrun to manage localstack compose -->
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
+                    <dependencies>
+                        <dependency>
+                            <groupId>ant-contrib</groupId>
+                            <artifactId>ant-contrib</artifactId>
+                            <version>1.0b3</version>
+                            <exclusions>
+                                <exclusion>
+                                    <groupId>ant</groupId>
+                                    <artifactId>ant</artifactId>
+                                </exclusion>
+                            </exclusions>
+                        </dependency>
+                    </dependencies>
                     <executions>
                         <execution>
                             <id>Start Localstack</id>
@@ -120,27 +122,33 @@
                                 <goal>run</goal>
                             </goals>
                             <configuration>
-                                <target unless="${skipTests}">
-                                    <property name="composeLocation" value=""/>
-                                    <fail message="Docker compose for localstack missing from ${localstack.compose.location}.">
-                                        <condition>
-                                            <not>
-                                                <resourceexists>
-                                                    <file file="${localstack.compose.location}"/>
-                                                </resourceexists>
-                                            </not>
-                                        </condition>
-                                    </fail>
-                                    <echo level="info">Starting Localstack</echo>
-                                    <exec executable="docker-compose" dir="${project.basedir}/src/test/docker"
-                                          searchpath="true" spawn="true">
-                                        <arg value="up"/>
-                                    </exec>
-                                    <echo level="info">Waiting for combined services available</echo>
-                                    <waitfor maxwait="2" maxwaitunit="minute">
-                                        <!-- wait for endpoint to be up -->
-                                        <http url="http://localhost:4566" errorsBeginAt="405"/>
-                                    </waitfor>
+                                <target unless="${lime.fast-build}"
+                                        xmlns:ac="antlib:net.sf.antcontrib">
+                                    <ac:if>
+                                        <resourceexists>
+                                            <file file="${localstack.compose.location}"/>
+                                        </resourceexists>
+                                        <then>
+                                            <echo level="info">Starting Localstack</echo>
+                                            <exec executable="docker-compose"
+                                                  dir="${project.basedir}/src/test/docker"
+                                                  searchpath="true"
+                                                  spawn="true">
+                                                <arg value="up"/>
+                                            </exec>
+                                            <echo level="info">Waiting for combined services available</echo>
+                                            <waitfor maxwait="2" maxwaitunit="minute">
+                                                <!-- wait for endpoint to be up -->
+                                                <http url="http://localhost:4566" errorsBeginAt="405"/>
+                                            </waitfor>
+                                        </then>
+                                        <else>
+                                            <echo level="info">
+                                                Docker compose for localstack missing from
+                                                ${localstack.compose.location}.
+                                            </echo>
+                                        </else>
+                                    </ac:if>
                                 </target>
                             </configuration>
                         </execution>
@@ -152,12 +160,21 @@
                                 <goal>run</goal>
                             </goals>
                             <configuration>
-                                <target unless="${skipTests}">
-                                    <echo level="info">Stopping Localstack</echo>
-                                    <exec executable="docker-compose" dir="${project.basedir}/src/test/docker"
-                                          searchpath="true">
-                                        <arg value="down"/>
-                                    </exec>
+                                <target unless="${lime.fast-build}"
+                                        xmlns:ac="antlib:net.sf.antcontrib">
+                                    <ac:if>
+                                        <resourceexists>
+                                            <file file="${localstack.compose.location}"/>
+                                        </resourceexists>
+                                        <then>
+                                            <echo level="info">Stopping Localstack</echo>
+                                            <exec executable="docker-compose"
+                                                  dir="${project.basedir}/src/test/docker"
+                                                  searchpath="true">
+                                                <arg value="down"/>
+                                            </exec>
+                                        </then>
+                                    </ac:if>
                                 </target>
                             </configuration>
                         </execution>
@@ -341,8 +358,10 @@
                                     <rule implementation="org.jacoco.maven.RuleConfiguration">
                                         <element>CLASS</element>
                                         <excludes>
-                                            <!-- Exclude for Spring configuration pacakage as these are too hard to unit test -->
+                                            <!-- Exclude for Spring configuration package as these are too hard to unit test -->
                                             <exclude>*.config.*</exclude>
+                                            <exclude>*.Config</exclude>
+                                            <exclude>*.Configuration</exclude>
                                             <!-- Exclude for *.1 classes produced by the compiler for things like switch statements -->
                                             <exclude>*.?</exclude>
                                             <!-- General exclude patterns from other projects -->
@@ -351,6 +370,13 @@
                                             <exclude>${coverage.exclude.pattern.3}</exclude>
                                             <exclude>${coverage.exclude.pattern.4}</exclude>
                                             <exclude>${coverage.exclude.pattern.5}</exclude>
+
+                                            <!-- Build exclude patterns -->
+                                            <exclude>${coverage.exclude.build.pattern.1}</exclude>
+                                            <exclude>${coverage.exclude.build.pattern.2}</exclude>
+                                            <exclude>${coverage.exclude.build.pattern.3}</exclude>
+                                            <exclude>${coverage.exclude.build.pattern.4}</exclude>
+                                            <exclude>${coverage.exclude.build.pattern.5}</exclude>
                                         </excludes>
                                         <limits>
                                             <limit implementation="org.jacoco.report.check.Limit">
@@ -408,6 +434,9 @@
                 <enforcer.skip>true</enforcer.skip>
                 <jacoco.skip>true</jacoco.skip>
                 <skipTests>true</skipTests>
+                <skipITs>true</skipITs>
+                <!-- preferred way to skip for fast build -->
+                <lime.fast-build>true</lime.fast-build>
             </properties>
         </profile>
         <profile>

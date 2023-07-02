@@ -35,13 +35,15 @@
         <bitbucket.url>https://bitbucket.org/limemojito/oss-maven-standards</bitbucket.url>
         <git.url>git@bitbucket.org:limemojito/oss-maven-standards.git</git.url>
         <lime.scm.url>scm:git:${git.url}</lime.scm.url>
-        <lime.website.url>https://www.limemojito.com</lime.website.url>
+        <lime.website.url>https://limemojito.com</lime.website.url>
         <staging.nexus.url>https://oss.sonatype.org</staging.nexus.url>
 
         <checkstyle.version>10.9.3</checkstyle.version>
         <java.version>17</java.version>
         <!-- This has both library and build implications -->
         <spring.boot.version>3.1.1</spring.boot.version>
+        <native-maven-plugin.version>0.9.23</native-maven-plugin.version>
+        <aws-cdk-lib.version>2.86.0</aws-cdk-lib.version>
         <lombok.version>1.18.28</lombok.version>
     </properties>
 
@@ -115,6 +117,11 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>3.6.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>3.3.0</version>
                 </plugin>
@@ -127,6 +134,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.11.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.6.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -176,6 +188,11 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>3.5.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>3.3.0</version>
                 </plugin>
@@ -183,6 +200,16 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.1.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>3.1.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.graalvm.buildtools</groupId>
+                    <artifactId>native-maven-plugin</artifactId>
+                    <version>${native-maven-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
@@ -193,6 +220,11 @@
                     <groupId>org.projectlombok</groupId>
                     <artifactId>lombok-maven-plugin</artifactId>
                     <version>1.18.20.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring.boot.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -247,8 +279,8 @@
                     </plugin>
                     <plugin>
                         <!--
-                        A custom configuration of the nexus staging plugin so it does NOT display maven-deploy-plugin as we want to use that to get
-                        to the lime repository.  Nexus publish is very, very slow globally so we want it in lime local first.
+                        A custom configuration of the nexus staging plugin so that it does NOT display maven-deploy-plugin as we want to use that to get
+                        to the lime repository.  Nexus publish is very, very slow globally, so we want it in lime local first.
                          -->
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
@@ -279,7 +311,12 @@
                 <checkstyle.skip>true</checkstyle.skip>
                 <enforcer.skip>true</enforcer.skip>
                 <jacoco.skip>true</jacoco.skip>
+                <!--surefire-->
                 <skipTests>true</skipTests>
+                <!--failsafe-->
+                <skipITs>true</skipITs>
+                <!-- Custom property for the fine-tuning of skip executions -->
+                <lime.fast-build>true</lime.fast-build>
             </properties>
         </profile>
     </profiles>
