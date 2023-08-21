@@ -258,23 +258,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-deploy-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>default-deploy</id>
-                                <configuration>
-                                    <altReleaseDeploymentRepository>
-                                        lime-release::https://artifactory.nonprod.limemojito.com/artifactory/libs-release-local
-                                    </altReleaseDeploymentRepository>
-                                    <altSnapshotDeploymentRepository>
-                                        lime-snapshot::https://artifactory.nonprod.limemojito.com/artifactory/libs-snapshot-local
-                                    </altSnapshotDeploymentRepository>
-                                </configuration>
-                                <goals>
-                                    <goal>deploy</goal>
-                                </goals>
-                                <phase>deploy</phase>
-                            </execution>
-                        </executions>
                     </plugin>
                     <plugin>
                         <!--
