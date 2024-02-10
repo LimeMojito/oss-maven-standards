@@ -39,6 +39,12 @@
                 <version>3.0.2</version>
             </dependency>
             <dependency>
+                <!-- Vulnerability Fix-->
+                <groupId>com.jayway.jsonpath</groupId>
+                <artifactId>json-path</artifactId>
+                <version>2.9.0</version>
+            </dependency>
+            <dependency>
                 <!-- Caffeine versus wiremock -->
                 <groupId>com.google.errorprone</groupId>
                 <artifactId>error_prone_annotations</artifactId>
