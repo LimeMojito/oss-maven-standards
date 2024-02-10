@@ -16,7 +16,8 @@
   ~
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.limemojito.oss.standards.development-test</groupId>
@@ -63,6 +64,10 @@
                         </goals>
                         <phase>install</phase>
                         <configuration>
+                            <environmentVariables>
+                                <JSII_SILENCE_WARNING_UNTESTED_NODE_VERSION>true
+                                </JSII_SILENCE_WARNING_UNTESTED_NODE_VERSION>
+                            </environmentVariables>
                             <executable>cdk</executable>
                             <commandlineArgs>--ci true bootstrap</commandlineArgs>
                             <skip>${lime.fast-build}</skip>
@@ -75,6 +80,10 @@
                         </goals>
                         <phase>install</phase>
                         <configuration>
+                            <environmentVariables>
+                                <JSII_SILENCE_WARNING_UNTESTED_NODE_VERSION>true
+                                </JSII_SILENCE_WARNING_UNTESTED_NODE_VERSION>
+                            </environmentVariables>
                             <executable>cdk</executable>
                             <commandlineArgs>--ci true deploy --require-approval never</commandlineArgs>
                             <skip>${lime.fast-build}</skip>

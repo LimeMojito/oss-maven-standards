@@ -65,7 +65,7 @@
         <coverage.exclude.build.pattern.4/>
         <coverage.exclude.build.pattern.5/>
 
-        <localstack.compose.location>${project.basedir}/src/test/docker/docker-compose.yml</localstack.compose.location>
+        <test.compose.location>${project.basedir}/src/test/docker/docker-compose.yml</test.compose.location>
         <lombok.outputDirectory>${project.build.directory}/generated-sources/delombok</lombok.outputDirectory>
 
         <!-- This can be disabled by profile - suggest fast-build -->
@@ -117,61 +117,57 @@
                     </dependencies>
                     <executions>
                         <execution>
-                            <id>Start Localstack</id>
-                            <phase>pre-integration-test</phase>
+                            <id>identify-docker-compose</id>
+                            <phase>process-resources</phase>
                             <goals>
                                 <goal>run</goal>
                             </goals>
                             <configuration>
-                                <target xmlns:ac="antlib:net.sf.antcontrib" unless="${lime.fast-build}">
-                                    <ac:if>
-                                        <resourceexists>
-                                            <file file="${localstack.compose.location}"/>
-                                        </resourceexists>
-                                        <then>
-                                            <echo level="info">Starting Localstack</echo>
-                                            <exec executable="docker-compose" dir="${project.basedir}/src/test/docker"
-                                                  searchpath="true" spawn="true">
-                                                <arg value="up"/>
-                                            </exec>
-                                            <echo level="info">Waiting for combined services available</echo>
-                                            <waitfor maxwait="2" maxwaitunit="minute">
-                                                <!-- wait for endpoint to be up -->
-                                                <http url="http://localhost:4566" errorsBeginAt="405"/>
-                                            </waitfor>
-                                        </then>
-                                        <else>
-                                            <echo level="info">
-                                                Docker compose for localstack missing from
-                                                ${localstack.compose.location}.
-                                            </echo>
-                                        </else>
-                                    </ac:if>
+                                <exportAntProperties>true</exportAntProperties>
+                                <target>
+                                    <condition property="docker.compose.skip" else="false">
+                                        <or>
+                                            <equals arg1="${lime.fast-build}" arg2="true"/>
+                                            <not>
+                                                <available file="${test.compose.location}"/>
+                                            </not>
+                                        </or>
+                                    </condition>
+                                    <!--suppress UnresolvedMavenProperty -->
+                                    <echo level="info" message="docker.compose.skip is ${docker.compose.skip}"/>
                                 </target>
                             </configuration>
                         </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>com.dkanejs.maven.plugins</groupId>
+                    <artifactId>docker-compose-maven-plugin</artifactId>
+                    <configuration>
+                        <composeFile>${project.basedir}/src/test/docker/docker-compose.yml</composeFile>
+                        <!-- Set by antrun task execution -->
+                        <!--suppress UnresolvedMavenProperty, MavenModelInspection -->
+                        <skip>${docker.compose.skip}</skip>
+                    </configuration>
+                    <executions>
                         <execution>
-                            <id>Stop Localstack</id>
-                            <!-- We run this slightly later so boot shuts down before docker -->
-                            <phase>install</phase>
+                            <id>docker-up</id>
                             <goals>
-                                <goal>run</goal>
+                                <goal>up</goal>
                             </goals>
+                            <phase>pre-integration-test</phase>
                             <configuration>
-                                <target xmlns:ac="antlib:net.sf.antcontrib" unless="${lime.fast-build}">
-                                    <ac:if>
-                                        <resourceexists>
-                                            <file file="${localstack.compose.location}"/>
-                                        </resourceexists>
-                                        <then>
-                                            <echo level="info">Stopping Localstack</echo>
-                                            <exec executable="docker-compose" dir="${project.basedir}/src/test/docker"
-                                                  searchpath="true">
-                                                <arg value="down"/>
-                                            </exec>
-                                        </then>
-                                    </ac:if>
-                                </target>
+                                <detachedMode>true</detachedMode>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>docker-down</id>
+                            <goals>
+                                <goal>down</goal>
+                            </goals>
+                            <phase>post-integration-test</phase>
+                            <configuration>
+                                <removeOrphans>true</removeOrphans>
                             </configuration>
                         </execution>
                     </executions>
