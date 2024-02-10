@@ -23,7 +23,7 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>java-development</artifactId>
-        <version>13.0.4</version>
+        <version>13.0.5-SNAPSHOT</version>
         <relativePath>../java-development</relativePath>
     </parent>
 

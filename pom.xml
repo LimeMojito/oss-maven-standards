@@ -20,7 +20,7 @@
 
     <groupId>com.limemojito.oss.standards</groupId>
     <artifactId>oss-maven-standards</artifactId>
-    <version>13.0.4</version>
+    <version>13.0.5-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -110,7 +110,7 @@
         <connection>${lime.scm.url}</connection>
         <developerConnection>${lime.scm.url}</developerConnection>
         <url>${bitbucket.url}</url>
-        <tag>oss-maven-standards-13.0.4</tag>
+        <tag>master</tag>
     </scm>
 
     <build>
