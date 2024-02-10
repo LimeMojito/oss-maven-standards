@@ -15,7 +15,8 @@
   ~    limitations under the License.
   ~
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -42,11 +43,14 @@
 
     <properties>
         <coverage.line.ratio>0.95</coverage.line.ratio>
-        <coverage.exclude.pattern.1 />
-        <coverage.exclude.pattern.2 />
-        <coverage.exclude.pattern.3 />
-        <coverage.exclude.pattern.4 />
-        <coverage.exclude.pattern.5 />
+        <coverage.exclude.pattern.1/>
+        <coverage.exclude.pattern.2/>
+        <coverage.exclude.pattern.3/>
+        <coverage.exclude.pattern.4/>
+        <coverage.exclude.pattern.5/>
+
+        <!-- Docker port to wait for -->
+        <docker.compose.port>4566</docker.compose.port>
 
         <!-- Compiler configuration assuming JDK 11 or higher -->
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -58,11 +62,11 @@
         </maven-checkstyle-plugin.configLocation>
 
         <!-- For internal build use only -->
-        <coverage.exclude.build.pattern.1 />
-        <coverage.exclude.build.pattern.2 />
-        <coverage.exclude.build.pattern.3 />
-        <coverage.exclude.build.pattern.4 />
-        <coverage.exclude.build.pattern.5 />
+        <coverage.exclude.build.pattern.1/>
+        <coverage.exclude.build.pattern.2/>
+        <coverage.exclude.build.pattern.3/>
+        <coverage.exclude.build.pattern.4/>
+        <coverage.exclude.build.pattern.5/>
 
         <test.compose.location>${project.basedir}/src/test/docker/docker-compose.yml</test.compose.location>
         <lombok.outputDirectory>${project.build.directory}/generated-sources/delombok</lombok.outputDirectory>
@@ -126,14 +130,36 @@
                                 <target>
                                     <condition property="docker.compose.skip" else="false">
                                         <or>
-                                            <equals arg1="${lime.fast-build}" arg2="true" />
+                                            <equals arg1="${lime.fast-build}" arg2="true"/>
                                             <not>
-                                                <available file="${test.compose.location}" />
+                                                <available file="${test.compose.location}"/>
                                             </not>
                                         </or>
                                     </condition>
                                     <!--suppress UnresolvedMavenProperty -->
-                                    <echo level="info" message="docker.compose.skip is ${docker.compose.skip}" />
+                                    <echo level="info" message="docker.compose.skip is ${docker.compose.skip}"/>
+                                </target>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>wait-for-docker</id>
+                            <phase>integration-test</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <configuration>
+                                <target xmlns:ac="antlib:net.sf.antcontrib">
+                                    <ac:if>
+                                        <!--suppress UnresolvedMavenProperty -->
+                                        <equals arg1="${docker.compose.skip}" arg2="false"/>
+                                        <then>
+                                            <echo level="info"
+                                                  message="Waiting for Docker on port ${docker.compose.port}"/>
+                                            <waitfor maxWait="2" maxWaitUnit="minute">
+                                                <http url="http://localhost:${docker.compose.port}"/>
+                                            </waitfor>
+                                        </then>
+                                    </ac:if>
                                 </target>
                             </configuration>
                         </execution>
@@ -247,7 +273,7 @@
                                     <requireJavaVersion>
                                         <version>[17.0.3,)</version>
                                     </requireJavaVersion>
-                                    <DependencyConvergence />
+                                    <DependencyConvergence/>
                                     <bannedDependencies>
                                         <excludes>
                                             <exclude>org.hamcrest:hamcrest-all</exclude>
