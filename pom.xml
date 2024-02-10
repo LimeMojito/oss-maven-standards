@@ -15,7 +15,8 @@
   ~    limitations under the License.
   ~
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.limemojito.oss.standards</groupId>
@@ -26,7 +27,6 @@
     <properties>
         <!-- Overridden by build server -->
         <build.number>LOCAL</build.number>
-
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
@@ -65,8 +65,7 @@
 
     <name>Lime Mojito OSS Development Standard Build</name>
     <description>A set of maven poms that allow us to use an agile development methodology when we build our apps.
-        Checkstyle, unit test, coverage,
-        etc are all built into the build.
+        Checkstyle, unit test, coverage, etc. are all built into the build.
     </description>
     <url>${bitbucket.url}</url>
     <licenses>
@@ -279,10 +278,6 @@
                         <artifactId>maven-deploy-plugin</artifactId>
                     </plugin>
                     <plugin>
-                        <!--
-                        A custom configuration of the nexus staging plugin so that it does NOT display maven-deploy-plugin as we want to use that to get
-                        to the lime repository.  Nexus publish is very, very slow globally, so we want it in lime local first.
-                         -->
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
                         <version>1.6.13</version>
@@ -295,7 +290,6 @@
                             <execution>
                                 <id>nexus-deploy</id>
                                 <phase>deploy</phase>
-                                <!-- By default, this is the phase deploy goal will bind to -->
                                 <goals>
                                     <goal>deploy</goal>
                                 </goals>
