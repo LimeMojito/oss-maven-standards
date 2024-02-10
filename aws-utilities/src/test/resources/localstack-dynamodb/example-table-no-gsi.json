@@ -1,0 +1,18 @@
+{
+  "keySchema": [
+    {
+      "attributeName": "id",
+      "keyType": "HASH"
+    }
+  ],
+  "attributes": [
+    {
+      "attributeName": "id",
+      "attributeType": "S"
+    },
+    {
+      "attributeName": "time",
+      "attributeType": "N"
+    }
+  ]
+}
