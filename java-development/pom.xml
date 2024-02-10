@@ -167,6 +167,7 @@
                             <phase>post-integration-test</phase>
                             <configuration>
                                 <removeOrphans>true</removeOrphans>
+                                <removeVolumes>true</removeVolumes>
                             </configuration>
                         </execution>
                     </executions>
