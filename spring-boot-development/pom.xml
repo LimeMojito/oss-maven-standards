@@ -120,4 +120,13 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>fast-build</id>
+            <properties>
+                <boot.skip.start>true</boot.skip.start>
+            </properties>
+        </profile>
+    </profiles>
 </project>
