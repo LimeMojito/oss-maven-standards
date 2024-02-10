@@ -53,6 +53,8 @@
 
         <module>aws-utilities</module>
         <module>aws-lambda</module>
+        <!-- Note depends on aws-utilities -->
+        <module>test-utilities</module>
 
         <module>spring-boot-development</module>
         <module>jar-lambda-development</module>
