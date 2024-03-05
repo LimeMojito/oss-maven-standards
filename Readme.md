@@ -18,7 +18,7 @@
 
 Our very “top” level of build standards is open source and available for others to use or be inspired by:
 
-Bitbucket: https://bitbucket.org/limemojito/oss-maven-standards/src/master/
+GitHub: https://github.com/LimeMojito/oss-maven-standards
 
 The base POM files are also available on the Maven Central Repository if you want to use our approach in your own
 builds.
@@ -54,7 +54,7 @@ This example will do all the below with only 6 lines of extra XML in your maven 
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>13.0.5-SNAPSHOT</version>
+        <version>14.0.0-SNAPSHOT</version>
         <relativePath/>
     </parent>
 </project>
@@ -77,7 +77,7 @@ they are managed by our modern Bill of Materials (BOM) style dependency setup.
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>13.0.5-SNAPSHOT</version>
+        <version>14.0.0-SNAPSHOT</version>
         <relativePath/>
     </parent>
     <dependencies>
