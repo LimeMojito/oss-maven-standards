@@ -190,6 +190,7 @@
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <useReleaseProfile>false</useReleaseProfile>
                         <releaseProfiles>release</releaseProfiles>
+                        <signTag>true</signTag>
                         <goals>deploy</goals>
                     </configuration>
                 </plugin>

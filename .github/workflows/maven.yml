@@ -61,6 +61,11 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-maven-
 
+    - name: Cache Docker images.
+      uses: ScribeMD/docker-cache@0.3.7
+      with:
+        key: docker-LimeMojito-OSS
+
     - name: Build with Maven
       # Release profile to check javadoc, signing, etc
       # install is required for framework as CDK is trying to load current library in another process.
