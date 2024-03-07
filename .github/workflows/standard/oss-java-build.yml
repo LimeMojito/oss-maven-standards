@@ -1,0 +1,58 @@
+name: OSS Java Build
+
+on:
+  workflow_call:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ secrets.LIME_AWS_REGION }}
+          role-to-assume: ${{ secrets.LIME_AWS_ROLE_ARN }}
+          role-session-name: ${{ github.repository_id }}-${{ github.run_id }}
+
+      - name: Install Python dependencies and CDK
+        run: |
+          python -m pip install --upgrade pip
+          # install your Python dependencies here
+          npm install -g aws-cdk
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.LIME_SIGNING_KEY }}
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Cache Docker images.
+        uses: ScribeMD/docker-cache@0.3.7
+        with:
+          key: docker-LimeMojito-OSS
+
+      - name: Build with Maven
+        # Release profile to check javadoc, signing, etc.
+        # install is required for framework as CDK is trying to load current library in another process.
+        run: mvn -B --file pom.xml -Prelease -Dgpg.keyname='Lime Mojito Pty Ltd' install
+

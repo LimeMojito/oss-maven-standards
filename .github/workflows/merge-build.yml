@@ -1,0 +1,12 @@
+name: OSS Java Build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  oss-maven-workflow:
+    uses: LimeMojito/oss-maven-standards/.github/workflows/oss-java-build.yml@main
+    secrets: inherit
