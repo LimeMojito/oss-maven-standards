@@ -8,5 +8,5 @@ on:
 
 jobs:
   oss-maven-workflow:
-    uses: ./.github/workflows/oss-java-build.yml
+    uses: ./.github/workflows/standard/oss-java-build.yml
     secrets: inherit
