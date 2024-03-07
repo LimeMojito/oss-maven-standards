@@ -57,6 +57,7 @@ jobs:
           ${{ runner.os }}-maven-
 
     - name: Build with Maven
+      # Release profile to check javadoc, signing, etc
       # install is required for framework as CDK is trying to load current library in another process.
-      run: mvn -B install --file pom.xml
+      run: mvn -B --file pom.xml -Prelease -Dgpg.keyname='Lime Mojito Pty Ltd' install
 
