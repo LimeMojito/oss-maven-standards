@@ -1,6 +1,16 @@
 name: "Lime Environment Setup"
 description: "Configures the build environment to work with Lime resources."
 inputs:
+  aws-region:
+    description: 'AWS Region name'
+    required: true
+  role-to-assume:
+    description: 'AWS Role ARN to run with'
+    required: true
+  signing-key:
+    description: 'Code signing GPG key data'
+    required: true
+
 outputs:
 runs:
   using: composite
@@ -8,8 +18,8 @@ runs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        aws-region: ${{ secrets.LIME_AWS_REGION }}
-        role-to-assume: ${{ secrets.LIME_AWS_ROLE_ARN }}
+        aws-region: ${{ inputs.aws-region }}
+        role-to-assume: ${{ inputs.role-to-assume }}
         role-session-name: ${{ github.repository_id }}-${{ github.run_id }}
 
     - name: Install Python dependencies and CDK
@@ -27,7 +37,7 @@ runs:
     - name: Import GPG key
       uses: crazy-max/ghaction-import-gpg@v6
       with:
-        gpg_private_key: ${{ secrets.LIME_SIGNING_KEY }}
+        gpg_private_key: ${{ inputs.signing-key }}
 
     - name: Cache local Maven repository
       uses: actions/cache@v3
