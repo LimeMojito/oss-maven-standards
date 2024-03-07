@@ -32,9 +32,9 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        aws-region: '$AWS_REGION'
+        aws-region: ${{ env.AWS_REGION }}
         role-to-assume: 'arn:aws:iam::632251705523:role/TeamcityAgentRole'
-        role-session-name: '$github.repository-$github.run_id'
+        role-session-name: ${{ github.repository }}-${{ github.run_id }}
         
     - name: Set up JDK 17
       uses: actions/setup-java@v3
