@@ -260,6 +260,10 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                                <!--
+                                  Supply key name with gpg.keyname property on command line if not default
+                                  https://maven.apache.org/plugins/maven-gpg-plugin/sign-mojo.html#keyname
+                                 -->
                             </execution>
                         </executions>
                     </plugin>
