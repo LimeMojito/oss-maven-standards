@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Environment Setup
-        uses: ./.github/actions/lime-env-setup.yml
+        uses: ./.github/actions/lime-env-setup/action.yml
 
       - name: Build with Maven
         # Release profile to check javadoc, signing, etc.
