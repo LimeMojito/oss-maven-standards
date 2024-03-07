@@ -48,6 +48,11 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    - name: Import GPG key
+      uses: crazy-max/ghaction-import-gpg@v6
+      with:
+        gpg_private_key: ${{ secrets.LIME_SIGNING_KEY }}
+
     - name: Cache local Maven repository
       uses: actions/cache@v3
       with:
