@@ -20,7 +20,7 @@
 
     <groupId>com.limemojito.oss.standards</groupId>
     <artifactId>oss-maven-standards</artifactId>
-    <version>13.0.5-SNAPSHOT</version>
+    <version>14.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -29,9 +29,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <!-- Because DRY -->
-        <bitbucket.url>https://bitbucket.org/limemojito/oss-maven-standards</bitbucket.url>
-        <git.url>git@bitbucket.org:limemojito/oss-maven-standards.git</git.url>
+        <github.url>https://github.com/LimeMojito/oss-maven-standards</github.url>
+        <git.url>git@github.com:LimeMojito/oss-maven-standards.git</git.url>
         <lime.scm.url>scm:git:${git.url}</lime.scm.url>
         <lime.website.url>https://limemojito.com</lime.website.url>
         <staging.nexus.url>https://oss.sonatype.org</staging.nexus.url>
@@ -39,9 +38,8 @@
         <checkstyle.version>10.13.0</checkstyle.version>
         <java.version>17</java.version>
         <!-- This has both library and build implications -->
-        <spring.boot.version>3.2.2</spring.boot.version>
-        <native-maven-plugin.version>0.9.28</native-maven-plugin.version>
-        <aws-cdk-lib.version>2.126.0</aws-cdk-lib.version>
+        <spring.boot.version>3.2.3</spring.boot.version>
+        <aws-cdk-lib.version>2.131.0</aws-cdk-lib.version>
         <lombok.version>1.18.30</lombok.version>
     </properties>
 
@@ -64,7 +62,7 @@
     <description>A set of maven poms that allow us to use an agile development methodology when we build our apps.
         Checkstyle, unit test, coverage, etc. are all built into the build.
     </description>
-    <url>${bitbucket.url}</url>
+    <url>${github.url}</url>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -86,8 +84,8 @@
         </developer>
     </developers>
     <issueManagement>
-        <system>Bitbucket</system>
-        <url>${bitbucket.url}/issues</url>
+        <system>GitHub</system>
+        <url>${github.url}/issues</url>
     </issueManagement>
 
     <organization>
@@ -109,7 +107,7 @@
     <scm>
         <connection>${lime.scm.url}</connection>
         <developerConnection>${lime.scm.url}</developerConnection>
-        <url>${bitbucket.url}</url>
+        <url>${github.url}</url>
         <tag>master</tag>
     </scm>
 
@@ -192,6 +190,7 @@
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <useReleaseProfile>false</useReleaseProfile>
                         <releaseProfiles>release</releaseProfiles>
+                        <signTag>true</signTag>
                         <goals>deploy</goals>
                     </configuration>
                 </plugin>
@@ -219,11 +218,6 @@
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
                     <version>3.1.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.graalvm.buildtools</groupId>
-                    <artifactId>native-maven-plugin</artifactId>
-                    <version>${native-maven-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
@@ -267,6 +261,10 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                                <!--
+                                  Supply key name with gpg.keyname property on command line if not default
+                                  https://maven.apache.org/plugins/maven-gpg-plugin/sign-mojo.html#keyname
+                                 -->
                             </execution>
                         </executions>
                     </plugin>

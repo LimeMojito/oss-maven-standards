@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 /**
- * Some native hints for working with AWS lambda.
+ * Some native hints for working with AWS lambda.  We avoid native after issue with runtimes, etc. SnapStart is preferred.
  */
 @Configuration
 @Import({ContextFunctionCatalogAutoConfiguration.class})

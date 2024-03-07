@@ -24,6 +24,7 @@
         <format>zip</format>
     </formats>
     <fileSets>
+        <!-- Layout lambda task area to suit native file load -->
         <fileSet>
             <directory>${native.support.dir}/shell</directory>
             <filtered>true</filtered>

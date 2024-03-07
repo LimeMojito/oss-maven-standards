@@ -65,18 +65,6 @@ public class JavaLambdaPocStack extends Stack {
 
         final AssetCode assetCode = fromAsset(LAMBDA_CODE_PATH);
 
-        /*
-        We don't use build image as that complicates the AWS Lambda deployment, as the default images are
-        not laid out with a bootstrap RI, etc. as per lambda requirements:
-        https://docs.aws.amazon.com/lambda/latest/dg/runtimes-custom.html.
-
-        To build this native lambda, we target an Amazon Linux 2 Lambda platform, with a bootstrap to
-        call the native exe.
-
-        That binary MUST be **built** on an AL2 platform as the compile links to OS and platform.
-        For Lime Mojito purposes our build agents are AL2 ARM64 platforms with Graal Vm, so the zip will
-        work when deployed on AWS Lambda.
-        */
         final int memorySize = 1024;
         final int timeoutSeconds = 30;
         final Function function = new Function(this,

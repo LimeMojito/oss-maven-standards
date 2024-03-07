@@ -1,0 +1,12 @@
+name: OSS Java Build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  oss-maven-workflow:
+    uses: ./.github/workflows/oss-java-build.yml
+    secrets: inherit
