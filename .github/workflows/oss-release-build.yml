@@ -37,16 +37,15 @@ jobs:
         shell: bash
         run: |
           touch .maven_settings.xml 
-          echo aws_host="$AWS_HOST" >> .maven_settings.xml
           echo '<settings>' >> .maven_settings.xml
-            echo '<servers>' >> .maven_settings.xml
-            echo '<server>' >> .maven_settings.xml
-            echo '<id>server.id</id>' >> .maven_settings.xml
-            echo '<username>${{ secrets.LIME_OSSRH_ID }}</username>' >> .maven_settings.xml
-            echo '<password>${{ secrets.LIME_OSSRH_KEY }}</password>' >> .maven_settings.xml
-            echo '</server>' >> .maven_settings.xml
-            echo '</servers>' >> .maven_settings.xml
-            echo '</settings>' >> .maven_settings.xml
+          echo '<servers>' >> .maven_settings.xml
+          echo '<server>' >> .maven_settings.xml
+          echo '<id>server.id</id>' >> .maven_settings.xml
+          echo '<username>${{ secrets.LIME_OSSRH_ID }}</username>' >> .maven_settings.xml
+          echo '<password>${{ secrets.LIME_OSSRH_KEY }}</password>' >> .maven_settings.xml
+          echo '</server>' >> .maven_settings.xml
+          echo '</servers>' >> .maven_settings.xml
+          echo '</settings>' >> .maven_settings.xml
 
       - name: Release Build with Maven
         # Release profile to check javadoc, signing, etc.
