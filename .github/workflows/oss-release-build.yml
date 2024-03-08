@@ -21,15 +21,43 @@ jobs:
           role-to-assume: ${{ secrets.LIME_AWS_ROLE_ARN }}
           code-signing-key: ${{ secrets.LIME_SIGNING_KEY }}
 
-      - name: Release
-        uses: qcastel/github-actions-maven-release@master
-        env:
-          JAVA_HOME: /usr/lib/jvm/java-17-openjdk/
+      - name: Import GPG key for Version Update
+        uses: crazy-max/ghaction-import-gpg@v6
         with:
-          ssh-private-key: ${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}
-          git-release-bot-name: "Lime-Build-Agent"
-          git-release-bot-email: "build@limemojito.com"
-          gpg-enabled: "true"
-          gpg-key-id: ${{ secrets.LIME_BUILD_AGENT_SIGNING_KEY_ID }}
-          gpg-key: ${{ secrets.LIME_BUILD_AGENT_SIGNING_KEY_BASE64 }}
-          maven-servers: ${{ secrets.MVN_OSSRH_REPOSITORY }}
+          gpg_private_key: ${{ secrets.LIME_BUILD_AGENT_GIT_SIGNING_KEY }}
+
+      - name: Configure OSSRH Credentials
+        shell: bash
+        run: |
+          touch local-settings.xml 
+          echo '<?xml version="1.0" encoding="UTF-8"?>' >> local-mvn-settings.xml
+          echo '<settings>' >> local-mvn-settings.xml
+          echo '<servers>' >> local-mvn-settings.xml
+          echo '<server>' >> local-mvn-settings.xml
+          echo '<id>server.id</id>' >> local-mvn-settings.xml
+          echo '<username>${{ secrets.LIME_OSSRH_ID }}</username>' >> local-mvn-settings.xml
+          echo '<password>${{ secrets.LIME_OSSRH_KEY }}</password>' >> local-mvn-settings.xml
+          echo '</server>' >> local-mvn-settings.xml
+          echo '</servers>' >> local-mvn-settings.xml
+          echo '</settings>' >> local-mvn-settings.xml
+
+      - name: Configure Release Git User
+        shell: bash
+        run: |
+          git config user.email "build@limemojito.com"
+          git config user.name "Lime-Build-Agent"
+
+      - name: Prepare Release Build with Maven
+        run: |
+          mvn -B build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
+          git add .
+          git commit -S -m "[Release] updated version in pom.xml"
+          git push
+
+      - name: Perform Release Build with Maven release:perform release:clean
+        run: mvn -B --settings local-mvn-settings.xml -Dgpg.keyname='Lime Mojito Pty Ltd' release:perform
+
+      - name: Remove Credentials
+        shell: bash
+        run: |
+          rm -f local-mvn-settings.xml 
