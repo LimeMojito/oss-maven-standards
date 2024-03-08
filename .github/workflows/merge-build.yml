@@ -1,4 +1,4 @@
-name: OSS Java Build
+name: OSS Maven Standards Merge Build
 
 on:
   push:
