@@ -43,7 +43,7 @@ jobs:
           
           git config core.sshCommand "ssh -i $KEY_PATH"
           remote_url="$(git config --get remote.origin.url)"
-          url=$(sed -r -i 's:https\://([^/]+)/(.*\.git):git@\1\:\2:g' "$remote_url")
+          url=$(echo "$remote_url" | sed -r -i 's:https\://([^/]+)/(.*\.git):git@\1\:\2:g')
           echo "Switched origin from $remote_url to $url"
           git remote set-url origin "$url"
           
