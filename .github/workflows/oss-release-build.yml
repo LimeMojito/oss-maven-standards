@@ -44,5 +44,9 @@ jobs:
 
       - name: Release Build with Maven
         # Release profile to check javadoc, signing, etc.
-        # install is required for framework as CDK is trying to load current library in another process.
-        run: mvn -B --file pom.xml -Dgpg.keyname='Lime Mojito Pty Ltd' -DpreparationGoals=clean release:prepare release:perform
+        run: mvn -B --file pom.xml -Dgpg.keyname='Lime Mojito Pty Ltd' release:prepare release:perform release:clean
+
+      - name: Remove OSSRH Credentials
+        shell: bash
+        run: |
+          rm -f .maven_settings.xml 
