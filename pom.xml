@@ -191,6 +191,7 @@
                         <useReleaseProfile>false</useReleaseProfile>
                         <releaseProfiles>release</releaseProfiles>
                         <signTag>true</signTag>
+                        <preparationGoals>clean</preparationGoals>
                         <goals>deploy</goals>
                     </configuration>
                 </plugin>
