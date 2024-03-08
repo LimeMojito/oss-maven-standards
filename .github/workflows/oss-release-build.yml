@@ -34,14 +34,17 @@ jobs:
           git_config_global: true
 
       - name: Prepare Release Build with Maven
+        shell: bash
         run: |
           mvn -B build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
-          echo '${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}' > git-commit-key
-          export GIT_SSH_COMMAND="ssh -i git-commit-key"
+          KEY_PATH=$PWD/git-commit-key
+          echo '${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}' > $KEY_PATH
+          echo "KEY_PATH is $KEY_PATH"
+          git config core.sshCommand "ssh -i $KEY_PATH"
           git add .
           git commit -S -m "[Release] updated version in pom.xml"
           git push
-          rm git-commit-key
+          rm $KEY_PATH
 
       - name: Configure OSSRH Credentials
         shell: bash
