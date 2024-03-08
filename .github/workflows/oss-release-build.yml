@@ -41,7 +41,7 @@ jobs:
           echo '${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}' > $KEY_PATH
           
           git config core.sshCommand "ssh -i $KEY_PATH"
-          remote_url="$(git remote get-url $remote)"
+          remote_url="$(git config --get remote.origin.url)"
           user="${BASH_REMATCH[3]}"
           repo="${BASH_REMATCH[4]}"
           url="git@github.com:$user/$repo.git"
