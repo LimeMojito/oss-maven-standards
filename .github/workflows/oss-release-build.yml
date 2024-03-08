@@ -21,38 +21,15 @@ jobs:
           role-to-assume: ${{ secrets.LIME_AWS_ROLE_ARN }}
           code-signing-key: ${{ secrets.LIME_SIGNING_KEY }}
 
-      - name: Configure Release Git User
-        shell: bash
-        run: |
-          git config user.email "build@limemojito.com"
-          git config user.name "Lime-Build-Agent"
-          echo "${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}" > .gitkey
-
-      - name: Import GPG key for Version Update
-        uses: crazy-max/ghaction-import-gpg@v6
+      - name: Release
+        uses: qcastel/github-actions-maven-release@master
+        env:
+          JAVA_HOME: /usr/lib/jvm/java-17-openjdk/
         with:
-          gpg_private_key: ${{ secrets.LIME_BUILD_AGENT_GIT_SIGNING_KEY }}
-
-      - name: Configure OSSRH Credentials
-        shell: bash
-        run: |
-          touch .maven_settings.xml 
-          echo '<settings>' >> .maven_settings.xml
-          echo '<servers>' >> .maven_settings.xml
-          echo '<server>' >> .maven_settings.xml
-          echo '<id>server.id</id>' >> .maven_settings.xml
-          echo '<username>${{ secrets.LIME_OSSRH_ID }}</username>' >> .maven_settings.xml
-          echo '<password>${{ secrets.LIME_OSSRH_KEY }}</password>' >> .maven_settings.xml
-          echo '</server>' >> .maven_settings.xml
-          echo '</servers>' >> .maven_settings.xml
-          echo '</settings>' >> .maven_settings.xml
-
-      - name: Release Build with Maven
-        # Release profile to check javadoc, signing, etc.
-        run: mvn -B --file pom.xml -Dgpg.keyname='Lime Mojito Pty Ltd' -DprivateKey='.gitkey' release:prepare release:perform release:clean
-
-      - name: Remove Credentials
-        shell: bash
-        run: |
-          rm -f .maven_settings.xml 
-          rm -f .gitkey
+          ssh-private-key: ${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}
+          git-release-bot-name: "Lime-Build-Agent"
+          git-release-bot-email: "build@limemojito.com"
+          gpg-enabled: "true"
+          gpg-key-id: ${{ secrets.LIME_BUILD_AGENT_SIGNING_KEY_ID }}
+          gpg-key: ${{ secrets.LIME_BUILD_AGENT_SIGNING_KEY_BASE64 }}
+          maven-servers: ${{ secrets.MVN_OSSRH_REPOSITORY }}
