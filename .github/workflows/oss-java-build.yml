@@ -19,7 +19,7 @@ jobs:
         with:
           aws-region: ${{ secrets.LIME_AWS_REGION }}
           role-to-assume: ${{ secrets.LIME_AWS_ROLE_ARN }}
-          signing-key: ${{ secrets.LIME_SIGNING_KEY }}
+          code-signing-key: ${{ secrets.LIME_SIGNING_KEY }}
 
       - name: Build with Maven
         # Release profile to check javadoc, signing, etc.
