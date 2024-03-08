@@ -25,6 +25,20 @@ jobs:
         uses: crazy-max/ghaction-import-gpg@v6
         with:
           gpg_private_key: ${{ secrets.LIME_BUILD_AGENT_GIT_SIGNING_KEY }}
+          git_committer_email: "build@limemojito.com"
+          git_committer_name: "Lime Build Agent"
+          git_user_signingkey: true
+          git_push_gpgsign: true
+          git_tag_gpgsign: true
+          git_commit_gpgsign: true
+          git_config_global: true
+
+      - name: Prepare Release Build with Maven
+        run: |
+          mvn -B build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
+          git add .
+          git commit -S -m "[Release] updated version in pom.xml"
+          git push
 
       - name: Configure OSSRH Credentials
         shell: bash
@@ -41,21 +55,6 @@ jobs:
           echo '</servers>' >> local-mvn-settings.xml
           echo '</settings>' >> local-mvn-settings.xml
 
-      - name: Configure Release Git User
-        shell: bash
-        run: |
-          git config user.email "build@limemojito.com"
-          git config user.name "Lime-Build-Agent"
-          echo '${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}' > git-commit-key
-
-      - name: Prepare Release Build with Maven
-        run: |
-          mvn -B build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
-          export GIT_SSH_COMMAND="ssh -i git-commit-key"
-          git add .
-          git commit -S -m "[Release] updated version in pom.xml"
-          git push
-
       - name: Perform Release Build with Maven release:perform release:clean
         run: mvn -B --settings local-mvn-settings.xml -Dgpg.keyname='Lime Mojito Pty Ltd' release:perform
 
@@ -63,4 +62,3 @@ jobs:
         shell: bash
         run: |
           rm -f local-mvn-settings.xml 
-          rm -rf git-commit-key
