@@ -1,0 +1,9 @@
+name: OSS Java Build
+
+on:
+  workflow_dispatch
+
+jobs:
+  oss-release-workflow:
+    uses: ./.github/workflows/oss-release-build.yml
+    secrets: inherit
