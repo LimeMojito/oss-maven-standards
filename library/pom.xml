@@ -88,12 +88,6 @@
                 <version>4.2.0</version>
             </dependency>
             <dependency>
-                <!-- Sec vulnerability -->
-                <groupId>org.bouncycastle</groupId>
-                <artifactId>bcprov-jdk15on</artifactId>
-                <version>1.70</version>
-            </dependency>
-            <dependency>
                 <!-- caffeine versus wiremock -->
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
