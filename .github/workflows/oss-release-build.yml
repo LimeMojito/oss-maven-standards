@@ -72,11 +72,11 @@ jobs:
       - name: Perform Release Build with Maven release:perform release:clean
         shell: bash
         run: |
-          mvn -B \ 
+          echo "mvn -B \ 
             --settings local-mvn-settings.xml \
             -DconnectionUrl="${steps.git_setup.outputs.lime.repository.scm.url}" \
             -Dgpg.keyname='Lime Mojito Pty Ltd' \
-            release:perform
+            release:perform"
 
       - name: Remove Credentials
         shell: bash
