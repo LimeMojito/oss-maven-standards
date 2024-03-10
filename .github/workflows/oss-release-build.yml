@@ -71,7 +71,7 @@ jobs:
 
       - name: Perform Release Build with Maven release:perform release:clean
         shell: bash
-        run: !
+        run: |
           mvn -B \ 
             --settings local-mvn-settings.xml \
             -DconnectionUrl="${steps.git_setup.outputs.lime.repository.scm.url}" \
