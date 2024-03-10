@@ -72,7 +72,7 @@ jobs:
           git add .
           git commit -S -m "[Release] updated version in pom.xml"
           tagName="$projectVersion-${{github.run_number}}"
-          git tag -V $tagName 
+          git tag -v $tagName 
           
           echo "lime-release-version=$tagName" >> "$GITHUB_OUTPUT"
 
