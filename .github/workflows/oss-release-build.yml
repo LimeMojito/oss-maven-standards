@@ -51,7 +51,6 @@ jobs:
         name: Prepare Release Build with Maven
         shell: bash
         run: |
-          mvn -B build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
           KEY_PATH=$PWD/git-commit-key
           echo '${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}' > $KEY_PATH
           chmod 600 $KEY_PATH
@@ -62,11 +61,25 @@ jobs:
           echo "Switched origin from $remote_url to $url"
           git remote set-url origin "$url"
           
+          echo "lime-git-url=${url}" >> "$GITHUB_OUTPUT"
+
+      - id: git_release_version
+        name: Increment Release Version
+        shell: bash
+        run: |
+          mvn -B build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
+          projectVersion=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout )
           git add .
           git commit -S -m "[Release] updated version in pom.xml"
-          git push
-          rm $KEY_PATH
-          echo "lime-scm-url=scm:git:${url}" >> "$GITHUB_OUTPUT"
+          tagName="$projectVersion-${{github.run_number}}"
+          git tag -V $tagName 
+          git push origin tag $tagName 
+          
+          mvn -B build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT versions:commit
+          git add .
+          git commit -S -m "[Development] updated development version in pom.xml"
+          
+          echo "lime-scm-url=scm:git:${{steps.git_setup.outputs.lime-git-url}}" >> "$GITHUB_OUTPUT"
 
       - name: Perform Release Build with Maven
         shell: bash
