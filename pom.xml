@@ -20,7 +20,7 @@
 
     <groupId>com.limemojito.oss.standards</groupId>
     <artifactId>oss-maven-standards</artifactId>
-    <version>14.0.5</version>
+    <version>14.0.6</version>
     <packaging>pom</packaging>
 
     <properties>
