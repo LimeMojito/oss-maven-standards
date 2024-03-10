@@ -67,16 +67,16 @@ jobs:
           git commit -S -m "[Release] updated version in pom.xml"
           git push
           rm $KEY_PATH
-          echo "lime.repository.scm.url=scm:git:${url}\n" >> "$GITHUB_OUTPUT"
+          echo "lime-scm-url=scm:git:${url}" >> "$GITHUB_OUTPUT"
 
-      - name: Perform Release Build with Maven release:perform release:clean
+      - name: Perform Release Build with Maven
         shell: bash
         run: |
-          echo "mvn -B \ 
+          mvn -B \ 
             --settings local-mvn-settings.xml \
-            -DconnectionUrl="${steps.git_setup.outputs.lime.repository.scm.url}" \
+            -DconnectionUrl="${steps.git_setup.outputs.lime-scm-url}" \
             -Dgpg.keyname='Lime Mojito Pty Ltd' \
-            release:perform"
+            release:perform
 
       - name: Remove Credentials
         shell: bash
