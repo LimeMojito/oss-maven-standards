@@ -54,7 +54,7 @@ This example will do all the below with only 6 lines of extra XML in your maven 
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>14.0.14</version>
+        <version>14.0.19</version>
         <relativePath/>
     </parent>
 </project>
@@ -77,7 +77,7 @@ they are managed by our modern Bill of Materials (BOM) style dependency setup.
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>14.0.14</version>
+        <version>14.0.19</version>
         <relativePath/>
     </parent>
     <dependencies>
@@ -96,6 +96,6 @@ Our Open Source Standards library supports the following module types (archetype
 |--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | java-development	        | Base POM used to configure deployment locations, checkstyle, enforcer, docker, plugin versions, profiles, etc. Designed to be extended for different archetypes (JAR, WAR, etc.). 
 | jar-development	         | Build a jar file with test and docker support                                                                                                                                     
-| jar-lamda-development	   | Build a Spring Boot Cloud Function jar suitable for lambda use (java 17 Runtime) with AWS dependencies added by default. Jar is shaded for simple upload.                         
+| jar-lambda-development	   | Build a Spring Boot Cloud Function jar suitable for lambda use (java 17 Runtime) with AWS dependencies added by default. Jar is shaded for simple upload.                         
 | spring-boot-development	 | Spring boot jar constructed with the base spring-boot-starter and lime mojito aws-utilities for local stack support.                                                            
 
