@@ -20,7 +20,7 @@
 
     <groupId>com.limemojito.oss.standards</groupId>
     <artifactId>oss-maven-standards</artifactId>
-    <version>14.0.12-SNAPSHOT</version>
+    <version>14.0.14-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -272,6 +272,9 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
