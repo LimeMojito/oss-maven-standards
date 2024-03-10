@@ -284,6 +284,8 @@
                             <serverId>ossrh</serverId>
                             <nexusUrl>${staging.nexus.url}/</nexusUrl>
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                            <!-- Deferred deploy mode -->
+                            <skipStaging>true</skipStaging>
                         </configuration>
                         <executions>
                             <execution>
