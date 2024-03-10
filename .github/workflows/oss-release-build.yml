@@ -33,7 +33,23 @@ jobs:
           git_commit_gpgsign: true
           git_config_global: true
 
+      - name: Configure OSSRH Credentials
+        shell: bash
+        run: |
+          touch local-settings.xml 
+          echo '<?xml version="1.0" encoding="UTF-8"?>' >> local-mvn-settings.xml
+          echo '<settings>' >> local-mvn-settings.xml
+          echo '<servers>' >> local-mvn-settings.xml
+          echo '<server>' >> local-mvn-settings.xml
+          echo '<id>server.id</id>' >> local-mvn-settings.xml
+          echo '<username>${{ secrets.LIME_OSSRH_ID }}</username>' >> local-mvn-settings.xml
+          echo '<password>${{ secrets.LIME_OSSRH_KEY }}</password>' >> local-mvn-settings.xml
+          echo '</server>' >> local-mvn-settings.xml
+          echo '</servers>' >> local-mvn-settings.xml
+          echo '</settings>' >> local-mvn-settings.xml
+
       - name: Prepare Release Build with Maven
+        id: git_setup
         shell: bash
         run: |
           mvn -B build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
@@ -51,26 +67,19 @@ jobs:
           git commit -S -m "[Release] updated version in pom.xml"
           git push
           rm $KEY_PATH
-
-      - name: Configure OSSRH Credentials
-        shell: bash
-        run: |
-          touch local-settings.xml 
-          echo '<?xml version="1.0" encoding="UTF-8"?>' >> local-mvn-settings.xml
-          echo '<settings>' >> local-mvn-settings.xml
-          echo '<servers>' >> local-mvn-settings.xml
-          echo '<server>' >> local-mvn-settings.xml
-          echo '<id>server.id</id>' >> local-mvn-settings.xml
-          echo '<username>${{ secrets.LIME_OSSRH_ID }}</username>' >> local-mvn-settings.xml
-          echo '<password>${{ secrets.LIME_OSSRH_KEY }}</password>' >> local-mvn-settings.xml
-          echo '</server>' >> local-mvn-settings.xml
-          echo '</servers>' >> local-mvn-settings.xml
-          echo '</settings>' >> local-mvn-settings.xml
+          echo "lime.repository.scm.url=scm:git:${git.url}" >> "$GITHUB_OUTPUT"
 
       - name: Perform Release Build with Maven release:perform release:clean
-        run: mvn -B --settings local-mvn-settings.xml -Dgpg.keyname='Lime Mojito Pty Ltd' release:perform
+        shell: bash
+        run: !
+          mvn -B \ 
+            --settings local-mvn-settings.xml \
+            -DconnectionUrl="${steps.git_setup.outputs.lime.repository.scm.url}" \
+            -Dgpg.keyname='Lime Mojito Pty Ltd' \
+            release:perform
 
       - name: Remove Credentials
         shell: bash
         run: |
           rm -f local-mvn-settings.xml 
+          rm -f git-commit-key
