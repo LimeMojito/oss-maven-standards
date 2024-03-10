@@ -26,7 +26,7 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>14.0.14-SNAPSHOT</version>
+        <version>14.0.15</version>
         <relativePath>../../jar-development</relativePath>
     </parent>
 
@@ -42,7 +42,7 @@
         <dependency>
             <groupId>com.limemojito.oss.standards.development-test</groupId>
             <artifactId>jar-lambda-poc</artifactId>
-            <version>14.0.14-SNAPSHOT</version>
+            <version>14.0.15</version>
         </dependency>
     </dependencies>
 

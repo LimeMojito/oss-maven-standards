@@ -24,7 +24,7 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>oss-maven-standards</artifactId>
-        <version>14.0.14-SNAPSHOT</version>
+        <version>14.0.15</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
