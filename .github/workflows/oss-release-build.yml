@@ -67,7 +67,7 @@ jobs:
           git commit -S -m "[Release] updated version in pom.xml"
           git push
           rm $KEY_PATH
-          echo "lime.repository.scm.url=scm:git:${git.url}" >> "$GITHUB_OUTPUT"
+          echo "lime.repository.scm.url=scm:git:${url}\n" >> "$GITHUB_OUTPUT"
 
       - name: Perform Release Build with Maven release:perform release:clean
         shell: bash
