@@ -71,12 +71,7 @@ jobs:
 
       - name: Perform Release Build with Maven
         shell: bash
-        run: |
-          mvn -B \ 
-            --settings local-mvn-settings.xml \
-            -DconnectionUrl="${steps.git_setup.outputs.lime-scm-url}" \
-            -Dgpg.keyname='Lime Mojito Pty Ltd' \
-            release:perform
+        run: mvn -B --settings local-mvn-settings.xml -DconnectionUrl="${steps.git_setup.outputs.lime-scm-url}" -Dgpg.keyname='Lime Mojito Pty Ltd' release:perform
 
       - name: Remove Credentials
         shell: bash
