@@ -34,6 +34,7 @@ jobs:
           git_config_global: true
 
       - name: Configure OSSRH Credentials
+        id: maven_setup
         shell: bash
         run: |
           mkdir target
@@ -49,6 +50,8 @@ jobs:
           echo '</server>' >> $localSettings
           echo '</servers>' >> $localSettings
           echo '</settings>' >> $localSettings
+          
+          echo "settings-file=$localSettings" >> "$GITHUB_OUTPUT"
 
       - id: git_setup
         name: Prepare Release Build with Maven
@@ -66,6 +69,7 @@ jobs:
           git remote set-url origin "$url"
           
           echo "lime-git-url=${url}" >> "$GITHUB_OUTPUT"
+          echo "commit-key=${KEY_PATH}" >> "$GITHUB_OUTPUT"
 
       - id: git_release_version
         name: Increment Release Version
@@ -84,7 +88,7 @@ jobs:
         shell: bash
         run: |
           # deploy to OSSRH
-          mvn -B --settings local-mvn-settings.xml -Prelease -Dbuild.number=${{github.run_number}} -Dgpg.keyname='Lime Mojito Pty Ltd' deploy
+          mvn -B --settings ${{steps.maven_setup.outputs.settings-file}} -Prelease -Dbuild.number=${{github.run_number}} -Dgpg.keyname='Lime Mojito Pty Ltd' deploy
 
       - name: Increment development version
         shell: bash
@@ -103,5 +107,5 @@ jobs:
         shell: bash
         if: always()
         run: |
-          rm -f target/local-mvn-settings.xml 
-          rm -f target/git-commit-key
+          rm -f ${{steps.maven_setup.outputs.settings-file}}
+          rm -f ${{steps.git_setup.outputs.commit-key}}
