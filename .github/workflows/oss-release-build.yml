@@ -3,6 +3,11 @@ name: OSS Release Build
 on:
   workflow_call:
 
+concurrency:
+  # this should stop release and java build running on the same repo as we have one AWS account involved.
+  group: ${{ github.repository }}
+  cancel-in-progress: true
+
 permissions:
   id-token: write
   contents: read
