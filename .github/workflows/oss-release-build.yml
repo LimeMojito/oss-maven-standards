@@ -48,8 +48,8 @@ jobs:
           echo '</servers>' >> local-mvn-settings.xml
           echo '</settings>' >> local-mvn-settings.xml
 
-      - name: Prepare Release Build with Maven
-        id: git_setup
+      - id: git_setup
+        name: Prepare Release Build with Maven
         shell: bash
         run: |
           mvn -B build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit
@@ -71,7 +71,8 @@ jobs:
 
       - name: Perform Release Build with Maven
         shell: bash
-        run: mvn -B --settings local-mvn-settings.xml -DconnectionUrl="${steps.git_setup.outputs.lime-scm-url}" -Dgpg.keyname='Lime Mojito Pty Ltd' release:perform
+        run: |
+          mvn -B --settings local-mvn-settings.xml -Dbuild.number=${{github.run_number}} -DconnectionUrl="${{steps.git_setup.outputs.lime-scm-url}}" -Dgpg.keyname='Lime Mojito Pty Ltd' release:perform
 
       - name: Remove Credentials
         shell: bash
