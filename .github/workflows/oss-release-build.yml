@@ -88,12 +88,6 @@ jobs:
           
           echo "lime-release-version=$tagName" >> "$GITHUB_OUTPUT"
 
-      - name: Perform Release Build with Maven
-        shell: bash
-        run: |
-          # deploy to OSSRH
-          mvn -B --settings ${{steps.maven_setup.outputs.settings-file}} -Prelease -Dbuild.number=${{github.run_number}} -Dgpg.keyname='Lime Mojito Pty Ltd' deploy
-
       - name: Increment development version
         shell: bash
         run: |
@@ -101,13 +95,19 @@ jobs:
           git add .
           git commit -S -m "[Development] updated development version in pom.xml"
 
-      - name: Push changes to repository
+      - name: Perform Release Build with Maven
+        shell: bash
+        run: |
+          git checkout ${{steps.git_release_version.outputs.lime-release-version}}
+          # deploy to OSSRH
+          mvn -B --settings ${{steps.maven_setup.outputs.settings-file}} -Prelease -Dbuild.number=${{github.run_number}} -Dgpg.keyname='Lime Mojito Pty Ltd' deploy
+
+      - name: Push version and tag to repository
         shell: bash
         run: |
           # grab the latest development updates if there was anything done concurrently while the build was running.
-          git pull
-          git push origin tag ${{steps.git_release_version.outputs.lime-release-version}}
           git push
+          git push origin tag ${{steps.git_release_version.outputs.lime-release-version}}
 
       - name: Remove Credentials
         shell: bash
