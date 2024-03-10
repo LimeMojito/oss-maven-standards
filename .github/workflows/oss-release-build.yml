@@ -36,12 +36,11 @@ jobs:
       - name: Configure OSSRH Credentials
         shell: bash
         run: |
-          touch local-settings.xml 
-          echo '<?xml version="1.0" encoding="UTF-8"?>' >> local-mvn-settings.xml
+          echo '<?xml version="1.0" encoding="UTF-8"?>' > local-mvn-settings.xml
           echo '<settings>' >> local-mvn-settings.xml
           echo '<servers>' >> local-mvn-settings.xml
           echo '<server>' >> local-mvn-settings.xml
-          echo '<id>server.id</id>' >> local-mvn-settings.xml
+          echo '<id>ossrh</id>' >> local-mvn-settings.xml
           echo '<username>${{ secrets.LIME_OSSRH_ID }}</username>' >> local-mvn-settings.xml
           echo '<password>${{ secrets.LIME_OSSRH_KEY }}</password>' >> local-mvn-settings.xml
           echo '</server>' >> local-mvn-settings.xml
@@ -76,6 +75,7 @@ jobs:
 
       - name: Remove Credentials
         shell: bash
+        if: always()
         run: |
           rm -f local-mvn-settings.xml 
           rm -f git-commit-key
