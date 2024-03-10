@@ -36,22 +36,26 @@ jobs:
       - name: Configure OSSRH Credentials
         shell: bash
         run: |
-          echo '<?xml version="1.0" encoding="UTF-8"?>' > local-mvn-settings.xml
-          echo '<settings>' >> local-mvn-settings.xml
-          echo '<servers>' >> local-mvn-settings.xml
-          echo '<server>' >> local-mvn-settings.xml
-          echo '<id>ossrh</id>' >> local-mvn-settings.xml
-          echo '<username>${{ secrets.LIME_OSSRH_ID }}</username>' >> local-mvn-settings.xml
-          echo '<password>${{ secrets.LIME_OSSRH_KEY }}</password>' >> local-mvn-settings.xml
-          echo '</server>' >> local-mvn-settings.xml
-          echo '</servers>' >> local-mvn-settings.xml
-          echo '</settings>' >> local-mvn-settings.xml
+          mkdir target
+          # avoid commits using a standard ignore directory
+          localSettings=target/local-mvn-settings.xml 
+          echo '<?xml version="1.0" encoding="UTF-8"?>' > $localSettings
+          echo '<settings>' >> $localSettings
+          echo '<servers>' >> $localSettings
+          echo '<server>' >> $localSettings
+          echo '<id>ossrh</id>' >> $localSettings
+          echo '<username>${{ secrets.LIME_OSSRH_ID }}</username>' >> $localSettings
+          echo '<password>${{ secrets.LIME_OSSRH_KEY }}</password>' >> $localSettings
+          echo '</server>' >> $localSettings
+          echo '</servers>' >> $localSettings
+          echo '</settings>' >> $localSettings
 
       - id: git_setup
         name: Prepare Release Build with Maven
         shell: bash
         run: |
-          KEY_PATH=$PWD/git-commit-key
+          # avoid commits using a standard ignore directory
+          KEY_PATH=$PWD/target/git-commit-key
           echo '${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}' > $KEY_PATH
           chmod 600 $KEY_PATH
           
@@ -99,5 +103,5 @@ jobs:
         shell: bash
         if: always()
         run: |
-          rm -f local-mvn-settings.xml 
-          rm -f git-commit-key
+          rm -f target/local-mvn-settings.xml 
+          rm -f target/git-commit-key
