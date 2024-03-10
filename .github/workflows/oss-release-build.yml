@@ -100,6 +100,8 @@ jobs:
       - name: Push changes to repository
         shell: bash
         run: |
+          # grab the latest development updates if there was anything done concurrently while the build was running.
+          git pull
           git push origin tag ${{steps.git_release_version.outputs.lime-release-version}}
           git push
 
