@@ -28,4 +28,4 @@ jobs:
       - name: Build with Maven
         # Release profile to check javadoc, signing, etc.
         # install is required for framework as CDK is trying to load current library in another process.
-        run: mvn -B --file pom.xml -Prelease -Dbuild.number=${{github.run_number}} -Dgpg.keyname='Lime Mojito Pty Ltd' install
+        run: mvn -B -Dstyle.color=always --file pom.xml -Prelease -Dbuild.number=${{github.run_number}} -Dgpg.keyname='Lime Mojito Pty Ltd' install

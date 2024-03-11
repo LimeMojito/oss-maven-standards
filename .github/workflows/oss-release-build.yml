@@ -79,7 +79,7 @@ jobs:
         name: Increment Release Version
         shell: bash
         run: |
-          mvn -B build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion} versions:commit
+          mvn -B -Dstyle.color=always build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion} versions:commit
           projectVersion=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout )
           git add .
           git commit -S -m "[Release] updated version in pom.xml"
@@ -91,7 +91,7 @@ jobs:
       - name: Increment development version
         shell: bash
         run: |
-          mvn -B build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT versions:commit
+          mvn -B -Dstyle.color=always build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT versions:commit
           git add .
           git commit -S -m "[Development] updated development version in pom.xml"
 
