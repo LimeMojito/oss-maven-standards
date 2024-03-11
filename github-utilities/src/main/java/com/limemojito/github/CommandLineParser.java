@@ -19,7 +19,6 @@ package com.limemojito.github;
 
 import com.jcabi.github.Coordinates;
 import com.jcabi.github.Github;
-import com.jcabi.github.Repo;
 import com.jcabi.http.Request;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +34,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.jcabi.http.Request.*;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @Component
 @Slf4j
@@ -49,6 +50,7 @@ public class CommandLineParser implements CommandLineRunner {
     private final boolean isPublic;
     private final int workflowRepositoryId;
 
+    @SuppressWarnings("ParameterNumber")
     public CommandLineParser(Github gitHub,
                              @Value("${github.org}") String organization,
                              @Value("${github.workflow.repository.id}") int workflowRepositoryId,
@@ -70,22 +72,21 @@ public class CommandLineParser implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        final Coordinates.Simple coords = new Coordinates.Simple(organization, this.repository);
-        final Repo repository = gitHub.repos().get(coords);
-        updateSettings(isPublic, coords, repository);
-        applyAutomatedSecurityFixes(coords);
-        applyTeamAccess(coords);
+        final Coordinates.Simple repo = new Coordinates.Simple(organization, this.repository);
+        updateSettings(repo);
+        applyAutomatedSecurityFixes(repo);
+        applyTeamAccess(repo);
         if (isPublic) {
-            applyRules(coords);
+            applyRules(repo);
         } else {
-            gitHub.entry().method(PUT).uri().path("repos/%s/actions/permissions".formatted(coords)).back()
+            gitHub.entry().method(PUT).uri().path("repos/%s/actions/permissions".formatted(repo)).back()
                   .body().set(json(Map.of(
                           "enabled", true,
                           "allowed_actions", "all"
                   ))).back()
                   .fetch();
         }
-        log.info("Updated %b repository %s".formatted(isPublic, coords));
+        log.info("Updated %b repository %s".formatted(isPublic, repo));
     }
 
     private void applyRules(Coordinates.Simple coords) throws IOException {
@@ -94,14 +95,15 @@ public class CommandLineParser implements CommandLineRunner {
                                   .method(GET).uri().path(path).back()
                                   .fetch()
                                   .body();
-        if (body.length() < 10) {
+        final int assumeEmptySize = 10;
+        if (body.length() < assumeEmptySize) {
             log.info("Creating ruleset");
             final JsonStructure json = ruleSet();
             final int status = gitHub.entry().method(POST).uri().path(path).back()
                                      .body().set(json).back()
                                      .fetch()
                                      .status();
-            if (status != 201) {
+            if (status != CREATED.value()) {
                 throw new IOException("Could not generate ruleset %s".formatted(json));
             }
         }
@@ -174,7 +176,7 @@ public class CommandLineParser implements CommandLineRunner {
         final int status = request
                 .fetch()
                 .status();
-        if (status != 204) {
+        if (status != NO_CONTENT.value()) {
             throw new IOException("Could not activate %s".formatted(uri));
         }
     }
@@ -183,8 +185,7 @@ public class CommandLineParser implements CommandLineRunner {
         applyPut(uri, null);
     }
 
-    private static void updateSettings(boolean isPublic, Coordinates.Simple coords, Repo repository) throws
-                                                                                                     IOException {
+    private void updateSettings(Coordinates.Simple coords) throws IOException {
         final JsonObjectBuilder builder = Json.createObjectBuilder()
                                               .add("private", !isPublic)
                                               .add("has_issues", isPublic)
@@ -204,7 +205,7 @@ public class CommandLineParser implements CommandLineRunner {
         }
         final JsonObject json = builder.build();
         log.info("Updating {} to {}", coords, json);
-        repository.patch(json);
+        gitHub.repos().get(coords).patch(json);
     }
 
     private static JsonObject securitySetup() {

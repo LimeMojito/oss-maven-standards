@@ -50,9 +50,8 @@ public class Application {
                 .header(ACCEPT, APPLICATION_JSON)
                 .header(CONTENT_TYPE, APPLICATION_JSON)
                 .header(AUTHORIZATION, String.format("token %s", token))
-                .through(AutoRedirectingWire.class)
-//                .through(VerboseWire.class)
-                ;
+                .through(AutoRedirectingWire.class);
+//                .through(VerboseWire.class);
         return new RtGithub(request);
     }
 }
