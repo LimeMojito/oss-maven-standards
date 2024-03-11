@@ -47,7 +47,7 @@ public class CommandLineParser implements CommandLineRunner {
     private final String developTeam;
     private final int ownerTeamId;
     private final boolean isPublic;
-    private int workflowRepositoryId;
+    private final int workflowRepositoryId;
 
     public CommandLineParser(Github gitHub,
                              @Value("${github.org}") String organization,
