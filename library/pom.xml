@@ -39,6 +39,11 @@
                 <version>3.0.2</version>
             </dependency>
             <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>annotations</artifactId>
+                <version>3.0.1u2</version>
+            </dependency>
+            <dependency>
                 <!-- Vulnerability Fix-->
                 <groupId>com.jayway.jsonpath</groupId>
                 <artifactId>json-path</artifactId>
