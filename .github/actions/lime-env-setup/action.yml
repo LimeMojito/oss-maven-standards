@@ -21,6 +21,12 @@ runs:
         role-to-assume: ${{ inputs.role-to-assume }}
         role-session-name: ${{ github.repository_id }}-${{ github.run_id }}
 
+    - uses: docker/setup-qemu-action@v2
+      with:
+        platforms: 'arm64'
+
+    - uses: docker/setup-buildx-action@v2
+
     - name: Install Python dependencies and CDK
       shell: bash
       run: |
