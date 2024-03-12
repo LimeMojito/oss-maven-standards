@@ -47,6 +47,7 @@ jobs:
           code-signing-key-name: Lime Mojito Pty Ltd
           git-access-key: ${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}
           git-signing-key: ${{ secrets.LIME_BUILD_AGENT_GIT_SIGNING_KEY }}
+          custom-maven-settings-file: ${{ steps.maven_setup.outputs.settings-file }}
 
       - name: Remove OSSRH Credentials
         shell: bash
