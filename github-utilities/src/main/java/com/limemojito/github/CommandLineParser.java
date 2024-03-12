@@ -30,6 +30,7 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonStructure;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -76,16 +77,15 @@ public class CommandLineParser implements CommandLineRunner {
         updateSettings(repo);
         applyAutomatedSecurityFixes(repo);
         applyTeamAccess(repo);
-        if (isPublic) {
-            applyRules(repo);
-        } else {
-            gitHub.entry().method(PUT).uri().path("repos/%s/actions/permissions".formatted(repo)).back()
-                  .body().set(json(Map.of(
-                          "enabled", true,
-                          "allowed_actions", "all"
-                  ))).back()
-                  .fetch();
-        }
+        applyRules(repo);
+
+        gitHub.entry().method(PUT).uri().path("repos/%s/actions/permissions".formatted(repo)).back()
+              .body().set(json(Map.of(
+                      "enabled", true,
+                      "allowed_actions", "all"
+              )))
+              .back()
+              .fetch();
         log.info("Updated %b repository %s".formatted(isPublic, repo));
     }
 
@@ -110,6 +110,31 @@ public class CommandLineParser implements CommandLineRunner {
     }
 
     private JsonStructure ruleSet() {
+        final List<Map<String, ?>> rules = new ArrayList<>(List.of(
+                Map.of("type", "deletion"),
+                Map.of("type", "required_signatures"),
+                Map.of("type", "non_fast_forward"),
+                Map.of("type", "pull_request",
+                       "parameters", Map.of(
+                                "required_approving_review_count", 1,
+                                "dismiss_stale_reviews_on_push", true,
+                                "require_code_owner_review", true,
+                                "require_last_push_approval", false,
+                                "required_review_thread_resolution", true
+                        ))
+        ));
+        if (isPublic) {
+            rules.add(Map.of("type", "workflows",
+                             "parameters", Map.of(
+                            "workflows", List.of(
+                                    Map.of(
+                                            "path", ".github/workflows/oss-java-build.yml",
+                                            "repository_id", workflowRepositoryId,
+                                            "ref", "master"
+                                    )
+                            ))
+            ));
+        }
         return json(Map.of(
                 "name", "SignAndSeal",
                 "target", "branch",
@@ -125,29 +150,7 @@ public class CommandLineParser implements CommandLineRunner {
                                 "include", List.of("~DEFAULT_BRANCH")
                         )
                 ),
-                "rules", List.of(
-                        Map.of("type", "deletion"),
-                        Map.of("type", "required_signatures"),
-                        Map.of("type", "non_fast_forward"),
-                        Map.of("type", "pull_request",
-                               "parameters", Map.of(
-                                        "required_approving_review_count", 1,
-                                        "dismiss_stale_reviews_on_push", true,
-                                        "require_code_owner_review", true,
-                                        "require_last_push_approval", false,
-                                        "required_review_thread_resolution", true
-                                )),
-                        Map.of("type", "workflows",
-                               "parameters", Map.of(
-                                        "workflows", List.of(
-                                                Map.of(
-                                                        "path", ".github/workflows/oss-java-build.yml",
-                                                        "repository_id", workflowRepositoryId,
-                                                        "ref", "master"
-                                                )
-                                        ))
-                        )
-                )
+                "rules", rules
         ));
     }
 
