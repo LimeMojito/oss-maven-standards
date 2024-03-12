@@ -101,5 +101,10 @@ runs:
       shell: bash
       if: always()
       run: |
-        rm -f ${{steps.git_setup.outputs.commit-key}}
-          
+        rm -f ${{ steps.git_setup.outputs.commit-key }}
+
+    - name: Remove Custom Maven Settings
+      shell: bash
+      if: always()
+      run: |
+        rm -f ${{ inputs.custom-maven-settings-file }}
