@@ -70,7 +70,7 @@ runs:
         projectVersion=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout )
         git add .
         git commit -S -m "[Release] updated version in pom.xml"
-        tagName="$projectVersion-${{github.run_number}}"
+        tagName="$projectVersion-release-build-${{github.run_number}}"
         git tag -a $tagName -m "[Release] Release Tag"
         
         echo "lime-release-version=$tagName" >> "$GITHUB_OUTPUT"
