@@ -90,13 +90,7 @@ public class CommandLineParser implements CommandLineRunner {
         gitHub.entry().method(PUT).uri().path("repos/%s/actions/permissions".formatted(repo)).back()
               .body().set(json(Map.of(
                       "enabled", true,
-                      "allowed_actions", "selected"
-              )))
-              .back()
-              .fetch();
-        gitHub.entry().method(PUT).uri().path("repos/%s/actions/permissions/selected-actions".formatted(repo)).back()
-              .body().set(json(Map.of(
-                      "github_owned_allowed", true
+                      "allowed_actions", "all"
               )))
               .back()
               .fetch();
