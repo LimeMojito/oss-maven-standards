@@ -19,6 +19,7 @@ package com.limemojito.github;
 
 import com.jcabi.github.Coordinates;
 import com.jcabi.github.Github;
+import com.jcabi.github.Repos;
 import com.jcabi.http.Request;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,6 +50,7 @@ public class CommandLineParser implements CommandLineRunner {
     private final String developTeam;
     private final int ownerTeamId;
     private final boolean isPublic;
+    private final String description;
     private final int workflowRepositoryId;
 
     @SuppressWarnings("ParameterNumber")
@@ -59,7 +61,8 @@ public class CommandLineParser implements CommandLineRunner {
                              @Value("${github.owner.team.id}") int ownerTeamId,
                              @Value("${github.develop.team}") String developTeam,
                              @Value("${github.repository}") String repository,
-                             @Value("${github.repository.public}") boolean isPublic) {
+                             @Value("${github.repository.public}") boolean isPublic,
+                             @Value("${github.repository.description}") String description) {
         this.gitHub = gitHub;
         this.organization = organization;
         this.repository = repository;
@@ -68,25 +71,38 @@ public class CommandLineParser implements CommandLineRunner {
         this.ownerTeamId = ownerTeamId;
         this.workflowRepositoryId = workflowRepositoryId;
         this.isPublic = isPublic;
+        this.description = description;
     }
 
     @Override
     public void run(String... args) throws Exception {
-
         final Coordinates.Simple repo = new Coordinates.Simple(organization, this.repository);
+        create(repo);
         updateSettings(repo);
         applyAutomatedSecurityFixes(repo);
         applyTeamAccess(repo);
         applyRules(repo);
+        actionPermissions(repo);
+        log.info("Updated %b repository %s".formatted(isPublic, repo));
+    }
 
+    private void actionPermissions(Coordinates.Simple repo) throws IOException {
         gitHub.entry().method(PUT).uri().path("repos/%s/actions/permissions".formatted(repo)).back()
               .body().set(json(Map.of(
                       "enabled", true,
-                      "allowed_actions", "all"
+                      "allowed_actions", "local_only"
               )))
               .back()
               .fetch();
-        log.info("Updated %b repository %s".formatted(isPublic, repo));
+    }
+
+    private void create(Coordinates.Simple repo) throws IOException {
+        if (!gitHub.repos().exists(repo)) {
+            log.info("Creating repository {}/{}", organization, repository);
+            gitHub.repos()
+                  .create(new Repos.RepoCreate(repository, !isPublic).withOrganization(organization)
+                                                                     .withDescription(description));
+        }
     }
 
     private void applyRules(Coordinates.Simple coords) throws IOException {
@@ -128,7 +144,7 @@ public class CommandLineParser implements CommandLineRunner {
                              "parameters", Map.of(
                             "workflows", List.of(
                                     Map.of(
-                                            "path", ".github/workflows/oss-java-build.yml",
+                                            "path", ".github/workflows/" + "oss-java-build.yml",
                                             "repository_id", workflowRepositoryId,
                                             "ref", "master"
                                     )
