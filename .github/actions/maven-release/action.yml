@@ -94,9 +94,9 @@ runs:
     - name: Push version and tag to repository
       shell: bash
       run: |
-        # Release builds are always on master.
-        echo "Checking out master"
-        git checkout master
+        defaultBranch=$(git remote show origin | grep "HEAD branch" | sed 's/.*: //')
+        echo "Checking out $defaultBranch"
+        git checkout $defaultBranch
         echo "Pushing version and tag changes"
         git push
         git push origin tag ${{steps.git_release_version.outputs.lime-release-version}}
