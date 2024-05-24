@@ -79,10 +79,10 @@ public class CommandLineParser implements CommandLineRunner {
         final Coordinates.Simple repo = new Coordinates.Simple(organization, this.repository);
         create(repo);
         updateSettings(repo);
+        actionPermissions(repo);
         applyAutomatedSecurityFixes(repo);
         applyTeamAccess(repo);
         applyRules(repo);
-        actionPermissions(repo);
         log.info("Updated %b repository %s".formatted(isPublic, repo));
     }
 
@@ -90,7 +90,13 @@ public class CommandLineParser implements CommandLineRunner {
         gitHub.entry().method(PUT).uri().path("repos/%s/actions/permissions".formatted(repo)).back()
               .body().set(json(Map.of(
                       "enabled", true,
-                      "allowed_actions", "local_only"
+                      "allowed_actions", "selected"
+              )))
+              .back()
+              .fetch();
+        gitHub.entry().method(PUT).uri().path("repos/%s/actions/permissions/selected-actions".formatted(repo)).back()
+              .body().set(json(Map.of(
+                      "github_owned_allowed", true
               )))
               .back()
               .fetch();
