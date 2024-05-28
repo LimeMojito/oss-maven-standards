@@ -22,13 +22,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Environment Setup
-      uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup@master
-      with:
-        aws-region: ${{ inputs.aws-region }}
-        role-to-assume: ${{ inputs.role-to-assume }}
-        code-signing-key: ${{ inputs.code-signing-key }}
-
     - name: Import GPG key for Version Update
       uses: crazy-max/ghaction-import-gpg@v6
       with:
