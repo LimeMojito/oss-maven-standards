@@ -18,9 +18,6 @@ inputs:
   git-signing-key:
     description: 'Github Commit signing GPG key data'
     required: true
-  custom-maven-settings-file:
-    description: 'Path to custom settings file for release build'
-    required: true
 
 runs:
   using: composite
@@ -49,6 +46,7 @@ runs:
       shell: bash
       run: |
         # avoid commits using a standard ignore directory
+        mkdir $PWD/target
         KEY_PATH=$PWD/target/git-commit-key
         echo '${{ inputs.git-access-key }}' > $KEY_PATH
         chmod 600 $KEY_PATH
@@ -58,9 +56,6 @@ runs:
         url="$(echo $remote_url | sed -r 's/https:\/\/github.com\/([^/]+)/git@github.com:\1/').git"  
         echo "Switched origin from $remote_url to $url"
         git remote set-url origin "$url"
-        
-        echo "lime-git-url=${url}" >> "$GITHUB_OUTPUT"
-        echo "commit-key=${KEY_PATH}" >> "$GITHUB_OUTPUT"
 
     - id: git_release_version
       name: Increment Release Version
@@ -100,15 +95,3 @@ runs:
         echo "Pushing version and tag changes"
         git push
         git push origin tag ${{steps.git_release_version.outputs.lime-release-version}}
-
-    - name: Remove Git Credentials
-      shell: bash
-      if: always()
-      run: |
-        rm -f ${{ steps.git_setup.outputs.commit-key }}
-
-    - name: Remove Custom Maven Settings
-      shell: bash
-      if: always()
-      run: |
-        rm -f ${{ inputs.custom-maven-settings-file }}
