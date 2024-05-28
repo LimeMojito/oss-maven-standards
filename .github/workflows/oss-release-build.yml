@@ -22,9 +22,7 @@ jobs:
         id: maven_setup
         shell: bash
         run: |
-          mkdir target
-          # avoid commits using a standard ignore directory
-          localSettings=target/local-mvn-settings.xml 
+          localSettings=~/.m2/settings.xml 
           echo '<?xml version="1.0" encoding="UTF-8"?>' > $localSettings
           echo '<settings>' >> $localSettings
           echo '<servers>' >> $localSettings
@@ -35,8 +33,6 @@ jobs:
           echo '</server>' >> $localSettings
           echo '</servers>' >> $localSettings
           echo '</settings>' >> $localSettings
-          
-          echo "settings-file=$localSettings" >> "$GITHUB_OUTPUT"
 
       - name: Maven Release Build
         uses: LimeMojito/oss-maven-standards/.github/actions/maven-release@master
@@ -47,4 +43,3 @@ jobs:
           code-signing-key-name: Lime Mojito Pty Ltd
           git-access-key: ${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}
           git-signing-key: ${{ secrets.LIME_BUILD_AGENT_GIT_SIGNING_KEY }}
-          custom-maven-settings-file: ${{ steps.maven_setup.outputs.settings-file }}
