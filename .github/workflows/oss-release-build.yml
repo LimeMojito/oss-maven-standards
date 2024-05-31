@@ -39,6 +39,8 @@ jobs:
           echo '</settings>' >> $localSettings
 
       - uses: actions/checkout@v4
+        with:
+          ssh-key: "${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}"
 
       - name: Maven Release Build
         uses: LimeMojito/oss-maven-standards/.github/actions/maven-release@master

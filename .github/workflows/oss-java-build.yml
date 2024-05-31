@@ -24,6 +24,8 @@ jobs:
           code-signing-key: ${{ secrets.LIME_SIGNING_KEY }}
 
       - uses: actions/checkout@v4
+        with:
+          ssh-key: "${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}"
 
       - name: Build with Maven
         # Release profile to check javadoc, signing, etc.

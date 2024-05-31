@@ -37,22 +37,6 @@ runs:
         git_commit_gpgsign: true
         git_config_global: true
 
-    - id: git_setup
-      name: Prepare Release Build with Maven
-      shell: bash
-      run: |
-        # avoid commits using a standard ignore directory
-        mkdir $PWD/target
-        KEY_PATH=$PWD/target/git-commit-key
-        echo '${{ inputs.git-access-key }}' > $KEY_PATH
-        chmod 600 $KEY_PATH
-        
-        git config core.sshCommand "ssh -i $KEY_PATH"
-        remote_url="$(git config --get remote.origin.url)"
-        url="$(echo $remote_url | sed -r 's/https:\/\/github.com\/([^/]+)/git@github.com:\1/').git"  
-        echo "Switched origin from $remote_url to $url"
-        git remote set-url origin "$url"
-
     - id: git_release_version
       name: Increment Release Version
       shell: bash
