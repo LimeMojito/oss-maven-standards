@@ -16,14 +16,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-
       - name: Environment Setup
         uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup@master
         with:
           aws-region: ${{ secrets.LIME_AWS_REGION }}
           role-to-assume: ${{ secrets.LIME_AWS_ROLE_ARN }}
           code-signing-key: ${{ secrets.LIME_SIGNING_KEY }}
+
+      - uses: actions/checkout@v4
 
       - name: Build with Maven
         # Release profile to check javadoc, signing, etc.

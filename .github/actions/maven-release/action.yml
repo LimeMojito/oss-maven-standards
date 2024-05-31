@@ -18,6 +18,9 @@ inputs:
   git-signing-key:
     description: 'Github Commit signing GPG key data'
     required: true
+  extra-mvn-options:
+    description: 'Extra maven command line options'
+    required: false
 
 runs:
   using: composite
@@ -77,7 +80,7 @@ runs:
         echo "Checking out ${{steps.git_release_version.outputs.lime-release-version}}"
         git checkout ${{steps.git_release_version.outputs.lime-release-version}}
         # deploy to OSSRH
-        mvn -B -Dstyle.color=always -Prelease -Dbuild.number=${{github.run_number}} -Dgpg.keyname='${{inputs.code-signing-key-name}}' deploy
+        mvn -B ${{ inputs.extra-mvn-options }} -Dstyle.color=always -Prelease -Dbuild.number=${{github.run_number}} -Dgpg.keyname='${{inputs.code-signing-key-name}}' deploy
 
     - name: Push version and tag to repository
       shell: bash
