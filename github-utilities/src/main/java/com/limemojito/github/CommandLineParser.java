@@ -139,18 +139,6 @@ public class CommandLineParser implements CommandLineRunner {
                                 "required_review_thread_resolution", true
                         ))
         ));
-        if (isPublic) {
-            rules.add(Map.of("type", "workflows",
-                             "parameters", Map.of(
-                            "workflows", List.of(
-                                    Map.of(
-                                            "path", ".github/workflows/" + "oss-java-build.yml",
-                                            "repository_id", workflowRepositoryId,
-                                            "ref", "master"
-                                    )
-                            ))
-            ));
-        }
         return json(Map.of(
                 "name", "SignAndSeal",
                 "target", "branch",
