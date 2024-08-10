@@ -26,7 +26,7 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>14.0.20-SNAPSHOT</version>
+        <version>14.0.21-SNAPSHOT</version>
         <relativePath>../jar-development</relativePath>
     </parent>
 
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>com.limemojito.oss.standards</groupId>
             <artifactId>aws-utilities</artifactId>
-            <version>14.0.20-SNAPSHOT</version>
+            <version>14.0.21-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
@@ -69,10 +69,6 @@
                         <phase>compile</phase>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.dkanejs.maven.plugins</groupId>
-                <artifactId>docker-compose-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

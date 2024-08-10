@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>oss-maven-standards</artifactId>
-        <version>14.0.20-SNAPSHOT</version>
+        <version>14.0.21-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -34,7 +34,7 @@
             <dependency>
                 <groupId>com.limemojito.oss.standards</groupId>
                 <artifactId>library</artifactId>
-                <version>14.0.20-SNAPSHOT</version>
+                <version>14.0.21-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -49,8 +49,9 @@
         <coverage.exclude.pattern.4/>
         <coverage.exclude.pattern.5/>
 
-        <!-- Docker port to wait for -->
-        <docker.compose.port>4566</docker.compose.port>
+        <!-- docker test configuration defaults -->
+        <docker.test.compose.dir>${project.basedir}/src/test/docker</docker.test.compose.dir>
+        <docker.test.compose.file>${docker.test.compose.dir}/docker-compose.yml</docker.test.compose.file>
 
         <!-- Compiler configuration assuming JDK 11 or higher -->
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -68,7 +69,6 @@
         <coverage.exclude.build.pattern.4/>
         <coverage.exclude.build.pattern.5/>
 
-        <test.compose.location>${project.basedir}/src/test/docker/docker-compose.yml</test.compose.location>
         <lombok.outputDirectory>${project.build.directory}/generated-sources/delombok</lombok.outputDirectory>
 
         <!-- This can be disabled by profile - suggest fast-build -->
@@ -114,79 +114,64 @@
                             <configuration>
                                 <exportAntProperties>true</exportAntProperties>
                                 <target>
-                                    <condition property="docker.compose.skip" else="false">
+                                    <condition property="docker.test.compose.skip" else="false">
                                         <or>
                                             <equals arg1="${lime.fast-build}" arg2="true"/>
                                             <not>
-                                                <available file="${test.compose.location}"/>
+                                                <available file="${docker.test.compose.file}"/>
                                             </not>
                                         </or>
                                     </condition>
                                     <!--suppress UnresolvedMavenProperty -->
-                                    <echo level="info" message="docker.compose.skip is ${docker.compose.skip}"/>
-
-                                    <!-- Remove this later if we need to replace docker plugin -->
+                                    <echo level="info" message="docker.test.compose.skip is ${docker.test.compose.skip}"/>
+                                </target>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>docker-up</id>
+                            <!--
+                             NOTE THAT LIFECYCLE CHECKS IN DOCKER COMPOSE FILES ARE REQUIRED
+                             AS NO WAIT AFTER STARTUP BEFORE TESTING BEGINS.
+                             -->
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <phase>pre-integration-test</phase>
+                            <configuration>
+                                <!--suppress MavenModelInspection -->
+                                <skip>${docker.test.compose.skip}</skip>
+                                <target>
                                     <exec executable="docker"
+                                          dir="${docker.test.compose.dir}"
                                           failifexecutionfails="true"
                                           failonerror="true">
-                                        <arg line="compose --help"/>
+                                        <arg value="compose"/>
+                                        <arg value="up"/>
+                                        <arg value="--detach"/>
                                     </exec>
                                 </target>
                             </configuration>
                         </execution>
                         <execution>
-                            <id>wait-for-docker</id>
-                            <phase>integration-test</phase>
+                            <id>docker-down</id>
                             <goals>
                                 <goal>run</goal>
                             </goals>
-                            <configuration>
-                                <target xmlns:ac="antlib:net.sf.antcontrib">
-                                    <ac:if>
-                                        <!--suppress UnresolvedMavenProperty -->
-                                        <equals arg1="${docker.compose.skip}" arg2="false"/>
-                                        <then>
-                                            <echo level="info"
-                                                  message="Waiting for Docker on port ${docker.compose.port}"/>
-                                            <waitfor maxWait="2" maxWaitUnit="minute">
-                                                <http url="http://localhost:${docker.compose.port}"/>
-                                            </waitfor>
-                                        </then>
-                                    </ac:if>
-                                </target>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>com.dkanejs.maven.plugins</groupId>
-                    <artifactId>docker-compose-maven-plugin</artifactId>
-                    <configuration>
-                        <composeFile>${project.basedir}/src/test/docker/docker-compose.yml</composeFile>
-                        <!-- Set by antrun task execution -->
-                        <!--suppress UnresolvedMavenProperty, MavenModelInspection -->
-                        <skip>${docker.compose.skip}</skip>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>docker-up</id>
-                            <goals>
-                                <goal>up</goal>
-                            </goals>
-                            <phase>pre-integration-test</phase>
-                            <configuration>
-                                <detachedMode>true</detachedMode>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>docker-down</id>
-                            <goals>
-                                <goal>down</goal>
-                            </goals>
                             <phase>post-integration-test</phase>
                             <configuration>
-                                <removeOrphans>true</removeOrphans>
-                                <removeVolumes>true</removeVolumes>
+                                <!--suppress MavenModelInspection -->
+                                <skip>${docker.test.compose.skip}</skip>
+                                <target>
+                                    <exec executable="docker"
+                                          dir="${docker.test.compose.dir}"
+                                          failifexecutionfails="true"
+                                          failonerror="true">
+                                        <arg value="compose"/>
+                                        <arg value="down"/>
+                                        <arg value="--remove-orphans"/>
+                                        <arg value="--volumes"/>
+                                    </exec>
+                                </target>
                             </configuration>
                         </execution>
                     </executions>
@@ -226,7 +211,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.13.0</version>
+                    <version>${maven-compiler-plugin.version}</version>
                     <configuration>
                         <!-- note using release option on JDK 9+ -->
                         <release>${java.version}</release>

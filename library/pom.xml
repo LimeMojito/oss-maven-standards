@@ -25,7 +25,7 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>oss-maven-standards</artifactId>
-        <version>14.0.20-SNAPSHOT</version>
+        <version>14.0.21-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -54,7 +54,7 @@
                 <!-- Caffeine versus wiremock -->
                 <groupId>com.google.errorprone</groupId>
                 <artifactId>error_prone_annotations</artifactId>
-                <version>2.24.1</version>
+                <version>2.29.2</version>
             </dependency>
             <dependency>
                 <groupId>org.jetbrains</groupId>
@@ -71,7 +71,7 @@
                 <!-- Springdoc -> Spring Data conflict -->
                 <groupId>io.github.classgraph</groupId>
                 <artifactId>classgraph</artifactId>
-                <version>4.8.165</version>
+                <version>4.8.174</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
@@ -81,7 +81,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.14.0</version>
+                <version>3.16.0</version>
             </dependency>
             <dependency>
                 <groupId>commons-fileupload</groupId>
@@ -91,44 +91,44 @@
             <dependency>
                 <groupId>org.awaitility</groupId>
                 <artifactId>awaitility</artifactId>
-                <version>4.2.0</version>
+                <version>4.2.2</version>
             </dependency>
             <dependency>
                 <!-- caffeine versus wiremock -->
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
-                <version>3.39.0</version>
+                <version>3.46.0</version>
             </dependency>
             <dependency>
                 <groupId>org.wiremock</groupId>
                 <artifactId>wiremock</artifactId>
-                <version>3.4.2</version>
+                <version>3.9.1</version>
             </dependency>
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>9.6</version>
+                <version>9.7</version>
             </dependency>
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-ui</artifactId>
-                <version>1.7.0</version>
+                <version>1.8.0</version>
             </dependency>
             <dependency>
                 <!-- Sec vulnerability -->
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
-                <version>1.16.0</version>
+                <version>1.17.1</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.15.1</version>
+                <version>2.16.1</version>
             </dependency>
             <dependency>
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
-                <version>1.3.0</version>
+                <version>1.3.3</version>
             </dependency>
             <dependency>
                 <groupId>com.github.ben-manes.caffeine</groupId>
@@ -155,12 +155,18 @@
             <dependency>
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-lambda-java-events</artifactId>
-                <version>3.11.4</version>
+                <version>3.13.0</version>
             </dependency>
             <dependency>
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-lambda-java-serialization</artifactId>
                 <version>1.1.5</version>
+            </dependency>
+            <dependency>
+                <!-- Sec vulnerability -->
+                <groupId>com.sun.jersey</groupId>
+                <artifactId>jersey-core</artifactId>
+                <version>1.19.4</version>
             </dependency>
             <!-- CDK builds and libraries -->
             <dependency>
@@ -176,7 +182,7 @@
             <dependency>
                 <groupId>software.amazon.jsii</groupId>
                 <artifactId>jsii-runtime</artifactId>
-                <version>1.93.0</version>
+                <version>1.102.0</version>
             </dependency>
             <!--End CDK -->
             <dependency>
@@ -190,7 +196,7 @@
                 <!-- The great log4j2 zero day fix -->
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-bom</artifactId>
-                <version>2.22.1</version>
+                <version>2.23.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -198,7 +204,7 @@
                 <!-- Guava secure -->
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava-bom</artifactId>
-                <version>32.1.3-jre</version>
+                <version>33.2.1-jre</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -206,14 +212,14 @@
                 <!-- Jackson -->
                 <groupId>com.fasterxml.jackson</groupId>
                 <artifactId>jackson-bom</artifactId>
-                <version>2.16.0</version>
+                <version>2.17.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-bom</artifactId>
-                <version>5.10.0</version>
+                <version>5.12.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -221,7 +227,7 @@
                 <!-- AWS SDK V1-->
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-java-sdk-bom</artifactId>
-                <version>1.12.651</version>
+                <version>1.12.767</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -229,7 +235,7 @@
                 <!-- AWS SDK V2-->
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>bom</artifactId>
-                <version>2.23.17</version>
+                <version>2.27.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -246,7 +252,7 @@
                 <!-- Spring Cloud -->
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>2023.0.0</version>
+                <version>2023.0.3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -254,7 +260,7 @@
                 <!-- Spring Cloud AWS -->
                 <groupId>io.awspring.cloud</groupId>
                 <artifactId>spring-cloud-aws-dependencies</artifactId>
-                <version>3.1.0</version>
+                <version>3.1.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -264,12 +270,6 @@
                 <version>10.0.0</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <!-- Sec vulnerability -->
-                <groupId>com.sun.jersey</groupId>
-                <artifactId>jersey-core</artifactId>
-                <version>1.19.4</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
