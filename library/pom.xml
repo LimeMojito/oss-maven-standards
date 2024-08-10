@@ -179,6 +179,12 @@
                 <version>1.93.0</version>
             </dependency>
             <!--End CDK -->
+            <dependency>
+                <!-- Vulnerability -->
+                <groupId>org.xmlunit</groupId>
+                <artifactId>xmlunit-core</artifactId>
+                <version>2.10.0</version>
+            </dependency>
 
             <dependency>
                 <!-- The great log4j2 zero day fix -->
