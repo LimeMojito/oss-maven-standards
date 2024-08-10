@@ -129,6 +129,28 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
                     <version>3.1.0</version>
+                    <!--
+                      This allows us to use things like if in ant tasks.  We use ant to add some control flow to
+                      maven builds.
+
+                      <configuration>
+                          <target xmlns:ac="antlib:net.sf.antcontrib">
+                              <ac:if>
+                                  ...
+                  -->
+                    <dependencies>
+                        <dependency>
+                            <groupId>ant-contrib</groupId>
+                            <artifactId>ant-contrib</artifactId>
+                            <version>1.0b3</version>
+                            <exclusions>
+                                <exclusion>
+                                    <groupId>ant</groupId>
+                                    <artifactId>ant</artifactId>
+                                </exclusion>
+                            </exclusions>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
