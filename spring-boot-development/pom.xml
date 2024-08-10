@@ -71,10 +71,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.dkanejs.maven.plugins</groupId>
-                <artifactId>docker-compose-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <executions>
