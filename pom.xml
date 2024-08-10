@@ -41,6 +41,7 @@
         <spring.boot.version>3.3.2</spring.boot.version>
         <aws-cdk-lib.version>2.151.0</aws-cdk-lib.version>
         <lombok.version>1.18.34</lombok.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
     </properties>
 
     <modules>
@@ -162,7 +163,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.13.0</version>
+                    <version>${maven-compiler-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
