@@ -17,11 +17,14 @@
 
 package com.limemojito.test.s3;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.core.sync.ResponseTransformer;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3Uri;
+import software.amazon.awssdk.services.s3.model.BucketAlreadyOwnedByYouException;
 import software.amazon.awssdk.services.s3.model.ListObjectsResponse;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import software.amazon.awssdk.services.s3.model.S3Object;
@@ -30,6 +33,7 @@ import software.amazon.awssdk.utils.IoUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 
 @Slf4j
 @Service
@@ -63,6 +67,16 @@ public class S3Support {
                            .contentType(contentType)
                            .contentLength(inputLength), RequestBody.fromInputStream(input, inputLength));
         log.info("Upload {}->{} completed.", bucketName, key);
+    }
+
+    @SneakyThrows
+    public void putData(URI uri, String contentType, byte[] data) {
+        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(data)) {
+            final S3Uri s3Uri = s3.utilities().parseUri(uri);
+            final String bucketName = s3Uri.bucket().orElseThrow();
+            final String key = s3Uri.key().orElseThrow();
+            putData(bucketName, key, inputStream, data.length, contentType);
+        }
     }
 
     public void putClasspathBinary(String bucketName, String key, String classpathResourcePath) {
@@ -100,5 +114,25 @@ public class S3Support {
     public InputStream getData(String bucketName, String key) {
         log.info("Retrieving {}->{}", bucketName, key);
         return s3.getObject(r -> r.bucket(bucketName).key(key), ResponseTransformer.toInputStream());
+    }
+
+    public URI toS3Uri(String bucket, String key) {
+        return URI.create("s3://%s/%s".formatted(bucket, key));
+    }
+
+    public void createBucket(URI uri) {
+        createBucket(s3.utilities()
+                       .parseUri(uri)
+                       .bucket()
+                       .orElseThrow());
+    }
+
+    public void createBucket(String bucketName) {
+        try {
+            s3.createBucket(r -> r.bucket(bucketName));
+            log.info("Created bucket s3://{}", bucketName);
+        } catch (BucketAlreadyOwnedByYouException e) {
+            log.info("Bucket already created.");
+        }
     }
 }

@@ -15,19 +15,20 @@
  *
  */
 
-package com.limemojito.test.sqs;
+package com.limemojito.test.jackson;
 
-import com.limemojito.aws.sqs.LocalstackSqsConfig;
-import com.limemojito.test.jackson.JacksonSupportConfiguration;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
+import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-@Slf4j
+/**
+ * Include the spring boot object mappers as other ones are poor choices as not configurable
+ * load validation support.
+ */
 @Configuration
-@Import({LocalstackSqsConfig.class, JacksonSupportConfiguration.class})
-@ComponentScan(basePackageClasses = SqsSupport.class)
-public class SqsSupportConfig {
-
+@Import({JacksonAutoConfiguration.class, ValidationAutoConfiguration.class})
+@ComponentScan(basePackageClasses = JacksonSupport.class)
+public class JacksonSupportConfiguration {
 }
