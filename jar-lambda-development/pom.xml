@@ -15,24 +15,20 @@
   ~    limitations under the License.
   ~
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>jar-lambda-development</artifactId>
     <packaging>pom</packaging>
 
     <!--
-    INSTRUCTIONS
-    ============
-    This project as parent, packaging as jar
+        INSTRUCTIONS
+        ============
+        This project as parent, packaging as jar
 
-    Supplies base lambda dependencies and slf4j for nicer logging.  Add a logback.xml in resources
-    to enable.
+        Supplies base lambda dependencies with Localstack and Lambda support for debugging in docker.
     -->
-
-    <properties>
-        <start-class>start-class property REQUIRED FOR PACKAGING FOR AWS</start-class>
-    </properties>
 
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
@@ -41,8 +37,124 @@
         <relativePath>../jar-development</relativePath>
     </parent>
 
+    <properties>
+        <start-class>start-class property REQUIRED FOR PACKAGING FOR AWS</start-class>
+
+        <!-- We have the shaded jar separate from the standard jar creation -->
+        <build.shaded.jar.name>${project.artifactId}-${project.version}-aws.jar</build.shaded.jar.name>
+    </properties>
+
+    <!-- include with all builds -->
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-function-adapter-aws</artifactId>
+        </dependency>
+        <dependency>
+            <!-- Localstack support -->
+            <groupId>com.limemojito.oss.standards</groupId>
+            <artifactId>aws-utilities</artifactId>
+            <version>14.0.21-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.limemojito.oss.standards</groupId>
+            <artifactId>aws-lambda</artifactId>
+            <version>14.0.21-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <!-- Access primarily for LambdaSupport -->
+            <groupId>com.limemojito.oss.test</groupId>
+            <artifactId>test-utilities</artifactId>
+            <version>14.0.21-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- Access for LambdaSupport -->
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>lambda</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- Access for LambdaSupport -->
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>check-shade-file</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                        <configuration>
+                            <exportAntProperties>true</exportAntProperties>
+                            <target>
+                                <!-- Handle the strange bug where shade places a file on classes for empty project -->
+                                <available property="shade.file.present" file="${project.basedir}/target/classes"
+                                           type="file"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>clean-classes</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                        <configuration>
+                            <target if="shade.file.present">
+                                <!-- Handle the strange bug where shade places a file on classes for empty project -->
+                                <delete file="${project.basedir}/target/classes"/>
+                                <delete dir="${project.basedir}/target/original-classes"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>clean-spring-jar</id>
+                        <!-- on repeated builds, the spring repackage leaves an "original jar" that is not a boot jar. -->
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <delete file="${project.build.directory}/${project.artifactId}-${project.version}.jar"
+                                        quiet="true"/>
+                                <delete file="${project.build.directory}/${build.shaded.jar.name}"
+                                        quiet="true"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <MainClass>${start-class}</MainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -61,30 +173,38 @@
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <shadedArtifactAttached>false</shadedArtifactAttached>
+                            <outputFile>${project.build.directory}/${build.shaded.jar.name}</outputFile>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>${start-class}</mainClass>
                                 </transformer>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/spring.handlers</resource>
                                 </transformer>
-                                <transformer implementation="org.springframework.boot.maven.PropertiesMergingResourceTransformer">
+                                <transformer
+                                        implementation="org.springframework.boot.maven.PropertiesMergingResourceTransformer">
                                     <resource>META-INF/spring.factories</resource>
                                 </transformer>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>
                                         META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
                                     </resource>
                                 </transformer>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>
                                         META-INF/spring/org.springframework.boot.actuate.autoconfigure.web.ManagementContextConfiguration.imports
                                     </resource>
                                 </transformer>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/spring.schemas</resource>
                                 </transformer>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/spring.components</resource>
                                 </transformer>
                             </transformers>
@@ -92,27 +212,29 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-artifacts</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>${project.build.directory}/${build.shaded.jar.name}</file>
+                                    <type>jar</type>
+                                    <!-- This is known by CDK support and LambdaSupport -->
+                                    <classifier>aws</classifier>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-function-adapter-aws</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.limemojito.oss.standards</groupId>
-            <artifactId>aws-lambda</artifactId>
-            <version>14.0.21-SNAPSHOT</version>
-        </dependency>
-
-    </dependencies>
 </project>

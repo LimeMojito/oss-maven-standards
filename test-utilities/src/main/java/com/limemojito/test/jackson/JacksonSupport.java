@@ -43,6 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Component
 @RequiredArgsConstructor
 public class JacksonSupport {
+    private static final int ONE_KB = 1024;
     private final ObjectMapper objectMapper;
     private final Validator validator;
     private final TypeReference<Map<String, Object>> rawMapType = new TypeReference<>() {
@@ -171,7 +172,7 @@ public class JacksonSupport {
     @SneakyThrows
     @SuppressWarnings("unchecked")
     public <T> String toJsonLambdaEvent(T lambdaEventInstance) {
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(1024)) {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(ONE_KB)) {
             Class<T> aClass = (Class<T>) lambdaEventInstance.getClass();
             PojoSerializer<T> pojoSerializer = lambdaSerializerFor(aClass);
             pojoSerializer.toJson(lambdaEventInstance, outputStream);

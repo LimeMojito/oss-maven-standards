@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -30,6 +29,7 @@ import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.awaitility.Durations.FIVE_HUNDRED_MILLISECONDS;
 import static software.amazon.awssdk.services.lambda.model.Runtime.JAVA17;
 import static software.amazon.awssdk.services.lambda.model.Runtime.NODEJS20_X;
@@ -86,6 +86,7 @@ public class LambdaSupport {
      * Name of default handler from spring-cloud-function.
      */
     public static final String SPRING_CLOUD_FUNCTION_HANDLER = "org.springframework.cloud.function.adapter.aws.FunctionInvoker";
+    private static final int TWO_KB = 2048;
 
     private final LambdaClient lambdaClient;
     private final S3Support s3;
@@ -251,7 +252,7 @@ public class LambdaSupport {
     @Deprecated
     public Lambda javaDebug(String moduleLocation,
                             String handler,
-                            @Min(1024) int memoryMegabytes,
+                            @Min(DEFAULT_JAVA_MEMORY_MEGABYTES) int memoryMegabytes,
                             Map<String, String> environment,
                             @Min(1) int debugPort) {
         return deployJava(moduleLocation, handler, memoryMegabytes, environment, debugPort);
@@ -312,7 +313,7 @@ public class LambdaSupport {
      */
     private Lambda deployJava(String moduleLocation,
                               String handler,
-                              @Min(1024) int memoryMegabytes,
+                              @Min(DEFAULT_JAVA_MEMORY_MEGABYTES) int memoryMegabytes,
                               Map<String, String> environment,
                               int debugPort) {
         String deployBucket = "lambda-deploy";
@@ -337,7 +338,7 @@ public class LambdaSupport {
                                   .packageType("Zip")
                                   .role(LAMBDA_ROLE)
                                   .timeout(JAVA_EXECUTION_TIMEOUT)
-                     );
+        );
     }
 
     private void safeDelete(String name) {
@@ -399,8 +400,8 @@ public class LambdaSupport {
         }
         spyEnv.put("_JAVA_OPTIONS",
                    "%s %s".formatted(inDebugMode
-                                             ? DEBUG_OPS.formatted(debugPort)
-                                             : "",
+                                     ? DEBUG_OPS.formatted(debugPort)
+                                     : "",
                                      javaToolOptions));
         log.debug("Decorated Environment is {}", spyEnv);
         return spyEnv;
@@ -451,10 +452,10 @@ public class LambdaSupport {
                 };
                 """.formatted(failure, response, response);
         // inline hack.
-        try (ByteArrayOutputStream outputBytes = new ByteArrayOutputStream(2048);
+        try (ByteArrayOutputStream outputBytes = new ByteArrayOutputStream(TWO_KB);
              ZipOutputStream codeZip = new ZipOutputStream(outputBytes)) {
             codeZip.putNextEntry(new ZipEntry("index.js"));
-            codeZip.write(nodeJsCode.getBytes(StandardCharsets.UTF_8));
+            codeZip.write(nodeJsCode.getBytes(UTF_8));
             codeZip.finish();
             c.zipFile(SdkBytes.fromByteArray(outputBytes.toByteArray()));
         }
