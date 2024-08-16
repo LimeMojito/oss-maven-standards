@@ -35,7 +35,7 @@ public class LocalstackLambdaConfig {
 
     @Primary
     @Bean(destroyMethod = "close")
-    public LambdaClient lambdaClient(@Value("${localstack.s3.url}") URI localStackS3Url) {
+    public LambdaClient lambdaClient(@Value("${localstack.url}") URI localStackS3Url) {
         return LambdaClient.builder()
                            .endpointOverride(localStackS3Url)
                            .build();

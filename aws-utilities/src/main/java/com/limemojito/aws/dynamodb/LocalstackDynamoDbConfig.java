@@ -49,7 +49,7 @@ public class LocalstackDynamoDbConfig {
     @Primary
     @Bean(destroyMethod = "close")
     public DynamoDbClient dynamoDBClient(ObjectMapper mapper,
-                                         @Value("${localstack.dynamodb.url}") URI localStackDynamoDbUrl,
+                                         @Value("${localstack.url}") URI localStackDynamoDbUrl,
                                          @Value("#{'${localstack.dynamodb.tables:}'.split(',')}") List<String> tableResourceList) {
         DynamoDbClient db = DynamoDbClient.builder().endpointOverride(localStackDynamoDbUrl).build();
         log.info("Tables to create: {}", tableResourceList);
@@ -69,7 +69,7 @@ public class LocalstackDynamoDbConfig {
     @Primary
     @Bean(destroyMethod = "shutdown")
     public AmazonDynamoDB amazonDynamoDB(LocalstackEndpointWrapper credentialWrapper,
-                                         @Value("${localstack.dynamodb.url}") String localStackDynamoDbUrl) {
+                                         @Value("${localstack.url}") String localStackDynamoDbUrl) {
         return credentialWrapper.wrap(AmazonDynamoDBClientBuilder.standard(), localStackDynamoDbUrl)
                                 .build();
     }

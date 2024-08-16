@@ -42,7 +42,7 @@ public class LocalstackSnsConfig {
 
     @Primary
     @Bean(destroyMethod = "close")
-    public SnsClient amazonSNSAsync(@Value("${localstack.sns.url}") URI localStackSnsUrl,
+    public SnsClient amazonSNSAsync(@Value("${localstack.url}") URI localStackSnsUrl,
                                     @Value("#{'${localstack.sns.topics:}'.split(',')}") List<String> topicList) {
         SnsClient sns = SnsClient.builder()
                                  .endpointOverride(localStackSnsUrl)

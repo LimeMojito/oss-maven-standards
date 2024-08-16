@@ -42,7 +42,7 @@ public class LocalstackSqsConfig {
 
     @Primary
     @Bean(destroyMethod = "close")
-    public SqsAsyncClient sqsClient(@Value("${localstack.sqs.url}") URI localStackSqsUrl,
+    public SqsAsyncClient sqsClient(@Value("${localstack.url}") URI localStackSqsUrl,
                                     @Value("#{'${localstack.sqs.queues:}'.split(',')}") List<String> queueNameList) {
         SqsAsyncClient sqs = SqsAsyncClient.builder().endpointOverride(localStackSqsUrl).build();
         log.info("Queues to create: {}", queueNameList);

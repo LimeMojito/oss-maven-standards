@@ -39,7 +39,7 @@ import java.util.List;
 public class LocalstackS3Config {
     @Primary
     @Bean(destroyMethod = "close")
-    public S3Client s3Client(@Value("${localstack.s3.url}") URI localStackS3Url,
+    public S3Client s3Client(@Value("${localstack.url}") URI localStackS3Url,
                              @Value("#{'${localstack.s3.buckets:}'.split(',')}") List<String> bucketNameList) {
         S3Client s3Client = S3Client.builder().endpointOverride(localStackS3Url).forcePathStyle(true).build();
         log.info("Buckets to create: {}", bucketNameList);
