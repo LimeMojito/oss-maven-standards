@@ -16,10 +16,13 @@
   ~
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>development-test</artifactId>
+    <artifactId>applications</artifactId>
+    <description>Applications made from development archetypes.</description>
     <packaging>pom</packaging>
 
     <parent>
@@ -30,7 +33,6 @@
     </parent>
 
     <modules>
-        <module>jar-lambda-poc</module>
-        <module>jar-lambda-poc-cdk</module>
+        <module>github-utilities</module>
     </modules>
 </project>

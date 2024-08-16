@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
   ~ Copyright 2011-2024 Lime Mojito Pty Ltd
   ~
@@ -16,34 +15,34 @@
   ~    limitations under the License.
   ~
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.limemojito.oss.standards.development-test</groupId>
-    <artifactId>jar-lambda-poc</artifactId>
+    <artifactId>json-utilities</artifactId>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
-        <artifactId>jar-lambda-development</artifactId>
+        <artifactId>jar-development</artifactId>
         <version>14.2.0-SNAPSHOT</version>
-        <relativePath>../../jar-lambda-development</relativePath>
+        <relativePath>../../jar-development/pom.xml</relativePath>
     </parent>
-
-    <properties>
-        <start-class>com.limemojito.lambda.poc.Application</start-class>
-
-        <!-- Missing the main method -->
-        <coverage.line.ratio>0.75</coverage.line.ratio>
-    </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.limemojito.oss.standards</groupId>
-            <artifactId>json-utilities</artifactId>
-            <version>14.2.0-SNAPSHOT</version>
-            <scope>test</scope>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-parameter-names</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
     </dependencies>
 </project>

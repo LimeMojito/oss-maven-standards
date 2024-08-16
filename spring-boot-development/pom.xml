@@ -26,7 +26,7 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>14.1.1-SNAPSHOT</version>
+        <version>14.2.0-SNAPSHOT</version>
         <relativePath>../jar-development</relativePath>
     </parent>
 
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>com.limemojito.oss.standards</groupId>
             <artifactId>aws-utilities</artifactId>
-            <version>14.1.1-SNAPSHOT</version>
+            <version>14.2.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
