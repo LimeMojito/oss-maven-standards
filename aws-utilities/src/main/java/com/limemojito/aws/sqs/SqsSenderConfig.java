@@ -17,10 +17,20 @@
 
 package com.limemojito.aws.sqs;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import software.amazon.awssdk.services.sqs.SqsClient;
 
+/**
+ * Configuration to create a SQS sender that uses all the standard attributes.
+ */
 @Configuration
-@Deprecated
-public class FifoSQSListenerConfig {
+// avoid component scans here as the localstack configuration is present.
+public class SqsSenderConfig {
 
+    @Bean
+    public SqsSender sqsSender(SqsClient sqs, ObjectMapper objectMapper) {
+        return new SqsSender(sqs, objectMapper);
+    }
 }

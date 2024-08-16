@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.util.StringUtils;
-import software.amazon.awssdk.services.sqs.SqsAsyncClient;
+import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.CreateQueueResponse;
 
 import java.net.URI;
@@ -40,11 +40,13 @@ import java.util.Map;
 @Slf4j
 public class LocalstackSqsConfig {
 
+    private static final String FIFO = ".fifo";
+
     @Primary
     @Bean(destroyMethod = "close")
-    public SqsAsyncClient sqsClient(@Value("${localstack.url}") URI localStackSqsUrl,
-                                    @Value("#{'${localstack.sqs.queues:}'.split(',')}") List<String> queueNameList) {
-        SqsAsyncClient sqs = SqsAsyncClient.builder().endpointOverride(localStackSqsUrl).build();
+    public SqsClient sqsClient(@Value("${localstack.url}") URI localStackSqsUrl,
+                               @Value("#{'${localstack.sqs.queues:}'.split(',')}") List<String> queueNameList) {
+        SqsClient sqs = SqsClient.builder().endpointOverride(localStackSqsUrl).build();
         log.info("Queues to create: {}", queueNameList);
         queueNameList.stream()
                      .filter(StringUtils::hasLength)
@@ -53,23 +55,22 @@ public class LocalstackSqsConfig {
         return sqs;
     }
 
-    public static CreateQueueResponse createQueue(SqsAsyncClient sqs, String qName) {
+    public static CreateQueueResponse createQueue(SqsClient sqs, String qName) {
         return createQueue(sqs, qName, true);
     }
 
-    public static CreateQueueResponse createQueue(SqsAsyncClient sqs, String qName, boolean withDeadLetter) {
+    public static CreateQueueResponse createQueue(SqsClient sqs, String qName, boolean withDeadLetter) {
         if (withDeadLetter) {
             return createQ(sqs, qName, computeDlqName(qName));
         }
         return createQ(sqs, qName);
     }
 
-    private static CreateQueueResponse createQ(SqsAsyncClient sqs, String qName, String dlQName) {
+    private static CreateQueueResponse createQ(SqsClient sqs, String qName, String dlQName) {
         log.info("Creating queue {} with DLQ {}", qName, dlQName);
         final String qARN = "QueueArn";
         CreateQueueResponse q = createQ(sqs, dlQName);
         final String dlqArn = sqs.getQueueAttributes(req -> req.queueUrl(q.queueUrl()).attributeNamesWithStrings(qARN))
-                                 .join()
                                  .attributesAsStrings()
                                  .get(qARN);
         final Map<String, String> attributes = new HashMap<>();
@@ -77,27 +78,26 @@ public class LocalstackSqsConfig {
         return createQ(sqs, qName, attributes);
     }
 
-    private static CreateQueueResponse createQ(SqsAsyncClient sqs, String qName) {
+    private static CreateQueueResponse createQ(SqsClient sqs, String qName) {
         return createQ(sqs, qName, new HashMap<>());
     }
 
-    private static CreateQueueResponse createQ(SqsAsyncClient sqs, String qName, Map<String, String> queueAttributes) {
+    private static CreateQueueResponse createQ(SqsClient sqs, String qName, Map<String, String> queueAttributes) {
         queueAttributes.put("ReceiveMessageWaitTimeSeconds", "3");
-        if (qName.endsWith(".fifo")) {
+        if (qName.endsWith(FIFO)) {
             log.trace("Creating FIFO queue");
             queueAttributes.put("FifoQueue", "true");
             queueAttributes.put("ContentBasedDeduplication", "true");
         }
         final CreateQueueResponse result = sqs.createQueue(req -> req.queueName(qName)
-                                                                     .attributesWithStrings(queueAttributes))
-                                              .join();
+                                                                     .attributesWithStrings(queueAttributes));
         log.info("Q {} created with url {} and attributes {}", qName, result.queueUrl(), queueAttributes);
         return result;
     }
 
     private static String computeDlqName(String qName) {
-        final String fifoSuffix = ".fifo";
-        return qName.endsWith(fifoSuffix) ? qName.substring(0,
-                                                            qName.length() - fifoSuffix.length()) + "-dlq.fifo" : qName + "-dlq";
+        return qName.endsWith(FIFO)
+               ? qName.substring(0, qName.length() - FIFO.length()) + "-dlq.fifo"
+               : qName + "-dlq";
     }
 }

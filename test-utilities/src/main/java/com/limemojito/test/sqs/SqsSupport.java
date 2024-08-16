@@ -20,13 +20,12 @@ package com.limemojito.test.sqs;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.limemojito.aws.sqs.LocalstackSqsConfig;
-import io.awspring.cloud.sqs.operations.SqsSendOptions;
-import io.awspring.cloud.sqs.operations.SqsTemplate;
+import com.limemojito.aws.sqs.SqsSender;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.services.sqs.SqsAsyncClient;
+import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.GetQueueAttributesResponse;
 import software.amazon.awssdk.services.sqs.model.Message;
 import software.amazon.awssdk.services.sqs.model.QueueDoesNotExistException;
@@ -44,23 +43,20 @@ import static java.util.stream.Collectors.toList;
 /**
  * This class provides support for working with Amazon Simple Queue Service (SQS). It includes methods for managing
  * queues, sending and receiving messages, and checking queue attributes.
+ * <p>
+ * Always adds the following SQS attributes:
+ * <ul>
+ *     <li>id - unique id for each message</li>
+ *     <li>timestamp - epoch milliseconds</li>
+ *     <li>contentType - mime type</li>
+ *     <li>Content-Type - Mime like attribute</li>
+ *     <li>Content-Length - Mime like attribute</li>
+ * </ul>
  */
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class SqsSupport {
-    /**
-     * The constant variable HEADER_MESSAGE_DEDUPLICATION_ID represents the string value "message-deduplication-id".
-     * It is used as a header key in a message to indicate the deduplication id.
-     */
-    public static final String HEADER_MESSAGE_DEDUPLICATION_ID = "message-deduplication-id";
-    /**
-     * This constant represents the header key for the message group ID.
-     * It is a string with the value "message-group-id".
-     * <p>
-     * This header key is commonly used in messaging applications to group related messages together.
-     * By using this header key, applications can easily identify and process messages that belong to the same group.
-     */
-    public static final String HEADER_MESSAGE_GROUP_ID = "message-group-id";
     /**
      * The SHORT_POLL constant represents the duration in seconds for a short max polling interval.
      * It is a final int variable with a value of 5.
@@ -77,22 +73,9 @@ public class SqsSupport {
      */
     public static final int MAX_POLL = 20;
 
-    private final SqsAsyncClient sqs;
-    private final SqsTemplate template;
+    private final SqsClient sqs;
+    private final SqsSender sqsSender;
     private final ObjectMapper objectMapper;
-
-    /**
-     * Constructs a new instance of the SqsSupport class with the specified SqsAsyncClient and ObjectMapper.
-     *
-     * @param sqs           the SqsAsyncClient object used to interact with the Amazon Simple Queue Service (SQS)
-     * @param objectMapper the ObjectMapper object used for serialization and deserialization of objects
-     */
-    @Autowired
-    public SqsSupport(SqsAsyncClient sqs, ObjectMapper objectMapper) {
-        this.sqs = sqs;
-        this.template = SqsTemplate.newTemplate(sqs);
-        this.objectMapper = objectMapper;
-    }
 
     /**
      * Retrieves the approximate number of messages in a specified queue.
@@ -106,8 +89,7 @@ public class SqsSupport {
         final String key = "ApproximateNumberOfMessages";
         final GetQueueAttributesResponse result = sqs.getQueueAttributes(req -> req.queueUrl(queueName)
                                                                                    .attributeNamesWithStrings(List.of(
-                                                                                           key)))
-                                                     .join();
+                                                                                           key)));
         final String value = result.attributesAsStrings().getOrDefault(key, "0");
         return Integer.parseInt(value);
     }
@@ -144,7 +126,7 @@ public class SqsSupport {
      * @return the URL of the queue
      */
     public String getQueueUrl(String queueName) {
-        return sqs.getQueueUrl(req -> req.queueName(queueName)).join().queueUrl();
+        return sqs.getQueueUrl(req -> req.queueName(queueName)).queueUrl();
     }
 
     /**
@@ -175,22 +157,7 @@ public class SqsSupport {
      * @param attributeValues optional sqs attribute values for the message
      */
     public void convertAndSend(String qName, Object message, Map<String, Object> attributeValues) {
-        template.send(to -> {
-            SqsSendOptions<Object> options = to.queue(getQueueUrl(qName))
-                                               .payload(message);
-            if (qName.endsWith("fifo") && attributeValues != null) {
-                to.headers(attributeValues);
-                for (String key : attributeValues.keySet()) {
-                    final Object value = attributeValues.get(key);
-                    if (key.equals(HEADER_MESSAGE_DEDUPLICATION_ID)) {
-                        options.messageDeduplicationId(value.toString());
-                    } else if (key.equals(HEADER_MESSAGE_GROUP_ID)) {
-                        options.messageGroupId(value.toString());
-                    }
-                }
-            }
-        });
-        log.info("Sent message: {} {} to {}", message, attributeValues, qName);
+        sqsSender.send(getQueueUrl(qName), message, attributeValues);
     }
 
     /**
@@ -235,15 +202,13 @@ public class SqsSupport {
         }
         final String queueUrl = getQueueUrl(queueName);
         final ReceiveMessageResponse result = sqs.receiveMessage(req -> req.queueUrl(queueUrl)
-                                                                           .waitTimeSeconds(waitTimeSeconds))
-                                                 .join();
+                                                                           .waitTimeSeconds(waitTimeSeconds));
         final List<Message> messages = result.messages();
         if (messages.isEmpty()) {
             throw new TimeoutException("Gave up waiting for message on " + queueName);
         } else {
             // acknowledge messages
-            messages.forEach(m -> sqs.deleteMessage(req -> req.queueUrl(queueUrl).receiptHandle(m.receiptHandle()))
-                                     .join());
+            messages.forEach(m -> sqs.deleteMessage(req -> req.queueUrl(queueUrl).receiptHandle(m.receiptHandle())));
             log.info("Received {} messages", messages.size());
             return messages;
         }
@@ -323,7 +288,7 @@ public class SqsSupport {
     public <T> List<T> waitForNotificationMessages(String queueName, int waitTimeSeconds, Class<T> clazz) {
         return waitForMessages(queueName, waitTimeSeconds).stream()
                                                           .map(m -> toObject(m.body(), Map.class))
-                                                          .map(sns -> toObject((String) sns.get("Message"), clazz))
+                                                          .map(sns -> toObject(snsMessage(sns), clazz))
                                                           .collect(toList());
     }
 
@@ -339,7 +304,7 @@ public class SqsSupport {
     public <T> List<T> waitForNotificationMessages(String queueName, int waitTimeSeconds, TypeReference<T> type) {
         return waitForMessages(queueName, waitTimeSeconds).stream()
                                                           .map(m -> toObject(m.body(), Map.class))
-                                                          .map(sns -> toObject((String) sns.get("Message"), type))
+                                                          .map(sns -> toObject(snsMessage(sns), type))
                                                           .collect(toList());
     }
 
@@ -357,13 +322,11 @@ public class SqsSupport {
                                                                     int waitUntilTimeSeconds,
                                                                     Class<T> clazz,
                                                                     int messageCountMin) {
-        return waitUntilMessageCountGreaterThan(queueName, waitUntilTimeSeconds, messageCountMin).stream()
-                                                                                                 .map(m -> toObject(m.body(),
-                                                                                                                    Map.class))
-                                                                                                 .map(sns -> toObject((String) sns.get(
-                                                                                                                              "Message"),
-                                                                                                                      clazz))
-                                                                                                 .collect(toList());
+        return waitUntilMessageCountGreaterThan(queueName, waitUntilTimeSeconds, messageCountMin)
+                .stream()
+                .map(m -> toObject(m.body(), Map.class))
+                .map(sns -> snsToObject(sns, clazz))
+                .collect(toList());
     }
 
     /**
@@ -380,13 +343,11 @@ public class SqsSupport {
                                                                     int waitUntilTimeSeconds,
                                                                     TypeReference<T> type,
                                                                     int messageCountMin) {
-        return waitUntilMessageCountGreaterThan(queueName, waitUntilTimeSeconds, messageCountMin).stream()
-                                                                                                 .map(m -> toObject(m.body(),
-                                                                                                                    Map.class))
-                                                                                                 .map(sns -> toObject((String) sns.get(
-                                                                                                                              "Message"),
-                                                                                                                      type))
-                                                                                                 .collect(toList());
+        return waitUntilMessageCountGreaterThan(queueName, waitUntilTimeSeconds, messageCountMin)
+                .stream()
+                .map(m -> toObject(m.body(), Map.class))
+                .map(sns -> snsToObject(sns, type))
+                .collect(toList());
     }
 
     /**
@@ -536,15 +497,15 @@ public class SqsSupport {
      */
     public void purge(String queueName) {
         final String url = getQueueUrl(queueName);
-        ReceiveMessageResponse receiveMessageResult = sqs.receiveMessage(r -> r.queueUrl(url)).join();
+        ReceiveMessageResponse receiveMessageResult = sqs.receiveMessage(r -> r.queueUrl(url));
         int count = 0;
         while (!receiveMessageResult.messages().isEmpty()) {
             final List<Message> messages = receiveMessageResult.messages();
             for (Message message : messages) {
-                sqs.deleteMessage(r -> r.queueUrl(url).receiptHandle(message.receiptHandle())).join();
+                sqs.deleteMessage(r -> r.queueUrl(url).receiptHandle(message.receiptHandle()));
                 count++;
             }
-            receiveMessageResult = sqs.receiveMessage(r -> r.queueUrl(url)).join();
+            receiveMessageResult = sqs.receiveMessage(r -> r.queueUrl(url));
         }
         log.info("Purged {} messages", count);
     }
@@ -559,4 +520,18 @@ public class SqsSupport {
         return objectMapper.readValue(json, clazz);
     }
 
+    @SuppressWarnings("rawtypes")
+    private <T> T snsToObject(Map sns, TypeReference<T> type) {
+        return toObject(snsMessage(sns), type);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private <T> T snsToObject(Map sns, Class<T> clazz) {
+        return toObject(snsMessage(sns), clazz);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private static String snsMessage(Map sns) {
+        return (String) sns.get("Message");
+    }
 }

@@ -21,9 +21,42 @@ import lombok.Value;
 
 import java.util.Map;
 
+/**
+ * The {@code SqsPumpMessage} class represents a message received from an Amazon Simple Queue Service (SQS) queue.
+ * Each instance of this class contains the actual message payload and optional attributes associated with the message.
+ *
+ * <p>
+ * This class is immutable and follows the value object pattern. Once created, the values of the {@code SqsPumpMessage}
+ * instance cannot be modified.
+ * </p>
+ *
+ * <p>
+ * The message payload is stored in the {@code message} field, which can hold any Java object. The optional attributes
+ * associated with the message are stored in the {@code attributes} field, which is a map of string keys to arbitrary
+ * object values.
+ * </p>
+ *
+ *
+ * <h3>Usage:</h3>
+ *
+ * <pre>
+ * SqsPumpMessage message = new SqsPumpMessage(payload, attributes);
+ * </pre>
+ *
+ * <h3>Serialization:</h3>
+ *
+ * <p>
+ * This class is annotated with Lombok's {@code @Value} annotation, and therefore provides both {@code equals()},
+ * {@code hashCode()}, and {@code toString()} methods based on the values of its fields.
+ * </p>
+ *
+ * <p>
+ * To serialize/deserialize instances of this class, a framework such as JSON or XML serialization can be used.
+ * </p>
+ */
 @Value
 @SuppressWarnings("RedundantModifiersValueLombok")
 public class SqsPumpMessage {
     private Object message;
-    private Map<String, Object> headers;
+    private Map<String, Object> attributes;
 }

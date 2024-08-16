@@ -18,6 +18,8 @@
 package com.limemojito.aws.sqs.pump;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.limemojito.aws.sqs.SqsSender;
+import com.limemojito.json.ObjectMapperPrototype;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,17 +28,14 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.messaging.MessageHeaders;
-import software.amazon.awssdk.services.sqs.SqsAsyncClient;
+import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.MessageAttributeValue;
 import software.amazon.awssdk.services.sqs.model.SendMessageBatchRequest;
 import software.amazon.awssdk.services.sqs.model.SendMessageBatchRequestEntry;
 import software.amazon.awssdk.services.sqs.model.SendMessageBatchResponse;
-import com.limemojito.json.ObjectMapperPrototype;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -51,14 +50,14 @@ public class SqsPumpTest {
     private final int pumpMaxBatchSize = 10;
     private final String queueUrl = "sqs://queue/url";
     @Mock
-    private SqsAsyncClient sqs;
+    private SqsClient sqs;
     @Captor
     private ArgumentCaptor<SendMessageBatchRequest> requestCaptor;
     private SqsPump sqsPump;
 
     @BeforeEach
     void setUp() {
-        sqsPump = new SqsPump(sqs, objectMapper, pumpMaxBatchSize);
+        sqsPump = new SqsPump(new SqsSender(sqs, objectMapper), pumpMaxBatchSize);
     }
 
     @Test
@@ -113,7 +112,7 @@ public class SqsPumpTest {
         assertThat(entry.messageAttributes()).containsKey(MessageHeaders.TIMESTAMP);
         assertThat(entry.messageAttributes()
                         .get(MessageHeaders.TIMESTAMP)
-                        .dataType()).isEqualTo("Number.java.lang.Long");
+                        .dataType()).isEqualTo("Number");
     }
 
     private void performBatchTest(int sendSize) {
@@ -143,13 +142,9 @@ public class SqsPumpTest {
     }
 
     private void whenBatchSendOk() {
-        doReturn(futureOf(() -> SendMessageBatchResponse.builder().build())).when(sqs)
-                                                                            .sendMessageBatch(any(
-                                                                                    SendMessageBatchRequest.class));
-    }
-
-    private <R> CompletableFuture<R> futureOf(Supplier<R> producer) {
-        return CompletableFuture.completedFuture(producer.get());
+        doReturn(SendMessageBatchResponse.builder().build())
+                .when(sqs)
+                .sendMessageBatch(any(SendMessageBatchRequest.class));
     }
 
     private String[] generateBodies(int start, int sendSize) {

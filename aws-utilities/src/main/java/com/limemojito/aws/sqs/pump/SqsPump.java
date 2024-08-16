@@ -17,15 +17,13 @@
 
 package com.limemojito.aws.sqs.pump;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.limemojito.aws.sqs.SqsSender;
 import jakarta.annotation.PreDestroy;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
-import software.amazon.awssdk.services.sqs.SqsAsyncClient;
-import software.amazon.awssdk.services.sqs.model.*;
+import software.amazon.awssdk.services.sqs.model.BatchResultErrorEntry;
+import software.amazon.awssdk.services.sqs.model.SendMessageBatchResponse;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,66 +31,86 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * SQS Pump is designed to be used in a multithreaded context where with exclusive flush semantics.  Two threads writing
- * to the same destination will get one batch sent.  Headers are set to be compatible with spring cloud messaging.
+ * to the same destination will get one batch sent.  Attributes are set to be compatible with spring cloud messaging.
  *
- * @see MessageHeaders#ID
- * @see MessageHeaders#CONTENT_TYPE
- * @see MessageHeaders#TIMESTAMP
+ * <ul>
+ *     <li>id - unique id for each message</li>
+ *     <li>timestamp - epoch milliseconds</li>
+ *     <li>contentType - mime type</li>
+ *     <li>Content-Type - Mime like attribute</li>
+ *     <li>Content-Length - Mime like attribute</li>
+ * </ul>
  */
 @Component
 @Slf4j
 public class SqsPump implements AutoCloseable {
-    public static final String HEADER_MESSAGE_DEDUPLICATION_ID = "message-deduplication-id";
-    public static final String HEADER_MESSAGE_GROUP_ID = "message-group-id";
-    private final SqsAsyncClient sqs;
+    private final SqsSender sqsSender;
     private final int pumpMaxBatchSize;
-    private final ObjectMapper objectMapper;
     private final Map<String, ConcurrentLinkedDeque<SqsPumpMessage>> localPump;
 
-    public SqsPump(SqsAsyncClient sqs,
-                   ObjectMapper objectMapper,
+    /**
+     * Constructs a new instance of the SqsPump class.
+     *
+     * @param sqsSender        Use SQS Sender to send messages with attributes set.
+     * @param pumpMaxBatchSize The maximum number of messages to send in a single batch from SQS.
+     */
+    public SqsPump(SqsSender sqsSender,
                    @Value("${com.limemojito.sqs.batchSize:10}") int pumpMaxBatchSize) {
-        this.sqs = sqs;
+        this.sqsSender = sqsSender;
         this.pumpMaxBatchSize = pumpMaxBatchSize;
-        this.objectMapper = objectMapper;
         this.localPump = new ConcurrentHashMap<>();
         log.info("Initialized SQS Pump with max batch size {}", pumpMaxBatchSize);
     }
 
+    /**
+     * Sends a message by adding it to the batch to be flushed by more message sends, or the flush method.
+     *
+     * @param destination     Destination to send message batch to.  May be qName or qUrl, url is more efficient.
+     * @param jsonableMessage message to send
+     * @see #flush(String)
+     * @see #flushAll()
+     */
     public void send(String destination, Object jsonableMessage) {
         send(destination, jsonableMessage, null);
     }
 
     /**
-     * Sends a message by adding it to the batch to be flushed by more message sends, or the flush method.
+     * Sends a message by adding it to the batch to be flushed by more message sends, or the flush method.  For FIFO
+     * queues message-group-id and message-deduplication-id must be supplied.
      * <p>
      * Note headers for ID, contentType and Timestamp (epoch millis) are set to ensure spring messaging compatibility.
      *
      * @param destination     Destination to send message batch to.  May be qName or qUrl, url is more efficient.
      * @param jsonableMessage message to send
-     * @param headers         headers to apply to message as SQS Attributes.  May also include FIFO info as headers.
+     * @param attributes      attributes to apply to message as SQS Attributes.  May also include FIFO info as headers.
      * @see #flush(String)
      * @see #flushAll()
-     * @see #HEADER_MESSAGE_DEDUPLICATION_ID
-     * @see #HEADER_MESSAGE_GROUP_ID
+     * @see SqsSender#ATTRIBUTE_MESSAGE_GROUP_ID
+     * @see SqsSender#ATTRIBUTE_MESSAGE_DEDUPLICATION_ID
      */
-    public void send(String destination, Object jsonableMessage, Map<String, Object> headers) {
+    public void send(String destination, Object jsonableMessage, Map<String, Object> attributes) {
         if (pumpFor(destination).size() >= pumpMaxBatchSize) {
             flush(destination);
         }
-        pumpFor(destination).add(new SqsPumpMessage(jsonableMessage, headers));
+        pumpFor(destination).add(new SqsPumpMessage(jsonableMessage, attributes));
     }
 
+    /**
+     * Flushes messages to the specified destination.
+     *
+     * @param destination the destination to flush messages to.
+     */
     public synchronized void flush(String destination) {
         final Deque<SqsPumpMessage> volatileMessages = pumpFor(destination);
         while (!volatileMessages.isEmpty()) {
             final List<SqsPumpMessage> messages = removeMessagesToSend(volatileMessages);
             log.trace("Flushing {} messages to {}", messages.size(), destination);
-            final SendMessageBatchRequest batchRequest = createBatchRequest(destination, messages);
-            final SendMessageBatchResponse sendMessageBatchResult = sqs.sendMessageBatch(batchRequest).join();
+            Map<Object, Map<String, Object>> toRaw = new LinkedHashMap<>();
+            messages.forEach(message -> toRaw.put(message.getMessage(), message.getAttributes()));
+            final SendMessageBatchResponse sendMessageBatchResult = sqsSender.sendBatch(destination, toRaw);
             final List<BatchResultErrorEntry> failed = sendMessageBatchResult.failed();
             if (!failed.isEmpty()) {
-                log.error("{} messages failed to {}", failed.size(), batchRequest.queueUrl());
+                log.error("{} messages failed to {}", failed.size(), destination);
                 for (BatchResultErrorEntry batchResultErrorEntry : failed) {
                     log.error("Failure onSender={} {}:{}",
                               batchResultErrorEntry.senderFault(),
@@ -106,6 +124,15 @@ public class SqsPump implements AutoCloseable {
         }
     }
 
+    /**
+     * Flushes all destinations by iterating over the set of destinations maintained in the localPump object and calling the flush method for each destination.
+     * This method should be called before destroying the object.
+     * <p>
+     * {@code @PreDestroy } annotation is used to indicate that this method should be called before the object is destroyed.
+     * It is important to call this method to ensure that any pending data in the destinations is flushed before destroying the object.
+     *
+     * @see #flush(String)
+     */
     @PreDestroy
     public void flushAll() {
         final Set<String> destinations = localPump.keySet();
@@ -114,57 +141,15 @@ public class SqsPump implements AutoCloseable {
         }
     }
 
+    /**
+     * Closes the resource and flushes any pending data.
+     * <p>
+     * This method overrides the close() method from the parent class. It should be called to release any resources held by the object and to ensure that any pending data is written
+     * before closing the resource.
+     */
     @Override
     public void close() {
         flushAll();
-    }
-
-    @SneakyThrows
-    private String toJson(Object object) {
-        return objectMapper.writeValueAsString(object);
-    }
-
-    private SendMessageBatchRequestEntry createEntry(int i, SqsPumpMessage sqsPumpMessage) {
-        final Map<String, Object> attributeValues = buildMessageAttributes(sqsPumpMessage.getHeaders());
-        final SendMessageBatchRequestEntry.Builder entry;
-        entry = SendMessageBatchRequestEntry.builder()
-                                            .id(Integer.toString(i))
-                                            .messageBody(toJson(sqsPumpMessage.getMessage()));
-        processMessageAttributes(entry, attributeValues);
-        return entry.build();
-    }
-
-    private Map<String, Object> buildMessageAttributes(Map<String, Object> headers) {
-        final Map<String, Object> attributeValues = new LinkedHashMap<>();
-        attributeValues.put(MessageHeaders.ID, UUID.randomUUID().toString());
-        attributeValues.put(MessageHeaders.CONTENT_TYPE, "application/json");
-        attributeValues.put(MessageHeaders.TIMESTAMP, System.currentTimeMillis());
-        if (headers != null) {
-            attributeValues.putAll(headers);
-        }
-        return attributeValues;
-    }
-
-    private void processMessageAttributes(SendMessageBatchRequestEntry.Builder entry,
-                                          Map<String, Object> attributeValues) {
-        final Map<String, MessageAttributeValue> attributes = new LinkedHashMap<>();
-        for (String key : attributeValues.keySet()) {
-            final Object value = attributeValues.get(key);
-            if (key.equals(HEADER_MESSAGE_DEDUPLICATION_ID)) {
-                entry.messageDeduplicationId(value.toString());
-            } else if (key.equals(HEADER_MESSAGE_GROUP_ID)) {
-                entry.messageGroupId(value.toString());
-            } else {
-                final MessageAttributeValue.Builder messageAttributeValue = MessageAttributeValue.builder();
-                // for compatibility with spring cloud aws messaging
-                messageAttributeValue.dataType(value instanceof Number
-                                                       ? "Number." + value.getClass().getName()
-                                                       : "String");
-                messageAttributeValue.stringValue(value.toString());
-                attributes.put(key, messageAttributeValue.build());
-            }
-        }
-        entry.messageAttributes(attributes);
     }
 
     private Deque<SqsPumpMessage> pumpFor(String destination) {
@@ -177,18 +162,6 @@ public class SqsPump implements AutoCloseable {
             messages.add(volatileMessages.removeFirst());
         }
         return messages;
-    }
-
-    private SendMessageBatchRequest createBatchRequest(String queueUrl, List<SqsPumpMessage> messages) {
-        final SendMessageBatchRequest.Builder batchRequest = SendMessageBatchRequest.builder().queueUrl(queueUrl);
-        final List<SendMessageBatchRequestEntry> entries = new ArrayList<>(messages.size());
-        for (int i = 0; i < messages.size(); i++) {
-            final SqsPumpMessage sqsPumpMessage = messages.get(i);
-            final SendMessageBatchRequestEntry entry = createEntry(i, sqsPumpMessage);
-            entries.add(entry);
-        }
-        batchRequest.entries(entries);
-        return batchRequest.build();
     }
 
 }
