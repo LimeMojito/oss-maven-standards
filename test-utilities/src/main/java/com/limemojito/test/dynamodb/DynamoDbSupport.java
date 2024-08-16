@@ -80,9 +80,7 @@ public class DynamoDbSupport {
         if (!objectList.isEmpty()) {
             log.info("Saving {} objects", objectList.size());
             DynamoDbTable<T> dynamoDbTable = tableFor(tableName, type);
-            objectList.forEach(item -> {
-                dynamoDbTable.putItem(r -> r.item(item));
-            });
+            objectList.forEach(item -> dynamoDbTable.putItem(r -> r.item(item)));
             log.debug("Saved");
         } else {
             log.warn("Empty list provided");

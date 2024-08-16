@@ -117,7 +117,7 @@ public final class AccessorAsserter {
             public void visitDescriptor(Object instance, PropertyDescriptor d) {
                 Method read = d.getReadMethod();
                 if (read != null) {
-                    callGetter(instance, read);
+                    final Object value = callGetter(instance, read);
                 }
             }
         });
@@ -150,7 +150,7 @@ public final class AccessorAsserter {
 
             @SneakyThrows
             private void checkWriteValue(Object o, Method readMethod, Object wrote) {
-                final Object value = readMethod.invoke(o);
+                final Object value = callGetter(o, readMethod);
                 assertNotNull("Read is null after write " + readMethod, value);
                 assertEquals("Read method failed on " + readMethod, wrote, value);
             }
@@ -190,7 +190,7 @@ public final class AccessorAsserter {
     }
 
     @SneakyThrows
-    static Object callGetter(Object o, Method readMethod) {
+    private static Object callGetter(Object o, Method readMethod) {
         log.debug("Invoking {}", readMethod);
         return readMethod.invoke(o);
     }

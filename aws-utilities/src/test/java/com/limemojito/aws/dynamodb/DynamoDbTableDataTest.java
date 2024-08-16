@@ -32,7 +32,7 @@ public class DynamoDbTableDataTest {
     private final JsonLoader loader = new JsonLoader(objectMapper);
 
     @Test
-    public void shouldProduceCreateTableRequest() throws Exception {
+    public void shouldProduceCreateTableRequest() {
         final DynamoDbTableData data = loader.loadFrom("/localstack-dynamodb/example-table.json",
                                                        DynamoDbTableData.class);
 
@@ -58,7 +58,7 @@ public class DynamoDbTableDataTest {
     }
 
     @Test
-    public void shouldProduceCreateTableRequestNoGSI() throws Exception {
+    public void shouldProduceCreateTableRequestNoGSI() {
         final DynamoDbTableData data = loader.loadFrom("/localstack-dynamodb/example-table-no-gsi.json",
                                                        DynamoDbTableData.class);
 
