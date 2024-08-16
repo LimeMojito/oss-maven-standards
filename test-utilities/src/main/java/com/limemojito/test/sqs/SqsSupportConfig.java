@@ -18,6 +18,7 @@
 package com.limemojito.test.sqs;
 
 import com.limemojito.aws.sqs.LocalstackSqsConfig;
+import com.limemojito.aws.sqs.SqsSenderConfig;
 import com.limemojito.test.jackson.JacksonSupportConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.ComponentScan;
@@ -50,7 +51,7 @@ import org.springframework.context.annotation.Import;
  */
 @Slf4j
 @Configuration
-@Import({LocalstackSqsConfig.class, JacksonSupportConfiguration.class})
+@Import({LocalstackSqsConfig.class, JacksonSupportConfiguration.class, SqsSenderConfig.class})
 @ComponentScan(basePackageClasses = SqsSupport.class)
 public class SqsSupportConfig {
 }
