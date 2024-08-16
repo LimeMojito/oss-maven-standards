@@ -45,7 +45,7 @@ public class LocalstackSsmConfig {
     @Primary
     @Bean(destroyMethod = "close")
     public SsmClient amazonSmsClient(@Value("${localstack.url}") URI localStackSnsUrl,
-                                     @Value("#{'${localstack.sms.pairs:}'.split(',')}") List<String> pairList) {
+                                     @Value("#{'${localstack.ssm.pairs:}'.split(',')}") List<String> pairList) {
         SsmClient ssm = SsmClient.builder()
                                  .endpointOverride(localStackSnsUrl)
                                  .build();
