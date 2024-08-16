@@ -61,7 +61,7 @@ public class SqsSender {
      * stores the unique identifier of a message group.
      * <p>
      * The value of this variable is set to "message-group-id".
-     * </
+     *
      */
     public static final String ATTRIBUTE_MESSAGE_GROUP_ID = "message-group-id";
     private static final String JSON_CONTENT = "application/json";
@@ -117,6 +117,7 @@ public class SqsSender {
      *
      * @param queueUrl the URL of the queue to send the message to
      * @param messages Map of message object to message attributes.
+     * @return Message batch sent.
      */
     public SendMessageBatchResponse sendBatch(String queueUrl,
                                               Collection<Object> messages) {
@@ -135,6 +136,7 @@ public class SqsSender {
      *
      * @param queueUrl            the URL of the queue to send the message to
      * @param messageAttributeMap Map of message object to message attributes.
+     * @return Message batch sent.
      * @see #ATTRIBUTE_MESSAGE_DEDUPLICATION_ID
      * @see #ATTRIBUTE_MESSAGE_GROUP_ID
      */

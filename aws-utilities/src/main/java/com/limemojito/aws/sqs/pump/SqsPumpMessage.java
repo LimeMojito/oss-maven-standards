@@ -37,13 +37,13 @@ import java.util.Map;
  * </p>
  *
  *
- * <h3>Usage:</h3>
+ * <h2>Usage:</h2>
  *
  * <pre>
  * SqsPumpMessage message = new SqsPumpMessage(payload, attributes);
  * </pre>
  *
- * <h3>Serialization:</h3>
+ * <h2>Serialization:</h2>
  *
  * <p>
  * This class is annotated with Lombok's {@code @Value} annotation, and therefore provides both {@code equals()},
