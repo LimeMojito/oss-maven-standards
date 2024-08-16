@@ -28,6 +28,12 @@ public class TestValueFactory {
 
     private final Map<Class<?>, Object> instanceStore;
 
+    /**
+     * Registers a test instance value for a given class so you can work with those types.
+     *
+     * @param clazz    The class for which to register the test instance.
+     * @param instance The test instance to register.
+     */
     public void registerTestInstanceFor(Class<?> clazz, Object instance) {
         instanceStore.put(clazz, instance);
     }
@@ -38,7 +44,6 @@ public class TestValueFactory {
      *
      * @param type Type of class to create test value for.
      * @return a value for the supplied type.
-     * @see Class#newInstance()
      */
     public Object createFor(Class<?> type) {
         Object rv = null;
@@ -55,6 +60,9 @@ public class TestValueFactory {
         return rv;
     }
 
+    /**
+     * Create a new factory.
+     */
     public TestValueFactory() {
         instanceStore = new HashMap<>();
         registerTestInstanceFor(UUID.class, UUID.randomUUID());

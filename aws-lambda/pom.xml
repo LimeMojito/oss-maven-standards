@@ -107,5 +107,11 @@
             <artifactId>commons-io</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.limemojito.oss.standards</groupId>
+            <artifactId>json-utilities</artifactId>
+            <version>14.0.21-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

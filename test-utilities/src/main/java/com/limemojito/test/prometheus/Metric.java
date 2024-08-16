@@ -35,6 +35,11 @@ public class Metric {
     private final Map<String, String> tags;
     private final BigDecimal value;
 
+    /**
+     * Checks if the Metric object has any tags.
+     *
+     * @return true if the Metric object has tags, false otherwise.
+     */
     public boolean hasTags() {
         return tags != null && !tags.isEmpty();
     }

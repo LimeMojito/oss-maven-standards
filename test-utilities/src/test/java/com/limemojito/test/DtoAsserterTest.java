@@ -17,6 +17,7 @@
 
 package com.limemojito.test;
 
+import com.limemojito.json.ObjectMapperPrototype;
 import lombok.Data;
 import org.junit.Test;
 

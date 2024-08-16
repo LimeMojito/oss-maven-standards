@@ -1,3 +1,20 @@
+/*
+ * Copyright 2011-2024 Lime Mojito Pty Ltd
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ *
+ */
+
 package com.limemojito.test.lambda;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -86,6 +103,7 @@ public class LambdaSupport {
      * Name of default handler from spring-cloud-function.
      */
     public static final String SPRING_CLOUD_FUNCTION_HANDLER = "org.springframework.cloud.function.adapter.aws.FunctionInvoker";
+
     private static final int TWO_KB = 2048;
 
     private final LambdaClient lambdaClient;
@@ -96,9 +114,21 @@ public class LambdaSupport {
     private final Set<String> tracker;
     private final Set<String> mappingTracker;
 
+    /**
+     * The Lambda function is identified by its name and Amazon Resource Name (ARN).
+     * This class serves as a convenient way to handle and manipulate Lambda function details.
+     */
     public record Lambda(String name, String arn) {
     }
 
+    /**
+     * Initializes the LambdaSupport object with the provided dependencies and deploy timeout.
+     *
+     * @param lambdaClient         The LambdaClient instance used for interacting with AWS Lambda.
+     * @param s3                   The S3Support instance used for interacting with AWS S3.
+     * @param json                 The JacksonSupport instance used for JSON processing.
+     * @param deployTimeoutSeconds The deploy timeout in seconds. Defaults to 180 if not specified.
+     */
     public LambdaSupport(LambdaClient lambdaClient,
                          S3Support s3,
                          JacksonSupport json,
@@ -128,12 +158,31 @@ public class LambdaSupport {
         return json.parseLambdaEvent(responseJson, responseType);
     }
 
+    /**
+     * Invokes a Lambda function asynchronously with the specified input and returns the response.
+     *
+     * @param lambda       the Lambda function to invoke
+     * @param pojo         the input object to be converted to JSON
+     * @param responseType the class representing the type of the response object
+     * @param <T>          the type of the response object
+     * @return the response object parsed from the JSON string
+     */
     public <T> T invoke(Lambda lambda, Object pojo, Class<T> responseType) {
         String jsonString = json.toJson(pojo);
         String responseJson = invokeAllowFail(lambda, jsonString);
         return json.parse(responseJson, responseType);
     }
 
+    /**
+     * Invokes the specified lambda function with the given POJO object as input
+     * and returns the response converted to the specified response object type.
+     *
+     * @param lambda       the lambda function to invoke
+     * @param pojo         the POJO object to pass as input to the lambda function
+     * @param responseType the type of the response object to convert the response to
+     * @param <T>          the type of the response object
+     * @return the response object converted to the specified type
+     */
     public <T> T invoke(Lambda lambda, Object pojo, TypeReference<T> responseType) {
         String jsonString = json.toJson(pojo);
         String responseJson = invokeAllowFail(lambda, jsonString);
@@ -160,24 +209,66 @@ public class LambdaSupport {
         return responseJson;
     }
 
+    /**
+     * Creates a Lambda function object using the provided function name by retrieving data from the Lambda runtime.
+     *
+     * @param functionName the name of the Lambda function
+     * @return a Lambda object representing the function
+     */
     public Lambda forName(String functionName) {
         return new Lambda(functionName, describe(functionName).configuration().functionArn());
     }
 
+    /**
+     * Creates a lambda stub with the given name and response data.
+     * The response data is serialized to JSON format using the provided JSON library.
+     * The created lambda stub can be used in integration tests.
+     *
+     * @param name         The name of the lambda stub.
+     * @param responsePojo The response data object to be serialized to JSON format.
+     * @return A lambda stub with the given name and serialized response data.
+     */
     @SneakyThrows
     public Lambda stub(String name, Object responsePojo) {
         return stub(name, json.toJson(responsePojo));
     }
 
+    /**
+     * Creates a lambda stub with the given name and response data.
+     * The response data is serialized to JSON format using the provided JSON library.
+     * The created lambda stub can be used in integration tests.
+     *
+     * @param name     The name of the lambda stub.
+     * @param response The response JSON.
+     * @return A lambda stub with the given name and response data.
+     */
     public Lambda stub(String name, String response) {
         return deployStub(name, response, false);
     }
 
+    /**
+     * Creates a lambda stub with the given name and response data as a failure event.
+     * The response data is serialized to JSON format using the provided JSON library.
+     * The created lambda stub can be used in integration tests.
+     *
+     * @param name         The name of the lambda stub.
+     * @param responsePojo The response data object to be serialized to JSON format.
+     * @return A lambda stub with the given name and response data as a fail event.
+     */
     @SneakyThrows
     public Lambda stubFail(String name, Object responsePojo) {
         return stubFail(name, json.toJson(responsePojo));
     }
 
+    /**
+     * Creates a lambda stub with the given name and response data as a failure event.
+     * The response data is serialized to JSON format using the provided JSON library.
+     * The created lambda stub can be used in integration tests.
+     *
+     * @param name     The name of the lambda stub.
+     * @param response The response JSON.
+     * @return A lambda stub with the given name and response JSON as a fail event.
+     */
     public Lambda stubFail(String name, String response) {
         return deployStub(name, response, true);
     }
@@ -258,6 +349,25 @@ public class LambdaSupport {
         return deployJava(moduleLocation, handler, memoryMegabytes, environment, debugPort);
     }
 
+    /**
+     * Cleans up the resources used by the deployed lambdas.
+     * <p>
+     * This method is annotated with the `@PreDestroy` annotation, indicating that it is executed
+     * before the object is destroyed.
+     * <p>
+     * The cleanup process involves the following steps:
+     * <p>
+     * 1. Logs a warning message, indicating the number of deployed lambdas to be cleaned up.
+     * 2. Iterates over the `mappingTracker` collection and invokes the `safeDeleteMapping` method
+     * for each entry.
+     * 3. Clears the `mappingTracker` collection.
+     * 4. Iterates over the `tracker` collection and invokes the `safeDelete` method for each entry.
+     * 5. Clears the `tracker` collection.
+     * <p>
+     * Please note that this method does not return any value.
+     *
+     * @see PreDestroy
+     */
     @PreDestroy
     public void cleanup() {
         log.warn("Cleaning up deployed lambdas (container dregs) {} lambdas", tracker.size());
@@ -293,6 +403,14 @@ public class LambdaSupport {
         waitForState(lambda, deployTimeoutSeconds, state);
     }
 
+    /**
+     * Waits for lambda state using the deployment timeout seconds (default 300).  Overridden
+     * on construction of LambdaSupport using spring property lambda.support.deploy.timeoutSeconds
+     *
+     * @param lambda     lambda to wait for
+     * @param maxSeconds Maximum seconds to wait.
+     * @param state      state to wait for
+     */
     public void waitForState(Lambda lambda, int maxSeconds, State state) {
         Awaitility.waitAtMost(maxSeconds, TimeUnit.SECONDS)
                   .pollInterval(FIVE_HUNDRED_MILLISECONDS)

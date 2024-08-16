@@ -20,16 +20,58 @@ package com.limemojito.test.prometheus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
 import static java.lang.String.format;
 
+/**
+ * The PrometheusMetrics class is responsible for fetching and retrieving metrics from a Prometheus endpoint.
+ * It uses a WebClient to make HTTP requests to the endpoint and a Parser to parse the metrics data.
+ * The class provides methods to refresh and retrieve metrics based on metric name and tags.
+ * <p>
+ * Example Usage:
+ * <pre>{@code
+ * WebClient webClient = WebClient.create();
+ * PrometheusMetrics metrics = new PrometheusMetrics(webClient);
+ * metrics.refresh();
+ * metrics.getMetric("metric_name");
+ * metrics.getValue("metric_name");
+ * metrics.getMetric("metric_name", tags);
+ * metrics.getValue("metric_name", tags);
+ * }</pre>
+ */
 @Slf4j
 public class PrometheusMetrics {
+    /**
+     * Represents a constant value used to indicate that a particular value was not found.
+     *
+     * <p>
+     * The {@code VALUE_NOT_FOUND} constant is of type {@code BigDecimal} and is set to a value of {@code -1.0}.
+     * It is declared as {@code public}, {@code static}, and {@code final}.
+     *
+     * <p>
+     * This constant is typically used in situations where a search operation is performed
+     * and the desired value is not found in the data source. Instead of returning {@code null}
+     * or throwing an exception, the {@code VALUE_NOT_FOUND} constant can be used to
+     * indicate that the value was not found.
+     *
+     * <p>
+     * Example usage:
+     * <pre>{@code
+     * BigDecimal value = lookupValue(key);
+     * if (value.equals(VALUE_NOT_FOUND)) {
+     *     System.out.println("Value not found");
+     * } else {
+     *     System.out.println("Value found: " + value);
+     * }
+     * }</pre>
+     *
+     * @since 1.0
+     */
     public static final BigDecimal VALUE_NOT_FOUND = new BigDecimal("-1.0");
+
     private final WebClient serviceClient;
     private final Parser parser;
     private final String uri;
@@ -43,10 +85,8 @@ public class PrometheusMetrics {
 
     /**
      * Load all metrics from the endpoint.
-     *
-     * @throws IOException If the metrics can not be read.
      */
-    public void refresh() throws IOException {
+    public void refresh() {
         log.info("fetching metrics from request path {}", uri);
         final String metricsData = serviceClient.get()
                                                 .uri(uri)
@@ -59,9 +99,8 @@ public class PrometheusMetrics {
     /**
      * @param metricName Metric name to get
      * @return null if metric not present.
-     * @throws IllegalStateException if there are too many metrics matching the name.
      */
-    public Metric getMetric(String metricName) throws IOException {
+    public Metric getMetric(String metricName) {
         final List<Metric> metrics = getMetricsFor(metricName);
         if (metrics == null) {
             return null;
@@ -75,20 +114,16 @@ public class PrometheusMetrics {
     /**
      * @param metricName Metric to locate
      * @return VALUE_NOT_FOUND if the metric can not be found.
-     * @throws IOException           When we can not connect to metric endpoint.
-     * @throws IllegalStateException if there are too many metrics matching the name.
      */
-    public BigDecimal getValue(String metricName) throws IOException {
+    public BigDecimal getValue(String metricName) {
         return metricToValue(metricName, getMetric(metricName));
     }
 
     /**
      * @param metricName  Metric name to get
      * @param tagsToMatch Tag to match to find metric. All tags must be matched.
-     * @throws IOException           When we can not connect to metric endpoint.
-     * @throws IllegalStateException if there are no metrics matching the name and tags.
      */
-    public Metric getMetric(String metricName, Map<String, String> tagsToMatch) throws IOException {
+    public Metric getMetric(String metricName, Map<String, String> tagsToMatch) {
         final List<Metric> metrics = getMetricsFor(metricName);
         if (metrics != null) {
             for (Metric metric : metrics) {
@@ -107,9 +142,8 @@ public class PrometheusMetrics {
      * @param metricName  Metric to locate
      * @param tagsToMatch Tag to match to find metric. All tags must be matched.
      * @return VALUE_NOT_FOUND if the metric with matching tags can not be found.
-     * @throws IOException When we can not connect to metric endpoint.
      */
-    public BigDecimal getValue(String metricName, Map<String, String> tagsToMatch) throws IOException {
+    public BigDecimal getValue(String metricName, Map<String, String> tagsToMatch) {
         try {
             return metricToValue(metricName, getMetric(metricName, tagsToMatch));
         } catch (IllegalStateException e) {
@@ -117,7 +151,7 @@ public class PrometheusMetrics {
         }
     }
 
-    private List<Metric> getMetricsFor(String metricName) throws IOException {
+    private List<Metric> getMetricsFor(String metricName) {
         if (metricMap == null) {
             refresh();
         }

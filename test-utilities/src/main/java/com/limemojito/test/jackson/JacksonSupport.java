@@ -40,6 +40,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * The {@code JacksonSupport} class provides utility methods for parsing, loading, and converting JSON using the Jackson library.
+ */
 @Component
 @RequiredArgsConstructor
 public class JacksonSupport {
@@ -68,7 +71,7 @@ public class JacksonSupport {
      * Parses and validates JSON String.
      *
      * @param json Json Data as string
-     * @param type Type to convert to (use for Map<, List<, etc)
+     * @param type Type to convert to (use for Map&lt;, List&lt;, etc)
      * @param <T>  Typing for conversion
      * @return the object loaded.
      * @throws ConstraintViolationException Runtime if validation constraints fail
@@ -85,6 +88,7 @@ public class JacksonSupport {
      *
      * @param json  json to parse
      * @param clazz Lambda Eventing class to pares.
+     * @param <T>  Typing for conversion
      * @return instance of class.
      */
     public <T> T parseLambdaEvent(String json, Class<T> clazz) throws ConstraintViolationException {
@@ -113,7 +117,7 @@ public class JacksonSupport {
      * Loads and validates JSON object.
      *
      * @param pathResource Where to load from
-     * @param type         Type to convert to (use for Map<, List<, etc)
+     * @param type         Type to convert to (use for Map&lt;, List&lt;, etc)
      * @param <T>          Typing for conversion
      * @return the object loaded.
      * @throws ConstraintViolationException Runtime if validation constraints fail
@@ -126,6 +130,15 @@ public class JacksonSupport {
         }
     }
 
+    /**
+     * Loads and returns a JSON resource as a list of objects of the specified type.
+     *
+     * @param pathResource The path of the JSON resource to load.
+     * @param clazz        The class of the objects in the list.
+     * @param <T>          The type of the objects in the list.
+     * @return A list of objects of the specified type loaded from the JSON resource.
+     * @throws ConstraintViolationException If validation constraints fail during loading.
+     */
     @SneakyThrows
     public <T> List<T> loadAsList(String pathResource, Class<T> clazz) throws ConstraintViolationException {
         try (InputStream inputStream = loadStream(pathResource)) {
@@ -134,6 +147,17 @@ public class JacksonSupport {
         }
     }
 
+    /**
+     * Loads and returns a Lambda event object from the specified JSON resource. This method reads the JSON resource as
+     * an {@code InputStream}, parses it into a {@code String}, and then converts it into the specified Lambda event object
+     * using the given class.
+     *
+     * @param pathResource The path of the JSON resource to load.
+     * @param clazz        The class representing the Lambda event object.
+     * @param <T>          The type of the Lambda event object.
+     * @return The loaded Lambda event object.
+     * @throws ConstraintViolationException If validation constraints fail during loading.
+     */
     @SneakyThrows
     public <T> T loadLambdaEvent(String pathResource, Class<T> clazz) throws ConstraintViolationException {
         try (InputStream inputStream = loadStream(pathResource)) {
@@ -164,11 +188,24 @@ public class JacksonSupport {
     }
 
 
+    /**
+     * Converts an object to its JSON representation.
+     *
+     * @param pojo the object to be converted to JSON
+     * @return the JSON representation of the object
+     */
     @SneakyThrows
     public String toJson(Object pojo) {
         return objectMapper.writeValueAsString(pojo);
     }
 
+    /**
+     * Converts an object to its JSON representation.
+     *
+     * @param lambdaEventInstance The object to be converted to JSON.
+     * @param <T>                 The type of the object.
+     * @return The JSON representation of the object.
+     */
     @SneakyThrows
     @SuppressWarnings("unchecked")
     public <T> String toJsonLambdaEvent(T lambdaEventInstance) {

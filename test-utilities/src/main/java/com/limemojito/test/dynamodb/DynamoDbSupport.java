@@ -27,12 +27,35 @@ import software.amazon.awssdk.enhanced.dynamodb.model.Page;
 
 import java.util.List;
 
+/**
+ * DynamoDbSupport is a utility class that provides simplified access to DynamoDB operations using the DynamoDbEnhancedClient.
+ * It can be used to delete all items from a DynamoDB table and save a list of objects to a DynamoDB table.
+ * <p>
+ * To use DynamoDbSupport, it needs to be instantiated as a Spring bean and injected with a DynamoDbEnhancedClient.
+ * It can then be used to perform deleteAll and saveAll operations on DynamoDB tables.
+ * <p>
+ * Example usage:
+ * ```
+ * DynamoDbSupport support = new DynamoDbSupport(dynamoDbEnhancedClient);
+ * support.deleteAll("myTable", MyObject.class);
+ * support.saveAll("myTable", objectList, MyObject.class);
+ * ```
+ *
+ * @see <a href="https://docs.aws.amazon.com/sdk-for-java/v2/developer-guide/examples-dynamodb-enhanced.html">DynamoDB Enhanced Client Documentation</a>
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class DynamoDbSupport {
     private final DynamoDbEnhancedClient dbMapper;
 
+    /**
+     * Deletes all items from a DynamoDB table.
+     *
+     * @param tableName the name of the DynamoDB table from which to delete items
+     * @param type      the class representing the type of items stored in the table
+     * @param <T>       the type of items stored in the table
+     */
     public <T> void deleteAll(String tableName, Class<T> type) {
         log.info("Deleting all {}", type.getSimpleName());
         DynamoDbTable<T> table = tableFor(tableName, type);
@@ -45,6 +68,14 @@ public class DynamoDbSupport {
         log.debug("Delete complete. {} items", count);
     }
 
+    /**
+     * Saves a list of objects to a DynamoDB table.
+     *
+     * @param tableName  the name of the DynamoDB table to save the objects to
+     * @param objectList the list of objects to save
+     * @param type       the class representing the type of objects in the list
+     * @param <T>        the type of objects in the list
+     */
     public <T> void saveAll(String tableName, List<T> objectList, Class<T> type) {
         if (!objectList.isEmpty()) {
             log.info("Saving {} objects", objectList.size());

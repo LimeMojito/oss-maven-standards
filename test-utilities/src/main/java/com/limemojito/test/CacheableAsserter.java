@@ -17,9 +17,17 @@
 
 package com.limemojito.test;
 
+/**
+ * Assert that something cacheable can be serialized.
+ */
 public class CacheableAsserter {
 
-    public static void assertCacheable(Object instance) throws Exception {
+    /**
+     * Assert that something cacheable can be serialized.
+     *
+     * @param instance Object to check.
+     */
+    public static void assertCacheable(Object instance) {
         SerializableAsserter.assertSerializable(instance);
     }
 }

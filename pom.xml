@@ -48,9 +48,11 @@
         <module>library</module>
         <module>java-development</module>
         <module>jar-development</module>
+
+        <module>json-utilities</module>
         <module>aws-utilities</module>
-        <!-- Note depends on aws-utilities -->
         <module>test-utilities</module>
+
         <module>aws-lambda</module>
         <module>spring-boot-development</module>
         <module>jar-lambda-development</module>
