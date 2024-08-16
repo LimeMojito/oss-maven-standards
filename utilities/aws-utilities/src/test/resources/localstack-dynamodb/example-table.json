@@ -1,0 +1,33 @@
+{
+  "keySchema": [
+    {
+      "attributeName": "id",
+      "keyType": "HASH"
+    }
+  ],
+  "attributes": [
+    {
+      "attributeName": "id",
+      "attributeType": "S"
+    },
+    {
+      "attributeName": "time",
+      "attributeType": "N"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "globalSecondary",
+      "keySchema": [
+        {
+          "attributeName": "id",
+          "keyType": "HASH"
+        },
+        {
+          "attributeName": "time",
+          "keyType": "RANGE"
+        }
+      ]
+    }
+  ]
+}
