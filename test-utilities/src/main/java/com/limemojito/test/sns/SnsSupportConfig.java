@@ -23,6 +23,26 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+/**
+ * Configuration class for SnsSupport.
+ * <p>
+ * This class is responsible for configuring the necessary components for using SnsSupport in a Spring Boot application.
+ * It imports the necessary configurations and performs component scanning.
+ * </p>
+ * <p>
+ * To use SnsSupport, import this class with your application's Spring configuration and ensure the required dependencies are available.
+ * </p>
+ * <p>
+ * This class should be used for integration testing purposes and is tagged with the {@code integration-test} profile.
+ * It configures the AWS config for localstack and creates necessary SNS topics.
+ * </p>
+ * <p>
+ * The class imports {@link LocalstackSnsConfig} to configure the AWS config for localstack and {@link SqsSupportConfig} for SqsSupport configuration.
+ * </p>
+ * <p>
+ * This class also performs component scanning for classes belonging to the {@link SnsSupport} package.
+ * </p>
+ */
 @Configuration
 @Import({LocalstackSnsConfig.class, SqsSupportConfig.class})
 @ComponentScan(basePackageClasses = SnsSupport.class)

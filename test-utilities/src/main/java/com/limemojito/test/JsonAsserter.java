@@ -18,32 +18,48 @@
 package com.limemojito.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
+import com.limemojito.json.ObjectMapperPrototype;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Checks that an instance can be serialized and deserialized from JSON
+ */
+@Slf4j
 public class JsonAsserter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JsonAsserter.class);
-
-    private static final ObjectMapper OBJECT_MAPPER = ObjectMapperPrototype.buildBootLikeMapper();
-    private static final JsonAsserter INSTANCE = new JsonAsserter(OBJECT_MAPPER);
+    private static final JsonAsserter INSTANCE = new JsonAsserter(ObjectMapperPrototype.buildBootLikeMapper());
     private final ObjectMapper objectMapper;
 
+    /**
+     * Represents a class that checks whether an instance can be serialized and deserialized from JSON.
+     *
+     * @param objectMapper Jackson object mapper to use.
+     */
     public JsonAsserter(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
-    public static void assertSerializeDeserialize(Object obj) throws IOException {
+    /**
+     * Checks that an instance can be serialized and deserialized from JSON
+     *
+     * @param obj instance to check
+     */
+    public static void assertSerializeDeserialize(Object obj) {
         INSTANCE.assertSerializeAndDeserialize(obj);
     }
 
-    public void assertSerializeAndDeserialize(Object obj) throws IOException {
+    /**
+     * Checks that an instance can be serialized and deserialized from JSON
+     *
+     * @param obj instance to check
+     */
+    @SneakyThrows
+    public void assertSerializeAndDeserialize(Object obj) {
         String json = objectMapper.writeValueAsString(obj);
-        LOGGER.info("JSON is {}", json);
+        log.info("JSON is {}", json);
         Class<?> clazz = obj.getClass();
         Object object = objectMapper.readValue(json, clazz);
         assertThat(object).isInstanceOf(clazz);

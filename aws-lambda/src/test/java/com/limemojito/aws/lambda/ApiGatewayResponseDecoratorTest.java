@@ -21,6 +21,7 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.limemojito.json.ObjectMapperPrototype;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.Validation;
@@ -44,10 +45,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ApiGatewayResponseDecoratorTest {
 
     private static final String JSON = "application/json";
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = ObjectMapperPrototype.buildBootLikeMapper();
     private final ApiGatewayResponseDecoratorFactory factory = new ApiGatewayResponseDecoratorFactory(mapper);
     private final TypeReference<Map<String, Object>> jsonMap = new TypeReference<>() {
     };
+    @SuppressWarnings("resource")
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @Test

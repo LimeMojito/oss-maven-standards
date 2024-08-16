@@ -17,17 +17,48 @@
 
 package com.limemojito.test;
 
-import java.lang.reflect.InvocationTargetException;
+import lombok.SneakyThrows;
+
 import java.lang.reflect.Method;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * The EnumAsserter class provides a utility method for asserting that an enum class
+ * follows certain conventions.
+ * <p>
+ * To use this class, call the {@code assertEnum} method with the enum class to be
+ * asserted. The method checks that the enum's constants, the result of calling its
+ * "values" method, and the result of calling its "valueOf" method with each constant's
+ * name, are all equal.
+ * <p>
+ * Example usage:
+ *
+ * <pre>{@code
+ * public enum MyEnum {VALUE1, VALUE2, VALUE3}
+ *
+ * public class MyEnumTest {
+ *     @Test
+ *     public void shouldPassAssertEnum() {
+ *         EnumAsserter.assertEnum(MyEnum.class);
+ *     }
+ * }
+ * }</pre>
+ * <p>
+ * Note that this class is not meant to be instantiated, as it only contains a static
+ * utility method.
+ */
 public class EnumAsserter {
+    /**
+     * The {@code assertEnum} method is a utility method that asserts that an enum class
+     * follows certain conventions. It throws exceptions if any of the assertions fail.
+     *
+     * @param enumClass the class of the enum to be asserted
+     * @param <T>       enum type to check.
+     */
+    @SneakyThrows
     @SuppressWarnings("unchecked")
-    public static <T extends Enum<T>> void assertEnum(Class<T> enumClass) throws
-            NoSuchMethodException,
-            InvocationTargetException,
-            IllegalAccessException {
+    public static <T extends Enum<T>> void assertEnum(Class<T> enumClass) {
         T[] constants = enumClass.getEnumConstants();
 
         Method valuesMethod = enumClass.getMethod("values");

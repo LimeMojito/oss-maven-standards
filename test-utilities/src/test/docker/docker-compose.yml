@@ -5,6 +5,11 @@ services:
       - "4566:4566"
     environment:
       - DEBUG=${DEBUG- }
+      #      - LAMBDA_DOCKER_FLAGS=-p 127.0.0.1:5050:5050 -e LOCALSTACK_INIT_LOG_LEVEL=debug
+      - LAMBDA_DOCKER_FLAGS=-e LOCALSTACK_INIT_LOG_LEVEL=debug
+      - LAMBDA_RUNTIME_ENVIRONMENT_TIMEOUT=300
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
     healthcheck:
       test: "bash -c 'AWS_ACCESS_KEY_ID=fake AWS_SECRET_ACCESS_KEY=fake aws --endpoint-url=http://localhost:4566 s3 ls'"

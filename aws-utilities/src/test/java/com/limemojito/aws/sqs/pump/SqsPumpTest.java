@@ -18,7 +18,6 @@
 package com.limemojito.aws.sqs.pump;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.limemojito.aws.ObjectMapperPrototype;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +31,7 @@ import software.amazon.awssdk.services.sqs.model.MessageAttributeValue;
 import software.amazon.awssdk.services.sqs.model.SendMessageBatchRequest;
 import software.amazon.awssdk.services.sqs.model.SendMessageBatchRequestEntry;
 import software.amazon.awssdk.services.sqs.model.SendMessageBatchResponse;
+import com.limemojito.json.ObjectMapperPrototype;
 
 import java.util.List;
 import java.util.Map;
@@ -47,7 +47,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class SqsPumpTest {
 
-    private final ObjectMapper objectMapper = ObjectMapperPrototype.createObjectMapper();
+    private final ObjectMapper objectMapper = ObjectMapperPrototype.buildBootLikeMapper();
     private final int pumpMaxBatchSize = 10;
     private final String queueUrl = "sqs://queue/url";
     @Mock
@@ -142,7 +142,6 @@ public class SqsPumpTest {
         return sendSize / pumpMaxBatchSize + (sendSize % pumpMaxBatchSize > 0 ? 1 : 0);
     }
 
-    @SuppressWarnings("unchecked")
     private void whenBatchSendOk() {
         doReturn(futureOf(() -> SendMessageBatchResponse.builder().build())).when(sqs)
                                                                             .sendMessageBatch(any(

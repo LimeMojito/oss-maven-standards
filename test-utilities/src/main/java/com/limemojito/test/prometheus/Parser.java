@@ -17,9 +17,9 @@
 
 package com.limemojito.test.prometheus;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -32,15 +32,42 @@ import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 
+/**
+ * The Parser class is responsible for parsing Prometheus metrics data and converting it into a map of Metric objects.
+ * It provides methods for parsing different formats of metrics data and extracting metric names, tags, and values.
+ * The class uses regular expressions and string manipulation to extract the necessary information from the metrics.
+ * <p>
+ * The Parser class has the following public methods:
+ * - parsePrometheusData: Parses the given Prometheus metrics data and returns a map of metrics.
+ * - isComment: Checks if a given string starts with a comment symbol.
+ * - parse: Parses metrics data to a Metric object representation.
+ * <p>
+ * Example Usage:
+ * <pre>{@code
+ * Parser parser = new Parser();
+ * String metricsData = "metric_name{tag1=value1,tag2=value2} 10.0";
+ * Map<String, List<Metric>> metricMap = parser.parsePrometheusData(metricsData);
+ * }</pre>
+ */
 @Slf4j
 public class Parser {
     private final Pattern tagExtractor;
 
+    /**
+     * Creates a new parser.
+     */
     public Parser() {
         tagExtractor = Pattern.compile("(.+?)\\{(.+?)} (.+)");
     }
 
-    public Map<String, List<Metric>> parsePrometheusData(String metricsData) throws IOException {
+    /**
+     * Parses the given Prometheus metrics data and returns a map of metrics.
+     *
+     * @param metricsData the Prometheus metrics data to be parsed
+     * @return a map with metric names as keys and lists of metrics as values
+     */
+    @SneakyThrows
+    public Map<String, List<Metric>> parsePrometheusData(String metricsData) {
         try (StringReader reader = new StringReader(metricsData); LineNumberReader lineReader = new LineNumberReader(
                 reader)) {
             final Map<String, List<Metric>> metricMap = new LinkedHashMap<>();
@@ -66,6 +93,12 @@ public class Parser {
         }
     }
 
+    /**
+     * Checks if the given string starts with a comment symbol.
+     *
+     * @param data the string to check
+     * @return true if the string starts with a comment symbol, false otherwise
+     */
     public boolean isComment(String data) {
         return data.startsWith("#");
     }

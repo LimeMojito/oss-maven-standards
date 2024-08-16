@@ -17,8 +17,8 @@
 
 package com.limemojito.test;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -28,25 +28,34 @@ import java.io.ObjectOutputStream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
+/**
+ * Assert that something can be serialized to and from a byte stream.
+ */
+@Slf4j
 public class SerializableAsserter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SerializableAsserter.class);
     private static final int BUFFER_SIZE = 8096;
 
-    public static void assertSerializable(Object o) throws Exception {
+    /**
+     * Assert that something can be serialized to and from a byte stream.
+     *
+     * @param o Instance to be tested.
+     */
+    @SneakyThrows
+    public static void assertSerializable(Object o) {
         final ByteArrayOutputStream out = new ByteArrayOutputStream(BUFFER_SIZE);
-        LOGGER.debug("Attempting Serialization");
+        log.debug("Attempting Serialization");
         try (ObjectOutputStream outputStream = new ObjectOutputStream(out)) {
             outputStream.writeObject(o);
         }
 
         byte[] data = out.toByteArray();
-        LOGGER.info("Serialized to {} bytes", data.length);
+        log.info("Serialized to {} bytes", data.length);
 
-        LOGGER.debug("Attempting Deserialization");
+        log.debug("Attempting Deserialization");
         try (ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(data))) {
             Object found = inputStream.readObject();
             assertThat(found).isEqualTo(o);
         }
-        LOGGER.debug("is Serializable");
+        log.debug("is Serializable");
     }
 }

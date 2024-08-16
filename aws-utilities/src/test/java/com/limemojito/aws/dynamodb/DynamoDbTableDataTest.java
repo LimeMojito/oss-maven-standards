@@ -18,8 +18,8 @@
 package com.limemojito.aws.dynamodb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.limemojito.aws.JsonLoader;
-import com.limemojito.aws.ObjectMapperPrototype;
+import com.limemojito.json.JsonLoader;
+import com.limemojito.json.ObjectMapperPrototype;
 import org.junit.jupiter.api.Test;
 import software.amazon.awssdk.services.dynamodb.model.CreateTableRequest;
 
@@ -28,12 +28,13 @@ import static software.amazon.awssdk.services.dynamodb.model.BillingMode.PAY_PER
 
 public class DynamoDbTableDataTest {
 
-    private final ObjectMapper objectMapper = ObjectMapperPrototype.createObjectMapper();
+    private final ObjectMapper objectMapper = ObjectMapperPrototype.buildBootLikeMapper();
     private final JsonLoader loader = new JsonLoader(objectMapper);
 
     @Test
-    public void shouldProduceCreateTableRequest() throws Exception {
-        final DynamoDbTableData data = loader.load("/localstack-dynamodb/example-table.json", DynamoDbTableData.class);
+    public void shouldProduceCreateTableRequest() {
+        final DynamoDbTableData data = loader.loadFrom("/localstack-dynamodb/example-table.json",
+                                                       DynamoDbTableData.class);
 
         final CreateTableRequest tableRequest = data.toCreateTableRequest("example");
         assertThat(tableRequest.keySchema()).hasSize(1);
@@ -57,9 +58,9 @@ public class DynamoDbTableDataTest {
     }
 
     @Test
-    public void shouldProduceCreateTableRequestNoGSI() throws Exception {
-        final DynamoDbTableData data = loader.load("/localstack-dynamodb/example-table-no-gsi.json",
-                                                   DynamoDbTableData.class);
+    public void shouldProduceCreateTableRequestNoGSI() {
+        final DynamoDbTableData data = loader.loadFrom("/localstack-dynamodb/example-table-no-gsi.json",
+                                                       DynamoDbTableData.class);
 
         final CreateTableRequest tableRequest = data.toCreateTableRequest("example");
         assertThat(tableRequest.keySchema()).hasSize(1);

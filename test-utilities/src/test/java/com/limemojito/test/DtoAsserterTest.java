@@ -17,13 +17,14 @@
 
 package com.limemojito.test;
 
+import com.limemojito.json.ObjectMapperPrototype;
 import lombok.Data;
 import org.junit.Test;
 
 public class DtoAsserterTest {
 
     @Test
-    public void shouldPassAssertOk() throws Exception {
+    public void shouldPassAssertOk() {
         new DtoAsserter(new JsonAsserter(ObjectMapperPrototype.buildBootLikeMapper()));
         DtoAsserter.assertDto(new Dto("world"));
     }

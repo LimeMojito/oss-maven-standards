@@ -20,7 +20,7 @@
 
     <groupId>com.limemojito.oss.standards</groupId>
     <artifactId>oss-maven-standards</artifactId>
-    <version>14.0.21-SNAPSHOT</version>
+    <version>14.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -48,9 +48,11 @@
         <module>library</module>
         <module>java-development</module>
         <module>jar-development</module>
+
+        <module>json-utilities</module>
         <module>aws-utilities</module>
-        <!-- Note depends on aws-utilities -->
         <module>test-utilities</module>
+
         <module>aws-lambda</module>
         <module>spring-boot-development</module>
         <module>jar-lambda-development</module>
@@ -219,6 +221,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.3.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.6.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>

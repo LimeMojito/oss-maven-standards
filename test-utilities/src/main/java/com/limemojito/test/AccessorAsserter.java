@@ -17,13 +17,12 @@
 
 package com.limemojito.test;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +34,8 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Asserts the accessors (Getters and Setters) of a class.
  */
+@Slf4j
 public final class AccessorAsserter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AccessorAsserter.class);
     private static final AccessorAsserter INSTANCE = new AccessorAsserter();
     private static final List<String> DEFAULT_IGNORES = List.of("class");
     private final TestValueFactory testValueFactory;
@@ -50,9 +49,8 @@ public final class AccessorAsserter {
      *
      * @param o                object to test
      * @param ignoreProperties Properties to ignore for tests
-     * @throws Exception if the getters fail.
      */
-    public static void assertGetters(Object o, String... ignoreProperties) throws Exception {
+    public static void assertGetters(Object o, String... ignoreProperties) {
         INSTANCE.assertGets(o, ignoreProperties);
     }
 
@@ -61,9 +59,8 @@ public final class AccessorAsserter {
      *
      * @param o                object to test
      * @param ignoreProperties Properties to ignore for tests
-     * @throws Exception if the accessors fail.
      */
-    public static void assertGettersAndSetters(Object o, String... ignoreProperties) throws Exception {
+    public static void assertGettersAndSetters(Object o, String... ignoreProperties) {
         INSTANCE.assertGetsAndSets(o, ignoreProperties);
     }
 
@@ -84,14 +81,21 @@ public final class AccessorAsserter {
      * @param object        Object to check.
      * @param ignoreMembers members to ignore by property name.
      */
-    public static void assertNotNullMembers(Object object, String... ignoreMembers) throws Exception {
+    public static void assertNotNullMembers(Object object, String... ignoreMembers) {
         INSTANCE.assertNotNullProperties(object, ignoreMembers);
     }
 
-    public void assertNotNullProperties(Object object, String... ignoreMembers) throws Exception {
+    /**
+     * Assert that all members are not null.
+     *
+     * @param object        Object to check.
+     * @param ignoreMembers members to ignore by property name.
+     */
+    public void assertNotNullProperties(Object object, String... ignoreMembers) {
         visitProperties(object, new IgnorePropertyVisitor(ignoreMembers) {
             @Override
-            public void visitDescriptor(Object instance, PropertyDescriptor d) throws Exception {
+            @SneakyThrows
+            public void visitDescriptor(Object instance, PropertyDescriptor d) {
                 final Method readMethod = d.getReadMethod();
                 if (readMethod != null) {
                     assertNotNull(readMethod.invoke(instance));
@@ -105,15 +109,15 @@ public final class AccessorAsserter {
      *
      * @param o                object to test
      * @param ignoreProperties Properties to ignore for tests
-     * @throws Exception if the getters fail.
      */
-    public void assertGets(Object o, String... ignoreProperties) throws Exception {
+    public void assertGets(Object o, String... ignoreProperties) {
         visitProperties(o, new IgnorePropertyVisitor(ignoreProperties) {
             @Override
-            public void visitDescriptor(Object instance, PropertyDescriptor d) throws Exception {
+            @SneakyThrows
+            public void visitDescriptor(Object instance, PropertyDescriptor d) {
                 Method read = d.getReadMethod();
                 if (read != null) {
-                    callGetter(instance, read);
+                    final Object value = callGetter(instance, read);
                 }
             }
         });
@@ -124,12 +128,11 @@ public final class AccessorAsserter {
      *
      * @param o                object to test
      * @param ignoreProperties Properties to ignore for tests
-     * @throws Exception if the accessors fail.
      */
-    public void assertGetsAndSets(Object o, String... ignoreProperties) throws Exception {
+    public void assertGetsAndSets(Object o, String... ignoreProperties) {
         visitProperties(o, new IgnorePropertyVisitor(ignoreProperties) {
             @Override
-            public void visitDescriptor(Object o, PropertyDescriptor descriptor) throws Exception {
+            public void visitDescriptor(Object o, PropertyDescriptor descriptor) {
                 final Method readMethod = descriptor.getReadMethod();
                 final Method writeMethod = descriptor.getWriteMethod();
                 if (readMethod != null) {
@@ -138,15 +141,16 @@ public final class AccessorAsserter {
                 if (writeMethod != null) {
                     Class<?> type = writeMethod.getParameterTypes()[0];
                     final Object testValue = testValueFactory.createFor(type);
-                    Object wrote = callSetter(writeMethod, o, testValue);
+                    Object wrote = callSetter(o, writeMethod, testValue);
                     if (readMethod != null) {
                         checkWriteValue(o, readMethod, wrote);
                     }
                 }
             }
 
-            private void checkWriteValue(Object o, Method readMethod, Object wrote) throws Exception {
-                final Object value = readMethod.invoke(o);
+            @SneakyThrows
+            private void checkWriteValue(Object o, Method readMethod, Object wrote) {
+                final Object value = callGetter(o, readMethod);
                 assertNotNull("Read is null after write " + readMethod, value);
                 assertEquals("Read method failed on " + readMethod, wrote, value);
             }
@@ -154,10 +158,10 @@ public final class AccessorAsserter {
     }
 
     private interface VisitDescriptor {
-        void visit(Object instance, PropertyDescriptor d) throws Exception;
+        void visit(Object instance, PropertyDescriptor d);
     }
 
-    private abstract class IgnorePropertyVisitor implements VisitDescriptor {
+    private abstract static class IgnorePropertyVisitor implements VisitDescriptor {
         private final List<String> ignorePropertiesList;
 
         IgnorePropertyVisitor(String[] ignoreProperties) {
@@ -166,16 +170,17 @@ public final class AccessorAsserter {
         }
 
         @Override
-        public void visit(Object o, PropertyDescriptor descriptor) throws Exception {
+        public void visit(Object o, PropertyDescriptor descriptor) {
             if (!ignorePropertiesList.contains(descriptor.getName())) {
                 visitDescriptor(o, descriptor);
             }
         }
 
-        protected abstract void visitDescriptor(Object o, PropertyDescriptor descriptor) throws Exception;
+        protected abstract void visitDescriptor(Object o, PropertyDescriptor descriptor);
     }
 
-    private void visitProperties(Object o, VisitDescriptor visitor) throws Exception {
+    @SneakyThrows
+    private void visitProperties(Object o, VisitDescriptor visitor) {
         final Class<?> clazz = o.getClass();
         final BeanInfo info = Introspector.getBeanInfo(clazz);
         final PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
@@ -184,14 +189,15 @@ public final class AccessorAsserter {
         }
     }
 
-    private static Object callGetter(Object o, Method readMethod) throws Exception {
-        LOGGER.debug("Invoking " + readMethod);
+    @SneakyThrows
+    private static Object callGetter(Object o, Method readMethod) {
+        log.debug("Invoking {}", readMethod);
         return readMethod.invoke(o);
     }
 
-    private static Object callSetter(Method writeMethod, Object instance, Object testValue)
-            throws IllegalAccessException, InvocationTargetException {
-        LOGGER.debug("Invoking " + writeMethod);
+    @SneakyThrows
+    private static Object callSetter(Object instance, Method writeMethod, Object testValue) {
+        log.debug("Invoking {} with {}", writeMethod, testValue);
         writeMethod.invoke(instance, testValue);
         return testValue;
     }

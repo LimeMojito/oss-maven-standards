@@ -17,22 +17,36 @@
 
 package com.limemojito.test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.limemojito.json.ObjectMapperPrototype;
 
+/**
+ * A utility class for asserting that a Data Transfer Object (DTO) can be serialized to and deserialized from JSON.
+ */
 public class DtoAsserter {
 
-    private static final DtoAsserter INSTANCE = new DtoAsserter(new JsonAsserter(new ObjectMapper()));
+    private static final DtoAsserter INSTANCE = new DtoAsserter(new JsonAsserter(ObjectMapperPrototype.buildBootLikeMapper()));
     private final JsonAsserter jsonAsserter;
 
+    /**
+     * @param jsonAsserter Json Asserter to use.
+     */
     public DtoAsserter(JsonAsserter jsonAsserter) {
         this.jsonAsserter = jsonAsserter;
     }
 
-    public static void assertDto(Object dto) throws Exception {
+    /**
+     * Assert that a Data Transfer Object can be serialized to and from json.
+     * @param dto object to check.
+     */
+    public static void assertDto(Object dto) {
         INSTANCE.assertValid(dto);
     }
 
-    public void assertValid(Object dto) throws Exception {
+    /**
+     * Assert that a Data Transfer Object can be serialized to and from json.
+     * @param dto object to check.
+     */
+    public void assertValid(Object dto) {
         AccessorAsserter.assertGetters(dto);
         jsonAsserter.assertSerializeAndDeserialize(dto);
     }

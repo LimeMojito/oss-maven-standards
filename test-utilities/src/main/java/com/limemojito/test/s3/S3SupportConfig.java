@@ -22,6 +22,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+/**
+ * The S3SupportConfig class is a Spring configuration class that configures the necessary beans for using the S3Support class.
+ * It imports the LocalstackS3Config class to configure the AWS config for localstack for integration testing purposes.
+ * It also scans the package where the S3Support class is located to enable component scanning and make the S3Support class available for injection.
+ */
 @Configuration
 @Import(LocalstackS3Config.class)
 @ComponentScan(basePackageClasses = S3Support.class)

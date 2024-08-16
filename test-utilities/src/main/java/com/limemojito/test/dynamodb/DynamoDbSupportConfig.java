@@ -22,6 +22,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+/**
+ * Configures the DynamoDbSupport for simplified access to DynamoDb in Spring applications using Localstack.
+ * This class should be imported in your application's Spring configuration using the {@link Import} annotation.
+ * It enables the necessary dependencies and creates the required beans for DynamoDb support.
+ */
 @Configuration
 @Import(LocalstackDynamoDbConfig.class)
 @ComponentScan(basePackageClasses = DynamoDbSupport.class)
