@@ -54,7 +54,7 @@ This example will do all the below with only 6 lines of extra XML in your maven 
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>14.0.21</version>
+        <version>14.1.0</version>
         <relativePath/>
     </parent>
 </project>
@@ -77,7 +77,7 @@ they are managed by our modern Bill of Materials (BOM) style dependency setup.
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>14.0.21</version>
+        <version>14.1.0</version>
         <relativePath/>
     </parent>
     <dependencies>
