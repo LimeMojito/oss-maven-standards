@@ -68,6 +68,7 @@ public class LocalstackSsmConfig {
     private void ssmParameter(SsmClient ssm, String name, String value) {
         ssm.putParameter(builder -> builder.name(name)
                                            .type("String")
+                                           .overwrite(true)
                                            .value(value));
     }
 }
