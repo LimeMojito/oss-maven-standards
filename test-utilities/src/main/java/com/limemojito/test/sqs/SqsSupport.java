@@ -39,6 +39,7 @@ import java.util.concurrent.TimeoutException;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
+import static software.amazon.awssdk.services.sqs.model.QueueAttributeName.QUEUE_ARN;
 
 /**
  * This class provides support for working with Amazon Simple Queue Service (SQS). It includes methods for managing
@@ -127,6 +128,20 @@ public class SqsSupport {
      */
     public String getQueueUrl(String queueName) {
         return sqs.getQueueUrl(req -> req.queueName(queueName)).queueUrl();
+    }
+
+    /**
+     * Retrieves the ARN of a queue with the specified name.
+     *
+     * @param queueName the name of the queue to retrieve the URL for
+     * @return the ARN of the queue for use with subscriptions, IAM, etc.
+     */
+    public String getQueueArn(String queueName) {
+        String qUrl = getQueueUrl(queueName);
+        return sqs.getQueueAttributes(req -> req.queueUrl(qUrl)
+                                                .attributeNames(QUEUE_ARN))
+                  .attributes()
+                  .get(QUEUE_ARN);
     }
 
     /**

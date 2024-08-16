@@ -69,8 +69,8 @@ public class SnsSupport {
      * Represents support for interacting with the Amazon Simple Notification Service (SNS).
      * This class provides methods for creating topics, retrieving ARNs, subscribing queues to topics, and sending messages to topics.
      *
-     * @param sqs The SqsSupport object used for interacting with the Amazon Simple Queue Service (SQS).
-     * @param sns The SnsClient object used for interacting with the Amazon Simple Notification Service (SNS).
+     * @param sqs    The SqsSupport object used for interacting with the Amazon Simple Queue Service (SQS).
+     * @param sns    The SnsClient object used for interacting with the Amazon Simple Notification Service (SNS).
      * @param mapper The ObjectMapper object used for converting messages to JSON format.
      */
     public SnsSupport(SqsSupport sqs,
@@ -117,6 +117,8 @@ public class SnsSupport {
     /**
      * Subscribes a queue to a topic in the Amazon Simple Notification Service (SNS), allowing the queue
      * to receive messages from the specified topic.
+     * <p>
+     * Queue will be created if it does not exist.
      *
      * @param topicName          The name of the topic to subscribe to.
      * @param queueName          The name of the queue to subscribe.
@@ -125,9 +127,10 @@ public class SnsSupport {
      */
     public void subscribe(String topicName, String queueName, boolean rawMessageDelivery) {
         final String arn = create(topicName);
-        final String queueUrl = sqs.create(queueName);
+        sqs.create(queueName);
+        final String queueArn = sqs.getQueueArn(queueName);
         sns.subscribe(r -> r.topicArn(arn)
-                            .endpoint(queueUrl)
+                            .endpoint(queueArn)
                             .protocol("sqs")
                             .attributes(Map.of("RawMessageDelivery", Boolean.toString(rawMessageDelivery))));
     }
