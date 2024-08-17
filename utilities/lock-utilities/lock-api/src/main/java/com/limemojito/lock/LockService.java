@@ -26,7 +26,6 @@ public interface LockService {
 
     /**
      * Try to acquire a lock, return a lock resource if the acquire operation succeeds.
-     * *
      *
      * @param lockName Name of lock to take (case-sensitive).
      * @return Optional distributed lock resource.
@@ -45,8 +44,21 @@ public interface LockService {
      * Lock Resource.  Designed for use in a try-with-resources block.
      */
     interface DistributedLock extends AutoCloseable {
+        /**
+         * Retrieves the name associated with this lock.
+         *
+         * @return The name of the lock.
+         */
         String getName();
 
+        /**
+         * Releases the resource associated with this object.
+         *
+         * <p>
+         * This method should be called to release any resources held by the object.
+         * It is automatically called when the object is used in a try-with-resources block.
+         * </p>
+         */
         @Override
         void close();
     }
