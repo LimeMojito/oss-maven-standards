@@ -28,12 +28,23 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Set up a DynamoDB table (com.limemojito.aws.lock.tableName) that has a hash key on a key with the name key.
+ * Configures a DynamoDb implementation of the LockService.  Will create the dynamodb table if required.
+ *
+ * @see com.limemojito.lock.LockService
  */
 @Configuration
 @Slf4j
-public class LockConfig {
+public class DynamodbLockServiceConfig {
 
+    /**
+     * Amazon DynamoDbLockClient implementation to wrap.  May create the lock database if it is not present.
+     *
+     * @param dynamoDB        The DynamoDB client used to interact with the lock table.
+     * @param tableName       The name of the lock table.
+     * @param leaseDuration   The duration of the lease for the locks, in seconds.
+     * @param heartbeatPeriod The period at which heartbeat signals are sent, in seconds.
+     * @return initialized lock client.
+     */
     @Bean(destroyMethod = "close")
     public AmazonDynamoDBLockClient dbLockClient(DynamoDbClient dynamoDB,
                                                  @Value("${com.limemojito.aws.lock.tableName}") String tableName,
@@ -57,6 +68,13 @@ public class LockConfig {
         return client;
     }
 
+    /**
+     * {@code DynamoDbLockService} is a service class that provides methods for acquiring and managing distributed locks using Amazon DynamoDB as the underlying storage mechanism
+     *
+     * @param client Amazon Dynamodb Lock Client to delegate to.
+     * @return a lock service implementation.
+     * @see com.limemojito.lock.LockService
+     */
     @Bean
     public DynamoDbLockService dynamoDbLockService(AmazonDynamoDBLockClient client) {
         return new DynamoDbLockService(client);

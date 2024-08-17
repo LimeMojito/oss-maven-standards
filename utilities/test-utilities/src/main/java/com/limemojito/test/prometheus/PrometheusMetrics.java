@@ -77,6 +77,13 @@ public class PrometheusMetrics {
     private final String uri;
     private Map<String, List<Metric>> metricMap;
 
+    /**
+     * Creates a new prometheus client using the supplied WebClient instance to communicate.  This webClient should be
+     * configured with a base path pointing to the prometheus aggregator.  The service will attach /actuator/prometheus
+     * to the base url.
+     *
+     * @param serviceClient WebClient, preconfigured, to use against prometheus.
+     */
     public PrometheusMetrics(WebClient serviceClient) {
         this.serviceClient = serviceClient;
         this.parser = new Parser();
@@ -122,6 +129,8 @@ public class PrometheusMetrics {
     /**
      * @param metricName  Metric name to get
      * @param tagsToMatch Tag to match to find metric. All tags must be matched.
+     * @return The found metric or throws IllegalStateException.
+     * @throws IllegalStateException if the metric can not be found.
      */
     public Metric getMetric(String metricName, Map<String, String> tagsToMatch) {
         final List<Metric> metrics = getMetricsFor(metricName);

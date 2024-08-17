@@ -20,6 +20,12 @@ package com.limemojito.lock.postgres;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configures a Postgres DB implementation of the LockService.  Will use the standard boot JDBC datasource made available via
+ * a JDBC template.  USes postgres locking primitives directly, not a table implementation.
+ *
+ * @see com.limemojito.lock.LockService
+ */
 @Configuration
 @ComponentScan(basePackageClasses = {PostgresLockConfig.class})
 public class PostgresLockConfig {

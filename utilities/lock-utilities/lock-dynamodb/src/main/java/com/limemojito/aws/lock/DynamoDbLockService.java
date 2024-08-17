@@ -29,6 +29,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * The DynamoDbLockService class is an implementation of the LockService interface that provides methods for acquiring and managing distributed locks using Amazon DynamoDB as the
+ * underlying storage mechanism.
+ * <p>
+ * This class utilizes the AmazonDynamoDBLockClient class from the AWS SDK for Java to interact with the DynamoDB table that stores the locks.
+ * <p>
+ * Note: The DynamoDbLockService class assumes the existence of a DynamoDB table with the necessary schema for storing locks.
+ * You should ensure that the table is set up and configured correctly before using this class.
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -36,6 +45,9 @@ public class DynamoDbLockService implements LockService {
 
     private final AmazonDynamoDBLockClient client;
 
+    /**
+     * @inheritDoc
+     */
     @Override
     @SneakyThrows
     public synchronized Optional<DistributedLock> tryAcquire(String lockName) {
@@ -43,6 +55,9 @@ public class DynamoDbLockService implements LockService {
                      .map(item -> new DynamoDbLock(item, lockName));
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     @SneakyThrows
     public DistributedLock acquire(String lockName) {
@@ -50,17 +65,26 @@ public class DynamoDbLockService implements LockService {
         return new DynamoDbLock(lockItem, lockName);
     }
 
+    /**
+     * @inheritDoc
+     */
     protected static class DynamoDbLock implements LockService.DistributedLock {
         private final LockItem lockItem;
         @Getter
         private final String name;
 
+        /**
+         * @inheritDoc
+         */
         public DynamoDbLock(LockItem lockItem, String name) {
             this.lockItem = lockItem;
             this.name = name;
             log.info("Acquired DynamoDb lock for {}", name);
         }
 
+        /**
+         * @inheritDoc
+         */
         @Override
         public void close() {
             lockItem.close();
