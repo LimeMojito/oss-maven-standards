@@ -30,17 +30,22 @@ import java.net.URI;
 import java.util.List;
 import java.util.StringTokenizer;
 
+/**
+ * Configuration class for creating an Amazon Simple Systems Manager (SSM) client with LocalStack support.
+ * This class is intended for use in integration tests via the integration-test spring profile.
+ */
 @Profile("integration-test")
 @Configuration
 @Slf4j
 public class LocalstackSsmConfig {
 
     /**
-     * Returns an instance of the Amazon SMS client.
+     * Creates an Amazon Simple Systems Manager (SSM) client with the specified localStackSnsUrl and pairList of parameters to create.
+     * The SSM client is used to interact with the AWS Systems Manager service.
      *
-     * @param localStackSnsUrl The URI of the Localstack service.
-     * @param pairList         The list of pairs for creating SSM parameters.
-     * @return An instance of the SmsClient that is configured for the Localstack SNS service.
+     * @param localStackSnsUrl The URL of the local Stack SNS.
+     * @param pairList         The comma separated list of key-value pairs that will be used to create SSM parameters.
+     * @return The Amazon SSM client.
      */
     @Primary
     @Bean(destroyMethod = "close")
