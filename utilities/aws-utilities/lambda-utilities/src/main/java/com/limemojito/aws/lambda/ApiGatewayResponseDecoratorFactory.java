@@ -24,15 +24,38 @@ import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
 
+/**
+ * Generates a response decorator for a lambda function.  Should be created one for each function bean.
+ */
 @Service
 @RequiredArgsConstructor
 public class ApiGatewayResponseDecoratorFactory {
     private final ObjectMapper jsonMapper;
 
+    /**
+     * Create a new decorator returning APIGatewayV2HttpResponse from your function output or RuntimeException.
+     * Defaults to DEFAULT_CONTENT_TYPE for success response data.
+     *
+     * @param <Input>   Input Type
+     * @param <Output>> Output Type
+     * @param function  function to chain with
+     * @see ApiGatewayResponseDecorator
+     * @see ApiGatewayResponseDecorator#DEFAULT_CONTENT_TYPE
+     */
     public <Input, Output> Function<Input, APIGatewayV2HTTPResponse> create(Function<Input, Output> function) {
         return create(ApiGatewayResponseDecorator.DEFAULT_CONTENT_TYPE, function);
     }
 
+    /**
+     * Create a new decorator returning APIGatewayV2HttpResponse from your function output or RuntimeException.
+     *
+     * @param <Input>     Input Type
+     * @param <Output>>   Output Type
+     * @param contentType contentType for success data.  Errors are always an application/json lambda event.
+     * @param function    function to chain with
+     * @see ApiGatewayResponseDecorator
+     * @see ApiGatewayResponseDecorator#DEFAULT_CONTENT_TYPE
+     */
     public <Input, Output> Function<Input, APIGatewayV2HTTPResponse> create(String contentType,
                                                                             Function<Input, Output> function) {
         return new ApiGatewayResponseDecorator<>(jsonMapper, contentType, function);

@@ -20,16 +20,41 @@ package com.limemojito.aws.dynamodb;
 
 import java.util.List;
 
+/**
+ * A Jackson ready JSON representation of DynamoDb table metadata to work around finicky Amazon classes.
+ *
+ * @param keySchema  keySchema attributes.
+ * @param attributes table data attributes
+ * @param indexes    global secondary index attributes.
+ */
 public record LimeDynamoDbData(List<LimeKeySchema> keySchema,
                                List<LimeAttributeDefinition> attributes,
                                List<LimeIndexInfo> indexes) {
 
+    /**
+     * DynamoDb field data attributes.
+     *
+     * @param attributeName attribute name.
+     * @param attributeType attribute type.
+     */
     public record LimeAttributeDefinition(String attributeName, String attributeType) {
     }
 
+    /**
+     * DynamoDb key data attributes.
+     *
+     * @param attributeName attribute name.
+     * @param keyType       type of key (HASH or RANGE).
+     */
     public record LimeKeySchema(String attributeName, String keyType) {
     }
 
+    /**
+     * DynamoDb index definition.  Assumes attribute propagation ALL.
+     *
+     * @param name      index name.
+     * @param keySchema Index key definition.
+     */
     public record LimeIndexInfo(String name, List<LimeKeySchema> keySchema) {
     }
 }

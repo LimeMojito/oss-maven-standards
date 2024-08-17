@@ -24,10 +24,21 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+/**
+ * Directly all the JacksonAutoConfiguration to solve issues in Intellij with bean detection.
+ *
+ * @see JacksonAutoConfiguration
+ */
 @Configuration
 @Import(JacksonAutoConfiguration.class)
 public class LimeJacksonJsonConfiguration {
 
+    /**
+     * Creates a new json loader delegating tp tje supplied object mapper.
+     *
+     * @param objectMapper Jackson objet mapper to delegate JSON parsing to.
+     * @return a json loader bean.
+     */
     @Bean
     public JsonLoader jsonLoader(ObjectMapper objectMapper) {
         return new JsonLoader(objectMapper);

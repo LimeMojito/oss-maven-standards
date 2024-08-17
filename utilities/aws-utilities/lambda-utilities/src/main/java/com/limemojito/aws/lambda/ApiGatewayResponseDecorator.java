@@ -39,14 +39,40 @@ import static java.util.Collections.emptyMap;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.springframework.http.HttpStatus.*;
 
+/**
+ * A decorator for APIGatewayV2HTTPResponse that converts the output of a function into an APIGatewayV2HTTPResponse.
+ * <p>
+ * This decorator manages the conversion of spring-web style exceptions being thrown as RuntimeExceptions
+ * by Cloud Function implementations.  ConstraintViolations are also handled automatically and converted to 400 Bad
+ * Request responses.  { @code @ResponseStatus } style exceptions will be mapped correctly to Api Gateway responses
+ * using the basic Lambda V2 Integration.
+ * </p>
+ *
+ * @param <Input> the type of the input to the decorator.
+ * @see ResponseStatus
+ * @see ConstraintViolationException
+ */
 @RequiredArgsConstructor
 @Slf4j
 public class ApiGatewayResponseDecorator<Input> implements Function<Input, APIGatewayV2HTTPResponse> {
+    /**
+     * The default content type used for requests and responses.
+     * The value of this constant is "application/json".
+     */
     public static final String DEFAULT_CONTENT_TYPE = "application/json";
+
     private final ObjectMapper mapper;
     private final String contentType;
     private final Function<Input, ?> next;
 
+    /**
+     * Applies the next function in the pipeline to the given input and returns the result.
+     *
+     * @param input the input to be processed by the next function
+     * @return the result of applying the next function to the input;
+     * if the output is an instance of APIGatewayV2HTTPResponse, it is returned as is;
+     * otherwise, the output is transformed into an APIGatewayV2HTTPResponse using the rebuildOutputJson method
+     */
     @Override
     public APIGatewayV2HTTPResponse apply(Input input) {
         try {
@@ -98,6 +124,7 @@ public class ApiGatewayResponseDecorator<Input> implements Function<Input, APIGa
      * simple class name if message is null on throwable.
      *
      * @param e Throwable to determine message for.
+     * @return reason message for exception.
      * @see ResponseStatus
      * @see Throwable#getMessage()
      * @see Class#getSimpleName()
@@ -108,6 +135,24 @@ public class ApiGatewayResponseDecorator<Input> implements Function<Input, APIGa
             return responseStatusType.reason();
         }
         return e.getMessage() == null ? e.getClass().getSimpleName() : e.getMessage();
+    }
+
+    /**
+     * Writes the given function output as bytes using Object Output Stream.
+     *
+     * @param functionOutput the function output to be written as bytes
+     * @return the byte array representation of the function output
+     * @throws IOException if an I/O error occurs while writing the bytes
+     * @see ObjectOutputStream
+     */
+    static byte[] writeDataAsBytes(Object functionOutput) throws IOException {
+        final int bufferSize = 512;
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(bufferSize);
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream)) {
+            objectOutputStream.writeObject(functionOutput);
+            objectOutputStream.flush();
+            return byteArrayOutputStream.toByteArray();
+        }
     }
 
     @SneakyThrows
@@ -131,16 +176,6 @@ public class ApiGatewayResponseDecorator<Input> implements Function<Input, APIGa
         APIGatewayV2HTTPResponse response = create(contentType, isBase64Encoded, body, OK);
         log.debug("lime:aws-lambda api response: {}", response);
         return response;
-    }
-
-    static byte[] writeDataAsBytes(Object functionOutput) throws IOException {
-        final int bufferSize = 512;
-        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(bufferSize);
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream)) {
-            objectOutputStream.writeObject(functionOutput);
-            objectOutputStream.flush();
-            return byteArrayOutputStream.toByteArray();
-        }
     }
 
     private static APIGatewayV2HTTPResponse create(String contentType, boolean isBase64Encoded, String body,

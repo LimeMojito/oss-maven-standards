@@ -30,7 +30,8 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * Configures the AWS config for localstack for integration testing purposes.  Should be imported with your application spring configuration.
+ * Configures the AWS config for localstack for integration testing purposes.
+ * Should be imported with your application spring configuration.
  */
 @Profile("integration-test")
 @Configuration
@@ -38,6 +39,14 @@ import java.util.List;
 @Import(LimeJacksonJsonConfiguration.class)
 public class LocalstackDynamoDbConfig {
 
+    /**
+     * Bean that an generate dynamodb tables.
+     *
+     * @param loader            Json loader to use for definition deserialization.
+     * @param dynamoDBClient    Amazon DynamoDB api
+     * @param tableResourceList comma separated list of table names to create.
+     * @return the creator bean for programmatic use.
+     */
     @Bean
     public LocalstackDynamodbTableCreator tableCreator(JsonLoader loader,
                                                        DynamoDbClient dynamoDBClient,
@@ -52,6 +61,12 @@ public class LocalstackDynamoDbConfig {
         return tableCreator;
     }
 
+    /**
+     * Amazon Dynamodb Client configured for Localstack.
+     *
+     * @param localStackDynamoDbUrl Localstack URL configured by {@code localstack.url }
+     * @return The API client.
+     */
     @Primary
     @Bean(destroyMethod = "close")
     public DynamoDbClient dynamoDBClient(@Value("${localstack.url}") URI localStackDynamoDbUrl) {
@@ -59,6 +74,12 @@ public class LocalstackDynamoDbConfig {
                              .endpointOverride(localStackDynamoDbUrl).build();
     }
 
+    /**
+     * Amazon Dynamodb Enhanced Client configured for Localstack.
+     *
+     * @param dynamoDBClient DynamoDb API client to delegate to.
+     * @return The Enhanced client.
+     */
     @Primary
     @Bean
     public DynamoDbEnhancedClient dynamoDBEnhancedClient(DynamoDbClient dynamoDBClient) {

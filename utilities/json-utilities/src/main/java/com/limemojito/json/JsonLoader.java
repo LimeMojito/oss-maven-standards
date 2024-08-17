@@ -35,6 +35,8 @@ public class JsonLoader {
     /**
      * A utility class for loading JSON data from a resource using the Jackson library.
      * Uses an instance of ObjectMapper to perform the deserialization.
+     *
+     * @param objectMapper Jackson Object mapper to delegate JSON operations to.
      */
     public JsonLoader(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;

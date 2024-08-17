@@ -33,5 +33,11 @@ import org.springframework.context.annotation.Import;
 @ComponentScan(basePackageClasses = ApiGatewayResponseDecoratorFactory.class)
 @RegisterReflectionForBinding({org.joda.time.DateTime.class, APIGatewayV2HTTPEvent.class})
 public class LimeAwsLambdaConfiguration {
+    /**
+     * Default lambda handler for spring cloud functions.  Currently, FunctionInvoker, you can use the
+     * ApiGatewayResponseDecorator to pipeline error handling to a good AWS Lambda integration experience.
+     * @see FunctionInvoker
+     * @see ApiGatewayResponseDecoratorFactory
+     */
     public static final String LAMBDA_HANDLER = "%s::handleRequest".formatted(FunctionInvoker.class.getName());
 }
