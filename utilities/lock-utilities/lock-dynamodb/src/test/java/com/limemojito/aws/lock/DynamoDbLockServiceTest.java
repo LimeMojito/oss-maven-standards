@@ -20,7 +20,7 @@ package com.limemojito.aws.lock;
 import com.amazonaws.services.dynamodbv2.AcquireLockOptions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBLockClient;
 import com.amazonaws.services.dynamodbv2.LockItem;
-import com.limemojito.aws.lock.LockService.DistributedLock;
+import com.limemojito.lock.LockService.DistributedLock;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;

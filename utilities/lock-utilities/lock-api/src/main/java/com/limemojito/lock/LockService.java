@@ -15,10 +15,13 @@
  *
  */
 
-package com.limemojito.aws.lock;
+package com.limemojito.lock;
 
 import java.util.Optional;
 
+/**
+ * The LockService interface provides methods for acquiring and managing distributed locks.
+ */
 public interface LockService {
 
     /**

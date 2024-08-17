@@ -23,7 +23,6 @@
 
     <groupId>com.limemojito.oss.standards.aws</groupId>
     <artifactId>dynamodb-utilities</artifactId>
-    <version>14.2.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <parent>
@@ -33,27 +32,27 @@
         <relativePath>../../../jar-development/pom.xml</relativePath>
     </parent>
 
-            <dependencies>
-                <dependency>
-                    <!-- for object mapper setup -->
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-json</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>com.limemojito.oss.standards</groupId>
-                    <artifactId>json-utilities</artifactId>
-                    <version>14.2.0-SNAPSHOT</version>
-                </dependency>
-                <dependency>
-                    <groupId>software.amazon.awssdk</groupId>
-                    <artifactId>dynamodb-enhanced</artifactId>
-                    <scope>provided</scope>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>commons-logging</groupId>
-                            <artifactId>commons-logging</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-            </dependencies>
+    <dependencies>
+        <dependency>
+            <!-- for object mapper setup -->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-json</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.limemojito.oss.standards</groupId>
+            <artifactId>json-utilities</artifactId>
+            <version>14.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>dynamodb-enhanced</artifactId>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
 </project>

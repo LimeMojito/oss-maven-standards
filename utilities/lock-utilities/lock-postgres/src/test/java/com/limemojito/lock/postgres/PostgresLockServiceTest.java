@@ -15,9 +15,9 @@
  *
  */
 
-package com.limemojito.aws.lock;
+package com.limemojito.lock.postgres;
 
-import com.limemojito.aws.lock.LockService.DistributedLock;
+import com.limemojito.lock.LockService.DistributedLock;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
