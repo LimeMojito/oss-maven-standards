@@ -23,9 +23,16 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>java-development</artifactId>
-        <version>14.1.1-SNAPSHOT</version>
+        <version>14.2.0-SNAPSHOT</version>
         <relativePath>../java-development</relativePath>
     </parent>
+
+    <properties>
+
+        <!-- Excluded from unit test coverage by default as Spring configurations -->
+        <coverage.exclude.build.pattern.1>**.*Config</coverage.exclude.build.pattern.1>
+        <coverage.exclude.build.pattern.2>**.*Configuration</coverage.exclude.build.pattern.2>
+    </properties>
 
     <build>
         <!-- We define common PROCESS here.  The CONFIGURATIONS are in the parent pom -->

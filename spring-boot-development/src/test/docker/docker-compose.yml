@@ -4,7 +4,10 @@ services:
     ports:
       - "4566:4566"
     environment:
-      - DEBUG=${DEBUG- }
+      - DEBUG=1
+      #      - LAMBDA_DOCKER_FLAGS=-p 127.0.0.1:5050:5050 -e LS_LOG=debug
+      - LAMBDA_DOCKER_FLAGS=-e LS_LOG=debug
+      - LAMBDA_RUNTIME_ENVIRONMENT_TIMEOUT=300
     restart: unless-stopped
     healthcheck:
       test: "bash -c 'AWS_ACCESS_KEY_ID=fake AWS_SECRET_ACCESS_KEY=fake aws --endpoint-url=http://localhost:4566 s3 ls'"
