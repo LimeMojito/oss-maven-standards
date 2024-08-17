@@ -37,7 +37,6 @@
         <module>aws-utilities</module>
         <module>lock-utilities</module>
         <module>test-utilities</module>
-        <module>aws-lambda</module>
     </modules>
 
 </project>

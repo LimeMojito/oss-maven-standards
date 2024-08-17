@@ -34,6 +34,11 @@
 
     <dependencies>
         <dependency>
+            <!-- for clients -->
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.jcabi</groupId>
             <artifactId>jcabi-github</artifactId>
             <version>1.8.0</version>

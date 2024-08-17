@@ -37,7 +37,7 @@ public class LocalstackDynamodbTableCreator {
 
     @SneakyThrows
     public void create(String tableName) {
-        if (!tableExists(db, tableName)) {
+        if (!tableExists(tableName)) {
             CreateTableRequest createTableRequest = toCreateTableRequest(tableName);
             log.info("Creating table {} with indexes {}",
                      tableName,
@@ -71,7 +71,7 @@ public class LocalstackDynamodbTableCreator {
         return loader.loadFrom(tableDefinitionPath, LimeDynamoDbData.class);
     }
 
-    private boolean tableExists(DynamoDbClient db, String tableName) {
+    private boolean tableExists(String tableName) {
         try {
             return db.describeTable(req -> req.tableName(tableName)) != null;
         } catch (ResourceNotFoundException e) {

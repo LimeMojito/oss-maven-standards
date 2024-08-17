@@ -32,6 +32,10 @@
         <relativePath>../../../jar-development/pom.xml</relativePath>
     </parent>
 
+    <properties>
+        <coverage.line.ratio>0.71</coverage.line.ratio>
+    </properties>
+
     <dependencies>
         <dependency>
             <!-- for object mapper setup -->
@@ -46,7 +50,6 @@
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>dynamodb-enhanced</artifactId>
-            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>

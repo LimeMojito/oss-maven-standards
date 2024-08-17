@@ -38,6 +38,11 @@
 
     <modules>
         <module>dynamodb-utilities</module>
+        <module>lambda-utilities</module>
+        <module>s3-utilities</module>
+        <module>sns-utilities</module>
+        <module>sqs-utilities</module>
+        <module>ssm-utilities</module>
     </modules>
 
 
