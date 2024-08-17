@@ -33,7 +33,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Configures the AWS config for localstack for integration testing purposes.  Should be imported with your application spring configuration.
+ * Configures the AWS config for localstack for integration testing purposes.
+ * Should be imported with your application spring configuration.
  */
 @Profile("integration-test")
 @Configuration
@@ -42,6 +43,13 @@ public class LocalstackSqsConfig {
 
     private static final String FIFO = ".fifo";
 
+    /**
+     * Initializes and configures an Amazon Simple Queue Service (SQS) client.
+     *
+     * @param localStackSqsUrl The URL of the local Amazon SQS endpoint.
+     * @param queueNameList    A list of queue names to be created.
+     * @return A configured instance of the Amazon SQS client.
+     */
     @Primary
     @Bean(destroyMethod = "close")
     public SqsClient sqsClient(@Value("${localstack.url}") URI localStackSqsUrl,
@@ -55,10 +63,25 @@ public class LocalstackSqsConfig {
         return sqs;
     }
 
+    /**
+     * Creates a new Amazon Simple Queue Service (SQS) queue with the specified name and an associated dead letter Q.
+     *
+     * @param sqs   the Amazon SQS client used to interact with the SQS service
+     * @param qName the name of the queue to be created.  Dead letter q is qName + -dlq
+     * @return a CreateQueueResponse object representing the result of the operation
+     */
     public static CreateQueueResponse createQueue(SqsClient sqs, String qName) {
         return createQueue(sqs, qName, true);
     }
 
+    /**
+     * Creates a new Amazon Simple Queue Service (SQS) queue with the specified name and an optional associated dead letter Q.
+     *
+     * @param sqs            the Amazon SQS client used to interact with the SQS service
+     * @param qName          the name of the queue to be created.  Dead letter q is qName + -dlq
+     * @param withDeadLetter true to create a dead letter Q
+     * @return a CreateQueueResponse object representing the result of the operation
+     */
     public static CreateQueueResponse createQueue(SqsClient sqs, String qName, boolean withDeadLetter) {
         if (withDeadLetter) {
             return createQ(sqs, qName, computeDlqName(qName));
