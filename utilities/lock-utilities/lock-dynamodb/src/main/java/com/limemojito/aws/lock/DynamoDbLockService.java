@@ -45,9 +45,6 @@ public class DynamoDbLockService implements LockService {
 
     private final AmazonDynamoDBLockClient client;
 
-    /**
-     * @inheritDoc
-     */
     @Override
     @SneakyThrows
     public synchronized Optional<DistributedLock> tryAcquire(String lockName) {
@@ -55,9 +52,6 @@ public class DynamoDbLockService implements LockService {
                      .map(item -> new DynamoDbLock(item, lockName));
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     @SneakyThrows
     public DistributedLock acquire(String lockName) {
@@ -65,26 +59,17 @@ public class DynamoDbLockService implements LockService {
         return new DynamoDbLock(lockItem, lockName);
     }
 
-    /**
-     * @inheritDoc
-     */
     protected static class DynamoDbLock implements LockService.DistributedLock {
         private final LockItem lockItem;
         @Getter
         private final String name;
 
-        /**
-         * @inheritDoc
-         */
         public DynamoDbLock(LockItem lockItem, String name) {
             this.lockItem = lockItem;
             this.name = name;
             log.info("Acquired DynamoDb lock for {}", name);
         }
 
-        /**
-         * @inheritDoc
-         */
         @Override
         public void close() {
             lockItem.close();
