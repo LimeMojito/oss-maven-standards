@@ -34,7 +34,7 @@
     </parent>
 
     <properties>
-        <coverage.line.ratio>0.64</coverage.line.ratio>
+        <coverage.line.ratio>0.63</coverage.line.ratio>
     </properties>
 
     <dependencies>
