@@ -74,7 +74,7 @@ public class JsonLoader {
 
     private static void assertStreamFound(String resourcePath, InputStream resourceAsStream) {
         if (resourceAsStream == null) {
-            throw new IllegalArgumentException("Could not load " + resourcePath);
+            throw new IllegalArgumentException("Could not load %s from classpath.".formatted(resourcePath));
         }
     }
 }
