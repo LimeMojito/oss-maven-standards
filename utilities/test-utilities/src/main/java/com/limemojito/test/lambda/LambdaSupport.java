@@ -419,7 +419,9 @@ public class LambdaSupport {
     }
 
     /**
-     * Debug should not be called directly as we pause for server connections by default
+     * Debug should not be called directly as we pause for server connections by default.  This class is aware of
+     * spring cloud functions and will suffix the name with the SPRING_CLOUD_FUNCTION_DEFINITION if set in the
+     * environment.
      *
      * @param moduleLocation  Maven module directory to deploy (relative path to this module).
      * @param handler         Java class name fully qualified as the Lambda Stream Handler
@@ -434,13 +436,16 @@ public class LambdaSupport {
                               @Min(DEFAULT_JAVA_MEMORY_MEGABYTES) int memoryMegabytes,
                               Map<String, String> environment,
                               int debugPort) {
-        String deployBucket = "lambda-deploy";
+        final String deployBucket = "lambda-deploy";
         final String name = moduleLocation.substring(moduleLocation.lastIndexOf('/') + 1);
-        String key = name + ".jar";
-        URI s3Uri = s3.toS3Uri(deployBucket, key);
+        final String key = "%s%s.jar".formatted(name,
+                                          environment.containsKey("SPRING_CLOUD_FUNCTION_DEFINITION")
+                                          ? "-" + environment.get("SPRING_CLOUD_FUNCTION_DEFINITION")
+                                          : "");
+        final URI s3Uri = s3.toS3Uri(deployBucket, key);
         log.info("Uploading code from {} to {}", moduleLocation, s3Uri);
         s3.createBucket(deployBucket);
-        byte[] awsJar = findJar(moduleLocation);
+        final byte[] awsJar = findJar(moduleLocation);
         s3.putData(s3Uri, "application/zip", awsJar);
         log.info("""
                          Deploying Java AWS function {} with
