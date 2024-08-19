@@ -63,8 +63,9 @@
         </maven-checkstyle-plugin.configLocation>
 
         <!-- For internal build use only -->
-        <coverage.exclude.build.pattern.1/>
-        <coverage.exclude.build.pattern.2/>
+        <!-- Excluded from unit test coverage by default as Spring configurations -->
+        <coverage.exclude.build.pattern.1>**.*Config</coverage.exclude.build.pattern.1>
+        <coverage.exclude.build.pattern.2>**.*Configuration</coverage.exclude.build.pattern.2>
         <coverage.exclude.build.pattern.3/>
         <coverage.exclude.build.pattern.4/>
         <coverage.exclude.build.pattern.5/>
