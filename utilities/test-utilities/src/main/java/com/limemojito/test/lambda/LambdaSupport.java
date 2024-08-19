@@ -105,6 +105,7 @@ public class LambdaSupport {
     public static final String SPRING_CLOUD_FUNCTION_HANDLER = "org.springframework.cloud.function.adapter.aws.FunctionInvoker";
 
     private static final int TWO_KB = 2048;
+    private static final String FUNCTION_DEF = "SPRING_CLOUD_FUNCTION_DEFINITION";
 
     private final LambdaClient lambdaClient;
     private final S3Support s3;
@@ -439,8 +440,8 @@ public class LambdaSupport {
         final String deployBucket = "lambda-deploy";
         final String name = moduleLocation.substring(moduleLocation.lastIndexOf('/') + 1);
         final String key = "%s%s.jar".formatted(name,
-                                          environment.containsKey("SPRING_CLOUD_FUNCTION_DEFINITION")
-                                          ? "-" + environment.get("SPRING_CLOUD_FUNCTION_DEFINITION")
+                                          environment.containsKey(FUNCTION_DEF)
+                                          ? "-" + environment.get(FUNCTION_DEF)
                                           : "");
         final URI s3Uri = s3.toS3Uri(deployBucket, key);
         log.info("Uploading code from {} to {}", moduleLocation, s3Uri);
