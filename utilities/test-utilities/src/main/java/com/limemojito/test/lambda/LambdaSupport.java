@@ -438,11 +438,11 @@ public class LambdaSupport {
                               Map<String, String> environment,
                               int debugPort) {
         final String deployBucket = "lambda-deploy";
-        final String name = moduleLocation.substring(moduleLocation.lastIndexOf('/') + 1);
-        final String key = "%s%s.jar".formatted(name,
-                                          environment.containsKey(FUNCTION_DEF)
-                                          ? "-" + environment.get(FUNCTION_DEF)
-                                          : "");
+        final String name = "%s%s".formatted(
+                moduleLocation.substring(moduleLocation.lastIndexOf('/') + 1),
+                environment.containsKey(FUNCTION_DEF) ? "-" + environment.get(FUNCTION_DEF)
+                                                      : "");
+        final String key = "%s.jar".formatted(name);
         final URI s3Uri = s3.toS3Uri(deployBucket, key);
         log.info("Uploading code from {} to {}", moduleLocation, s3Uri);
         s3.createBucket(deployBucket);
