@@ -22,4 +22,4 @@ spring:
 logging:
   level:
     root: info
-    com.limemojito.com: debug
+    com.limemojito: debug

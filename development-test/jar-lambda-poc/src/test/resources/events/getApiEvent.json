@@ -1,0 +1,43 @@
+{
+  "version": "2.0",
+  "routeKey": "POST /v1/api",
+  "rawPath": "/v1/api/",
+  "rawQueryString": "",
+  "headers": {
+    "accept": "*/*",
+    "accept-encoding": "gzip, deflate, br",
+    "authorization": "Bearer bob@example.com",
+    "content-length": "13068",
+    "content-type": "application/json",
+    "host": "api.nonprod.limemojito.com",
+    "postman-token": "c2e80c0d-9706-4ea3-8ed0-703408dde76f",
+    "user-agent": "PostmanRuntime/7.41.1",
+    "x-amzn-trace-id": "Root=1-66bd625a-6568490c248e78e740d5c2b8",
+    "x-forwarded-for": "27.32.156.162",
+    "x-forwarded-port": "443",
+    "x-forwarded-proto": "https"
+  },
+  "requestContext": {
+    "accountId": "632251705523",
+    "apiId": "txs701sae3",
+    "domainName": "some.random.server",
+    "domainPrefix": "api",
+    "http": {
+      "method": "GET",
+      "path": "/v1/api/",
+      "protocol": "HTTP/1.1",
+      "sourceIp": "27.32.156.162",
+      "userAgent": "PostmanRuntime/7.41.1"
+    },
+    "requestId": "chxOMhPyPHcEMGA=",
+    "routeKey": "GET /v1/api/{proxy+}",
+    "stage": "api",
+    "time": "15/Aug/2024:02:05:14 +0000",
+    "timeEpoch": 1723687514569
+  },
+  "isBase64Encoded": false,
+  "body": "{\n\"hello\":\n\t\"world\"}",
+  "pathParameters": {
+    "testParam": "I am a test parameter"
+  }
+}

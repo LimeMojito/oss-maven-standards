@@ -71,8 +71,17 @@ public class ApplicationIT {
     }
 
     @Test
-    public void shouldCallTransactionPostOk() {
-        final APIGatewayV2HTTPEvent event = json.loadLambdaEvent("/events/apiEvent.json",
+    public void shouldCallTransactionGetOkApiGatewayEvent() {
+        perform("/events/getApiEvent.json");
+    }
+
+    @Test
+    public void shouldCallTransactionPostOkApiGatewayEvent() {
+        perform("/events/postApiEvent.json");
+    }
+
+    private void perform(String pathResource) {
+        final APIGatewayV2HTTPEvent event = json.loadLambdaEvent(pathResource,
                                                                  APIGatewayV2HTTPEvent.class);
 
         final APIGatewayV2HTTPResponse response = lambdaSupport.invokeLambdaEvent(LAMBDA,
