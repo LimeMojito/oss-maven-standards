@@ -26,6 +26,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.awaitility.Awaitility;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.function.adapter.aws.FunctionInvoker;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.services.lambda.LambdaClient;
@@ -43,6 +44,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -66,6 +68,7 @@ import static software.amazon.awssdk.services.lambda.model.Runtime.NODEJS20_X;
 @Service
 @Slf4j
 public class LambdaSupport {
+    private static final int TWO_KB = 2048;
     private static final int MB = 1024 * 1024;
     private static final int NO_DEBUG = -1;
 
@@ -109,16 +112,19 @@ public class LambdaSupport {
     /**
      * Name of default handler from spring-cloud-function.
      */
-    public static final String SPRING_CLOUD_FUNCTION_HANDLER = "org.springframework.cloud.function.adapter.aws.FunctionInvoker";
+    public static final String SPRING_CLOUD_FUNCTION_HANDLER = FunctionInvoker.class.getName();
 
-    private static final int TWO_KB = 2048;
-    private static final String FUNCTION_DEF = "SPRING_CLOUD_FUNCTION_DEFINITION";
+    private static final String FUNCTION_DEF_KEY = "SPRING_CLOUD_FUNCTION_DEFINITION";
+
+    /**
+     * As used in the maven base pom /jar-lambda-development/pom.xml
+     */
+    private static final String LAMBDA_JAR_CLASSIFIER = "aws";
 
     private final LambdaClient lambdaClient;
     private final S3Support s3;
     private final JacksonSupport json;
     private final int deployTimeoutSeconds;
-
     private final Set<String> tracker;
     private final Set<String> mappingTracker;
 
@@ -315,7 +321,7 @@ public class LambdaSupport {
                        String handler,
                        @Min(DEFAULT_JAVA_MEMORY_MEGABYTES) int memoryMegabytes,
                        Map<String, String> environment) {
-        return deployJava(moduleLocation, handler, memoryMegabytes, environment, NO_DEBUG);
+        return deployJavaFromSourceBase(moduleLocation, handler, memoryMegabytes, environment, NO_DEBUG);
     }
 
     /**
@@ -354,7 +360,7 @@ public class LambdaSupport {
                             @Min(DEFAULT_JAVA_MEMORY_MEGABYTES) int memoryMegabytes,
                             Map<String, String> environment,
                             @Min(1) int debugPort) {
-        return deployJava(moduleLocation, handler, memoryMegabytes, environment, debugPort);
+        return deployJavaFromSourceBase(moduleLocation, handler, memoryMegabytes, environment, debugPort);
     }
 
     /**
@@ -439,21 +445,34 @@ public class LambdaSupport {
      * @return the deployed lambda.
      * @see #SPRING_CLOUD_FUNCTION_HANDLER
      */
-    private Lambda deployJava(String moduleLocation,
+    private Lambda deployJavaFromSourceBase(String moduleLocation,
+                                            String handler,
+                                            @Min(DEFAULT_JAVA_MEMORY_MEGABYTES) int memoryMegabytes,
+                                            Map<String, String> environment,
+                                            int debugPort) {
+
+        final String artifactId = moduleLocation.substring(moduleLocation.lastIndexOf('/') + 1);
+        return deployJava(artifactId,
+                          () -> findJar(moduleLocation),
+                          handler, memoryMegabytes,
+                          debugPort,
+                          environment
+        );
+    }
+
+    private Lambda deployJava(String artifactId,
+                              Supplier<byte[]> getCodeJar,
                               String handler,
-                              @Min(DEFAULT_JAVA_MEMORY_MEGABYTES) int memoryMegabytes,
-                              Map<String, String> environment,
-                              int debugPort) {
+                              int memoryMegabytes,
+                              int debugPort,
+                              Map<String, String> environment) {
+        final byte[] awsJar = getCodeJar.get();
         final String deployBucket = "lambda-deploy";
-        final String name = "%s%s".formatted(
-                moduleLocation.substring(moduleLocation.lastIndexOf('/') + 1),
-                environment.containsKey(FUNCTION_DEF) ? "-" + environment.get(FUNCTION_DEF)
-                                                      : "");
+        final String name = lambdaName(environment, artifactId);
         final String key = "%s.jar".formatted(name);
         final URI s3Uri = s3.toS3Uri(deployBucket, key);
-        log.info("Uploading code from {} to {}", moduleLocation, s3Uri);
+        log.info("Uploading code to {}", s3Uri);
         s3.createBucket(deployBucket);
-        final byte[] awsJar = findJar(moduleLocation);
         s3.putData(s3Uri, "application/zip", awsJar);
         final Integer timeout = isInDebugMode(debugPort) ? JAVA_DEBUG_EXECUTION_TIMEOUT : JAVA_EXECUTION_TIMEOUT;
         log.info("""
@@ -461,9 +480,9 @@ public class LambdaSupport {
                          \ttimeout: {} seconds
                          \thandler {}
                          \tenv {}""", name, timeout, handler, environment);
-        final String desc = "Deployment of %s from module %s with timeout %d (s)".formatted(name,
-                                                                                            moduleLocation,
-                                                                                            timeout);
+        final String desc = "Deployment of %s from artifactId %s with timeout %d (s)".formatted(name,
+                                                                                                artifactId,
+                                                                                                timeout);
         return deploy(name, r -> r.functionName(name)
                                   .description(desc)
                                   .memorySize(memoryMegabytes * MB)
@@ -477,6 +496,13 @@ public class LambdaSupport {
                                   .role(LAMBDA_ROLE)
                                   .timeout(timeout)
         );
+    }
+
+    private static String lambdaName(Map<String, String> environment, String artifactId) {
+        return "%s%s".formatted(
+                artifactId,
+                environment.containsKey(FUNCTION_DEF_KEY) ? "-" + environment.get(FUNCTION_DEF_KEY)
+                                                          : "");
     }
 
     private void safeDelete(String name) {
@@ -498,14 +524,16 @@ public class LambdaSupport {
 
     @SneakyThrows
     private byte[] findJar(String moduleLocation) {
+        log.info("Uploading code from {}", moduleLocation);
         File moduleBaseDir = new File(moduleLocation);
         File targetDir = new File(moduleBaseDir, "target");
         if (!targetDir.isDirectory()) {
             throw new IOException("Can not access module target directory %s".formatted(targetDir));
         }
-        String[] list = targetDir.list((dir, file) -> file.endsWith("-aws.jar"));
+        final String suffix = "-%s.jar".formatted(LAMBDA_JAR_CLASSIFIER);
+        String[] list = targetDir.list((dir, file) -> file.endsWith(suffix));
         if (list == null || list.length != 1) {
-            throw new IOException("Incorrect jars detected %s".formatted((Object) list));
+            throw new IOException("Incorrect jars (not ending with %s) detected %s".formatted(suffix, list));
         }
         try (FileInputStream input = new FileInputStream(new File(targetDir, list[0]))) {
             return IoUtils.toByteArray(input);
