@@ -76,6 +76,7 @@ public class LambdaSupport {
 
     /**
      * Raw javaDebug execution timout seconds (900).  This gives 15 minutes to debug in localstack before a retry.
+     *
      * @see #javaDebug(String, String, Map)
      */
     public static final int JAVA_DEBUG_EXECUTION_TIMEOUT = 900;
@@ -460,14 +461,17 @@ public class LambdaSupport {
                          \ttimeout: {} seconds
                          \thandler {}
                          \tenv {}""", name, timeout, handler, environment);
+        final String desc = "Deployment of %s from module %s with timeout %d (s)".formatted(name,
+                                                                                            moduleLocation,
+                                                                                            timeout);
         return deploy(name, r -> r.functionName(name)
-                                  .description("Deployment of %s from module %s with timeout %d (s)".formatted(name,
-                                                                                                               moduleLocation,
-                                                                                                               timeout))
+                                  .description(desc)
                                   .memorySize(memoryMegabytes * MB)
                                   .handler(handler)
                                   .runtime(JAVA17)
-                                  .environment(e -> e.variables(spyEnvironment(environment, debugPort)))
+                                  .environment(e -> e.variables(spyEnvironment(environment,
+                                                                               debugPort,
+                                                                               memoryMegabytes)))
                                   .code(c -> c.s3Bucket(deployBucket).s3Key(key))
                                   .packageType("Zip")
                                   .role(LAMBDA_ROLE)
@@ -508,18 +512,11 @@ public class LambdaSupport {
         }
     }
 
-    /**
-     * Keep up to date with comment on class header.
-     *
-     * @param environment Environment map to decorate.
-     * @param debugPort   port to use for debug mode.  (see class documentation)  Sets if > 0.
-     * @return the decorated environment
-     * @see LambdaSupport
-     */
-    private Map<String, String> spyEnvironment(Map<String, String> environment, int debugPort) {
+    private Map<String, String> spyEnvironment(Map<String, String> environment,
+                                               int debugPort,
+                                               int memoryMegabytes) {
         log.debug("Supplied Environment is {}", environment);
-        String javaToolOptions = environment.getOrDefault("JAVA_TOOL_OPTIONS",
-                                                          "-XX:+TieredCompilation -XX:TieredStopAtLevel=1");
+        String javaToolOptions = computeToolOptions(environment, memoryMegabytes);
         Map<String, String> spyEnv = new LinkedHashMap<>(environment);
         final boolean inDebugMode = isInDebugMode(debugPort);
         if (inDebugMode) {
@@ -539,6 +536,20 @@ public class LambdaSupport {
                                      javaToolOptions));
         log.debug("Decorated Environment is {}", spyEnv);
         return spyEnv;
+    }
+
+    private static String computeToolOptions(Map<String, String> environment, int memoryMegabytes) {
+        final String javaOptionsKey = "JAVA_TOOL_OPTIONS";
+        String javaToolOptions = environment.get(javaOptionsKey);
+        if (javaToolOptions == null) {
+            javaToolOptions = environment.getOrDefault(javaOptionsKey,
+                                                       "-XX:+TieredCompilation -XX:TieredStopAtLevel=1");
+        }
+        final double eightyPercent = 0.8;
+        final int maxHeap = (int) (memoryMegabytes * eightyPercent);
+        log.debug("Defaulting Localstack Lambda Max Heap to 80% of configured memory: {} MB", maxHeap);
+        javaToolOptions += " -Xmx=%dm".formatted(maxHeap);
+        return javaToolOptions;
     }
 
     private Lambda deployStub(String name, String response, boolean failure) {
