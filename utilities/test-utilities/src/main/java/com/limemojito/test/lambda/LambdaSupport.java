@@ -70,9 +70,15 @@ public class LambdaSupport {
     private static final int NO_DEBUG = -1;
 
     /**
-     * Raw java execution timout seconds.  Overridden by
+     * Raw java execution timout seconds (180).  This gives 3 minutes to covers non SnapStart deployments.
      */
-    public static final int JAVA_EXECUTION_TIMEOUT = 300;
+    public static final int JAVA_EXECUTION_TIMEOUT = 180;
+
+    /**
+     * Raw javaDebug execution timout seconds (900).  This gives 15 minutes to debug in localstack before a retry.
+     * @see #javaDebug(String, String, Map)
+     */
+    public static final int JAVA_DEBUG_EXECUTION_TIMEOUT = 900;
 
     /**
      * Default localstack lambda role (stubbed IAM)
@@ -448,12 +454,16 @@ public class LambdaSupport {
         s3.createBucket(deployBucket);
         final byte[] awsJar = findJar(moduleLocation);
         s3.putData(s3Uri, "application/zip", awsJar);
+        final Integer timeout = isInDebugMode(debugPort) ? JAVA_DEBUG_EXECUTION_TIMEOUT : JAVA_EXECUTION_TIMEOUT;
         log.info("""
                          Deploying Java AWS function {} with
+                         \ttimeout: {} seconds
                          \thandler {}
-                         \tenv {}""", name, handler, environment);
+                         \tenv {}""", name, timeout, handler, environment);
         return deploy(name, r -> r.functionName(name)
-                                  .description("Deployment of %s from module %s".formatted(name, moduleLocation))
+                                  .description("Deployment of %s from module %s with timeout %d (s)".formatted(name,
+                                                                                                               moduleLocation,
+                                                                                                               timeout))
                                   .memorySize(memoryMegabytes * MB)
                                   .handler(handler)
                                   .runtime(JAVA17)
@@ -461,7 +471,7 @@ public class LambdaSupport {
                                   .code(c -> c.s3Bucket(deployBucket).s3Key(key))
                                   .packageType("Zip")
                                   .role(LAMBDA_ROLE)
-                                  .timeout(JAVA_EXECUTION_TIMEOUT)
+                                  .timeout(timeout)
         );
     }
 
