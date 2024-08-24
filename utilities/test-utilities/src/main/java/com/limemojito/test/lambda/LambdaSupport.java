@@ -548,7 +548,7 @@ public class LambdaSupport {
         final double eightyPercent = 0.8;
         final int maxHeap = (int) (memoryMegabytes * eightyPercent);
         log.debug("Defaulting Localstack Lambda Max Heap to 80% of configured memory: {} MB", maxHeap);
-        javaToolOptions += " -Xmx=%dm".formatted(maxHeap);
+        javaToolOptions += " -Xms%dm -Xmx%dm".formatted(maxHeap, maxHeap);
         return javaToolOptions;
     }
 
