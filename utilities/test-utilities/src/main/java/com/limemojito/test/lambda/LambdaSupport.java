@@ -361,14 +361,12 @@ public class LambdaSupport {
                        String handler,
                        @Min(DEFAULT_JAVA_MEMORY_MEGABYTES) int memoryMegabytes,
                        Map<String, String> environment) {
-        return deployJavaFromLocalRepo(groupId,
-                                       artifactId,
-                                       version,
-                                       classifier,
-                                       handler,
-                                       memoryMegabytes,
-                                       environment,
-                                       NO_DEBUG);
+        return deployJava(artifactId,
+                          findMavenJarFromLocalRepo(groupId, artifactId, version, classifier),
+                          handler,
+                          memoryMegabytes,
+                          NO_DEBUG,
+                          environment);
     }
 
     /**
@@ -431,6 +429,7 @@ public class LambdaSupport {
      * @deprecated DO NOT USE IN COMMITTED CODE AS THIS STOPS THE VM UNTIL DEBUG CONNECTION.
      */
     @Deprecated
+    @SuppressWarnings("ParameterNumber")
     public Lambda javaDebug(String groupId,
                             String artifactId,
                             String version,
@@ -439,14 +438,12 @@ public class LambdaSupport {
                             @Min(DEFAULT_JAVA_MEMORY_MEGABYTES) int memoryMegabytes,
                             Map<String, String> environment,
                             @Min(1) int debugPort) {
-        return deployJavaFromLocalRepo(groupId,
-                                       artifactId,
-                                       version,
-                                       classifier,
-                                       handler,
-                                       memoryMegabytes,
-                                       environment,
-                                       debugPort);
+        return deployJava(artifactId,
+                          findMavenJarFromLocalRepo(groupId, artifactId, version, classifier),
+                          handler,
+                          memoryMegabytes,
+                          debugPort,
+                          environment);
     }
 
     /**
@@ -516,22 +513,6 @@ public class LambdaSupport {
                   .pollInterval(FIVE_HUNDRED_MILLISECONDS)
                   .alias("%s did not reach state %s".formatted(lambda.name, state))
                   .until(() -> checkFailed(lambda, state));
-    }
-
-    private Lambda deployJavaFromLocalRepo(String groupId,
-                                           String artifactId,
-                                           String version,
-                                           String classifier,
-                                           String handler,
-                                           int memoryMegabytes,
-                                           Map<String, String> environment,
-                                           int debugPort) {
-        return deployJava(artifactId,
-                          findMavenJarFromLocalRepo(groupId, artifactId, version, classifier),
-                          handler,
-                          memoryMegabytes,
-                          debugPort,
-                          environment);
     }
 
     private Lambda deployJavaFromSourceBase(String moduleLocation,
