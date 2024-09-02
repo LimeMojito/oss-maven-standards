@@ -26,11 +26,13 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.awaitility.Awaitility;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.function.adapter.aws.FunctionInvoker;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.services.lambda.LambdaClient;
 import software.amazon.awssdk.services.lambda.model.*;
 import software.amazon.awssdk.utils.IoUtils;
+import software.amazon.awssdk.utils.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -43,6 +45,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -66,6 +69,7 @@ import static software.amazon.awssdk.services.lambda.model.Runtime.NODEJS20_X;
 @Service
 @Slf4j
 public class LambdaSupport {
+    private static final int TWO_KB = 2048;
     private static final int MB = 1024 * 1024;
     private static final int NO_DEBUG = -1;
 
@@ -109,16 +113,26 @@ public class LambdaSupport {
     /**
      * Name of default handler from spring-cloud-function.
      */
-    public static final String SPRING_CLOUD_FUNCTION_HANDLER = "org.springframework.cloud.function.adapter.aws.FunctionInvoker";
+    public static final String SPRING_CLOUD_FUNCTION_HANDLER = FunctionInvoker.class.getName();
 
-    private static final int TWO_KB = 2048;
-    private static final String FUNCTION_DEF = "SPRING_CLOUD_FUNCTION_DEFINITION";
+
+    /**
+     * Environment variable to set to override repository location when loading jars for lambdas using maven
+     * co-ordinates.
+     */
+    public static final String LIME_MAVEN_REPOSITORY = "LIME_MAVEN_REPOSITORY";
+
+    /**
+     * As used in the maven base pom /jar-lambda-development/pom.xml
+     */
+    private static final String LAMBDA_JAR_CLASSIFIER = "aws";
+
+    private static final String FUNCTION_DEF_KEY = "SPRING_CLOUD_FUNCTION_DEFINITION";
 
     private final LambdaClient lambdaClient;
     private final S3Support s3;
     private final JacksonSupport json;
     private final int deployTimeoutSeconds;
-
     private final Set<String> tracker;
     private final Set<String> mappingTracker;
 
@@ -315,7 +329,44 @@ public class LambdaSupport {
                        String handler,
                        @Min(DEFAULT_JAVA_MEMORY_MEGABYTES) int memoryMegabytes,
                        Map<String, String> environment) {
-        return deployJava(moduleLocation, handler, memoryMegabytes, environment, NO_DEBUG);
+        return deployJavaFromSourceBase(moduleLocation, handler, memoryMegabytes, NO_DEBUG, environment);
+    }
+
+    /**
+     * Deploys Java lambda with sane defaults.  To debug use the deprecated javaDebug method but
+     * do not commit this code as it will pause the deployed lambda until a debug connection is made. This method
+     * finds jars in your local maven repository directory paying respect to the environment variable
+     * LIME_MAVEN_REPOSITORY or defaulting to ~/.m2 if this is not present.
+     * <p>
+     * Add required jars to your test scope as dependencies for maven to download to your local repo before running
+     * tests with localstack.
+     * <p>
+     * AWS Lambda vCPU is proportional to memory.  Though for execution time consider that it is normally
+     * single threaded.  AWS keeps the number of CPUs vs Memory ranking internal.
+     *
+     * @param groupId         Maven group id to find.
+     * @param artifactId      Maven artifactId to find.
+     * @param version         Maven artifact version.
+     * @param classifier      Maven artifact classifier.  Use blank for default.
+     * @param handler         Java class name fully qualified as the Lambda Stream Handler
+     * @param memoryMegabytes Number of MB to allocate to lambda.  AWS vCPU is proportional to memory.
+     * @param environment     Map of environment variables to deploy.  May be decorated with more.
+     * @return the deployed lambda.
+     * @see #SPRING_CLOUD_FUNCTION_HANDLER
+     */
+    public Lambda java(String groupId,
+                       String artifactId,
+                       String version,
+                       String classifier,
+                       String handler,
+                       @Min(DEFAULT_JAVA_MEMORY_MEGABYTES) int memoryMegabytes,
+                       Map<String, String> environment) {
+        return deployJava(artifactId,
+                          findMavenJarFromLocalRepo(groupId, artifactId, version, classifier),
+                          handler,
+                          memoryMegabytes,
+                          NO_DEBUG,
+                          environment);
     }
 
     /**
@@ -326,6 +377,7 @@ public class LambdaSupport {
      * @param environment    Map of environment variables to deploy.  May be decorated with more.
      * @return the deployed lambda.
      * @see #SPRING_CLOUD_FUNCTION_HANDLER
+     * @see #java(String, String, Map)
      * @deprecated DO NOT USE IN COMMITTED CODE AS THIS STOPS THE VM UNTIL DEBUG CONNECTION.
      */
     @Deprecated
@@ -346,6 +398,7 @@ public class LambdaSupport {
      * @return the deployed lambda.
      * @see #SPRING_CLOUD_FUNCTION_HANDLER
      * @see #DEFAULT_DEBUG_PORT
+     * @see #java(String, String, String, String, String, int, Map)
      * @deprecated DO NOT USE IN COMMITTED CODE AS THIS STOPS THE VM UNTIL DEBUG CONNECTION.
      */
     @Deprecated
@@ -354,7 +407,43 @@ public class LambdaSupport {
                             @Min(DEFAULT_JAVA_MEMORY_MEGABYTES) int memoryMegabytes,
                             Map<String, String> environment,
                             @Min(1) int debugPort) {
-        return deployJava(moduleLocation, handler, memoryMegabytes, environment, debugPort);
+        return deployJavaFromSourceBase(moduleLocation, handler, memoryMegabytes, debugPort, environment);
+    }
+
+
+    /**
+     * Debug should not be called directly as we pause for server connections by default.  Refer to readme.md.
+     *
+     * @param groupId         Maven group id to find.
+     * @param artifactId      Maven artifactId to find.
+     * @param version         Maven artifact version.
+     * @param classifier      Maven artifact classifier.  Use blank for default.
+     * @param handler         Java class name fully qualified as the Lambda Stream Handler
+     * @param memoryMegabytes Number of MB to allocate to lambda.  AWS vCPU is proportional to memory.
+     * @param environment     Map of environment variables to deploy.  May be decorated with more.
+     * @param debugPort       port for debugging to occur on (when > 0).  Must align with docker-compose.yml file.
+     * @return the deployed lambda.
+     * @see #SPRING_CLOUD_FUNCTION_HANDLER
+     * @see #DEFAULT_DEBUG_PORT
+     * @see #java(String, String, String, String, String, int, Map)
+     * @deprecated DO NOT USE IN COMMITTED CODE AS THIS STOPS THE VM UNTIL DEBUG CONNECTION.
+     */
+    @Deprecated
+    @SuppressWarnings("ParameterNumber")
+    public Lambda javaDebug(String groupId,
+                            String artifactId,
+                            String version,
+                            String classifier,
+                            String handler,
+                            @Min(DEFAULT_JAVA_MEMORY_MEGABYTES) int memoryMegabytes,
+                            Map<String, String> environment,
+                            @Min(1) int debugPort) {
+        return deployJava(artifactId,
+                          findMavenJarFromLocalRepo(groupId, artifactId, version, classifier),
+                          handler,
+                          memoryMegabytes,
+                          debugPort,
+                          environment);
     }
 
     /**
@@ -426,34 +515,35 @@ public class LambdaSupport {
                   .until(() -> checkFailed(lambda, state));
     }
 
-    /**
-     * Debug should not be called directly as we pause for server connections by default.  This class is aware of
-     * spring cloud functions and will suffix the name with the SPRING_CLOUD_FUNCTION_DEFINITION if set in the
-     * environment.
-     *
-     * @param moduleLocation  Maven module directory to deploy (relative path to this module).
-     * @param handler         Java class name fully qualified as the Lambda Stream Handler
-     * @param memoryMegabytes Number of MB to allocate to lambda.  AWS vCPU is proportional to memory.
-     * @param environment     Map of environment variables to deploy.  May be decorated with more.
-     * @param debugPort       port for debugging to occur on (when > 0)
-     * @return the deployed lambda.
-     * @see #SPRING_CLOUD_FUNCTION_HANDLER
-     */
-    private Lambda deployJava(String moduleLocation,
+    private Lambda deployJavaFromSourceBase(String moduleLocation,
+                                            String handler,
+                                            int memoryMegabytes,
+                                            int debugPort,
+                                            Map<String, String> environment) {
+
+        final String artifactId = moduleLocation.substring(moduleLocation.lastIndexOf('/') + 1);
+        return deployJava(artifactId,
+                          () -> findJarForModule(moduleLocation),
+                          handler,
+                          memoryMegabytes,
+                          debugPort,
+                          environment
+        );
+    }
+
+    private Lambda deployJava(String artifactId,
+                              Supplier<byte[]> getCodeJar,
                               String handler,
-                              @Min(DEFAULT_JAVA_MEMORY_MEGABYTES) int memoryMegabytes,
-                              Map<String, String> environment,
-                              int debugPort) {
+                              int memoryMegabytes,
+                              int debugPort,
+                              Map<String, String> environment) {
+        final byte[] awsJar = getCodeJar.get();
         final String deployBucket = "lambda-deploy";
-        final String name = "%s%s".formatted(
-                moduleLocation.substring(moduleLocation.lastIndexOf('/') + 1),
-                environment.containsKey(FUNCTION_DEF) ? "-" + environment.get(FUNCTION_DEF)
-                                                      : "");
+        final String name = lambdaName(artifactId, environment);
         final String key = "%s.jar".formatted(name);
         final URI s3Uri = s3.toS3Uri(deployBucket, key);
-        log.info("Uploading code from {} to {}", moduleLocation, s3Uri);
+        log.info("Uploading code to {}", s3Uri);
         s3.createBucket(deployBucket);
-        final byte[] awsJar = findJar(moduleLocation);
         s3.putData(s3Uri, "application/zip", awsJar);
         final Integer timeout = isInDebugMode(debugPort) ? JAVA_DEBUG_EXECUTION_TIMEOUT : JAVA_EXECUTION_TIMEOUT;
         log.info("""
@@ -461,9 +551,9 @@ public class LambdaSupport {
                          \ttimeout: {} seconds
                          \thandler {}
                          \tenv {}""", name, timeout, handler, environment);
-        final String desc = "Deployment of %s from module %s with timeout %d (s)".formatted(name,
-                                                                                            moduleLocation,
-                                                                                            timeout);
+        final String desc = "Deployment of %s from artifactId %s with timeout %d (s)".formatted(name,
+                                                                                                artifactId,
+                                                                                                timeout);
         return deploy(name, r -> r.functionName(name)
                                   .description(desc)
                                   .memorySize(memoryMegabytes * MB)
@@ -477,6 +567,74 @@ public class LambdaSupport {
                                   .role(LAMBDA_ROLE)
                                   .timeout(timeout)
         );
+    }
+
+    private static Supplier<byte[]> findMavenJarFromLocalRepo(String groupId,
+                                                              String artifactId,
+                                                              String version,
+                                                              String classifier) {
+        final File artifactLocation = assertArtifactLocation(groupId,
+                                                             artifactId,
+                                                             version,
+                                                             classifier);
+        return () -> loadArtifact(artifactLocation);
+    }
+
+    private static File assertArtifactLocation(String groupId,
+                                               String artifactId,
+                                               String version,
+                                               String classifier) {
+        final String mavenRepositoryLocation = mavenLocalRepositoryLocation();
+
+        final File artifactLocation = new File(new File(mavenRepositoryLocation,
+                                                        mavenArtifactFolder(groupId, artifactId, version)),
+                                               mavenArtifactName(artifactId, version, classifier));
+        if (!artifactLocation.isFile()) {
+            throw new IllegalArgumentException(
+                    "Can not locate %s in %s local maven repository.  Check <dependencies> in pom.xml"
+                            .formatted(artifactLocation, mavenRepositoryLocation));
+        }
+        return artifactLocation;
+    }
+
+    @SneakyThrows
+    private static byte[] loadArtifact(File artifactLocation) {
+        try (FileInputStream inputStream = new FileInputStream(artifactLocation)) {
+            return IoUtils.toByteArray(inputStream);
+        }
+    }
+
+    private static String mavenLocalRepositoryLocation() {
+        String mavenRepositoryLocation = System.getenv(LIME_MAVEN_REPOSITORY);
+        if (mavenRepositoryLocation == null) {
+            mavenRepositoryLocation = "%s/.m2/repository".formatted(System.getProperty("user.home"));
+            log.info("Using default maven repository {}.  Override if required with {}",
+                     mavenRepositoryLocation, LIME_MAVEN_REPOSITORY);
+        } else {
+            log.info("Using maven repository {} from environment {}", mavenRepositoryLocation, LIME_MAVEN_REPOSITORY);
+        }
+        return mavenRepositoryLocation;
+    }
+
+    private static String mavenArtifactFolder(String groupId, String artifactId, String version) {
+        return "%s/%s/%s".formatted(groupId.replace('.', '/'),
+                                    artifactId,
+                                    version);
+    }
+
+    private static String mavenArtifactName(String artifactId, String version, String classifier) {
+        if (StringUtils.isBlank(classifier)) {
+            return "%s-%s.jar".formatted(artifactId, version);
+
+        }
+        return "%s-%s-%s.jar".formatted(artifactId, version, classifier);
+    }
+
+    private static String lambdaName(String artifactId, Map<String, String> environment) {
+        return "%s%s".formatted(
+                artifactId,
+                environment.containsKey(FUNCTION_DEF_KEY) ? "-" + environment.get(FUNCTION_DEF_KEY)
+                                                          : "");
     }
 
     private void safeDelete(String name) {
@@ -497,15 +655,17 @@ public class LambdaSupport {
 
 
     @SneakyThrows
-    private byte[] findJar(String moduleLocation) {
+    private byte[] findJarForModule(String moduleLocation) {
+        log.info("Uploading code from {}", moduleLocation);
         File moduleBaseDir = new File(moduleLocation);
         File targetDir = new File(moduleBaseDir, "target");
         if (!targetDir.isDirectory()) {
             throw new IOException("Can not access module target directory %s".formatted(targetDir));
         }
-        String[] list = targetDir.list((dir, file) -> file.endsWith("-aws.jar"));
+        final String suffix = "-%s.jar".formatted(LAMBDA_JAR_CLASSIFIER);
+        String[] list = targetDir.list((dir, file) -> file.endsWith(suffix));
         if (list == null || list.length != 1) {
-            throw new IOException("Incorrect jars detected %s".formatted((Object) list));
+            throw new IOException("Incorrect jars (not ending with %s) detected %s".formatted(suffix, list));
         }
         try (FileInputStream input = new FileInputStream(new File(targetDir, list[0]))) {
             return IoUtils.toByteArray(input);
