@@ -16,7 +16,8 @@
   ~
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.limemojito.oss.standards.aws</groupId>
@@ -31,6 +32,8 @@
     </parent>
 
     <properties>
+        <coverage.line.ratio>0</coverage.line.ratio>
+
         <coverage.exclude.pattern.1>*LimeAwsLambdaConfiguration</coverage.exclude.pattern.1>
     </properties>
 
@@ -78,7 +81,8 @@
                     <groupId>commons-logging</groupId>
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
-            </exclusions>   </dependency>
+            </exclusions>
+        </dependency>
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-lambda-java-events</artifactId>
@@ -87,7 +91,8 @@
                     <groupId>commons-logging</groupId>
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
-            </exclusions>     </dependency>
+            </exclusions>
+        </dependency>
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-lambda-java-serialization</artifactId>
@@ -96,7 +101,8 @@
                     <groupId>commons-logging</groupId>
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
-            </exclusions>     </dependency>
+            </exclusions>
+        </dependency>
         <dependency>
             <!-- This is to lock the version as there is some strange dependencies going on if missing -->
             <groupId>org.springframework</groupId>
