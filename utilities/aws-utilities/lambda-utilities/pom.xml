@@ -111,6 +111,11 @@
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
         </dependency>
+        <dependency>
+            <!-- SnapStart optimization -->
+            <groupId>org.crac</groupId>
+            <artifactId>crac</artifactId>
+        </dependency>
 
         <!-- TEST DEPENDENCIES -->
         <dependency>

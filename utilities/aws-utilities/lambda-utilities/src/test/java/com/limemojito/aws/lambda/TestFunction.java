@@ -48,6 +48,17 @@ public class TestFunction {
     }
 
     @Bean
+    public SnapStartOptimizer snapStartOptimizer(ValidatingService validatingService) {
+        return new SnapStartOptimizer() {
+            @Override
+            protected void performBeforeCheckpoint() {
+                checkSpringCloudFunctionDefinitionBean();
+                swallowError(() -> validatingService.perform("bng"));
+            }
+        };
+    }
+
+    @Bean
     public Function<String, String> goBangValue() {
         return input -> {
             throw new NotFoundException();
