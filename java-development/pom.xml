@@ -290,26 +290,6 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-gpg-plugin</artifactId>
-                    <configuration>
-                        <skip>${sign.skip}</skip>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>sign-artifacts</id>
-                            <phase>verify</phase>
-                            <goals>
-                                <goal>sign</goal>
-                            </goals>
-                            <!--
-                              Supply key name with gpg.keyname property on command line if not default
-                              https://maven.apache.org/plugins/maven-gpg-plugin/sign-mojo.html#keyname
-                             -->
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <configuration>
                         <archive>
@@ -334,7 +314,7 @@
                             <goals>
                                 <goal>jar</goal>
                             </goals>
-                            <phase>verify</phase>
+                            <phase>prepare-package</phase>
                             <configuration>
                                 <sourcepath>${lombok.outputDirectory}:${project.build.sourceDirectory}</sourcepath>
                             </configuration>
@@ -367,7 +347,7 @@
                     <executions>
                         <execution>
                             <id>attach-sources</id>
-                            <phase>verify</phase>
+                            <phase>prepare-package</phase>
                             <goals>
                                 <goal>jar</goal>
                             </goals>
@@ -446,6 +426,31 @@
                         </execution>
                     </executions>
                 </plugin>
+                <!-- declared late so that signing is before install -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <configuration>
+                        <skip>${sign.skip}</skip>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                            <!--
+                              Supply key name with gpg.keyname property on command line if not default
+                              https://maven.apache.org/plugins/maven-gpg-plugin/sign-mojo.html#keyname
+                             -->
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -456,7 +461,7 @@
             </resource>
         </resources>
 
-        <!-- We define common PROCESS here.  The CONFIGURATIONS are in the parent pom -->
+        <!-- We define common PROCESS here.  The CONFIGURATIONS are in the plugin management section -->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -513,6 +518,10 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
             </plugin>
         </plugins>
@@ -531,8 +540,6 @@
                 <skipTests>true</skipTests>
                 <skipITs>true</skipITs>
                 <source.skip>true</source.skip>
-                <!-- Custom property for the fine-tuning of skip executions -->
-                <lime.fast-build>true</lime.fast-build>
             </properties>
         </profile>
         <profile>
