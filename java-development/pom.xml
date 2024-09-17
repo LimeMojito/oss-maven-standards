@@ -124,7 +124,8 @@
                                         </or>
                                     </condition>
                                     <!--suppress UnresolvedMavenProperty -->
-                                    <echo level="info" message="docker.test.compose.skip is ${docker.test.compose.skip}"/>
+                                    <echo level="info"
+                                          message="docker.test.compose.skip is ${docker.test.compose.skip}"/>
                                 </target>
                             </configuration>
                         </execution>
@@ -289,6 +290,26 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <configuration>
+                        <skip>${sign.skip}</skip>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                            <!--
+                              Supply key name with gpg.keyname property on command line if not default
+                              https://maven.apache.org/plugins/maven-gpg-plugin/sign-mojo.html#keyname
+                             -->
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <configuration>
                         <archive>
@@ -300,6 +321,25 @@
                             </manifest>
                         </archive>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <configuration>
+                        <!--suppress MavenModelInspection -->
+                        <skip>${javadoc.skip}</skip>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                            <phase>verify</phase>
+                            <configuration>
+                                <sourcepath>${lombok.outputDirectory}:${project.build.sourceDirectory}</sourcepath>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -316,6 +356,23 @@
                             <nonFilteredFileExtension>zip</nonFilteredFileExtension>
                         </nonFilteredFileExtensions>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <configuration>
+                        <!--suppress MavenModelInspection -->
+                        <skipSource>${source.skip}</skipSource>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -389,29 +446,6 @@
                         </execution>
                     </executions>
                 </plugin>
-                <plugin>
-                    <groupId>org.projectlombok</groupId>
-                    <artifactId>lombok-maven-plugin</artifactId>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version>
-                        </dependency>
-                    </dependencies>
-                    <executions>
-                        <execution>
-                            <phase>verify</phase>
-                            <goals>
-                                <goal>delombok</goal>
-                            </goals>
-                            <configuration>
-                                <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-                                <outputDirectory>${lombok.outputDirectory}</outputDirectory>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -421,6 +455,67 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+
+        <!-- We define common PROCESS here.  The CONFIGURATIONS are in the parent pom -->
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <phase>compile</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+            </plugin>
+        </plugins>
     </build>
 
     <profiles>
@@ -431,9 +526,12 @@
                 <codenarc.skip>true</codenarc.skip>
                 <enforcer.skip>true</enforcer.skip>
                 <jacoco.skip>true</jacoco.skip>
+                <javadoc.skip>true</javadoc.skip>
+                <sign.skip>true</sign.skip>
                 <skipTests>true</skipTests>
                 <skipITs>true</skipITs>
-                <!-- preferred way to skip for fast build -->
+                <source.skip>true</source.skip>
+                <!-- Custom property for the fine-tuning of skip executions -->
                 <lime.fast-build>true</lime.fast-build>
             </properties>
         </profile>
@@ -442,29 +540,24 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok-maven-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${lombok.version}</version>
+                            </dependency>
+                        </dependencies>
                         <executions>
                             <execution>
-                                <id>attach-sources</id>
                                 <phase>verify</phase>
                                 <goals>
-                                    <goal>jar</goal>
+                                    <goal>delombok</goal>
                                 </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                                <phase>verify</phase>
                                 <configuration>
-                                    <sourcepath>${lombok.outputDirectory}:${project.build.sourceDirectory}</sourcepath>
+                                    <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                                    <outputDirectory>${lombok.outputDirectory}</outputDirectory>
                                 </configuration>
                             </execution>
                         </executions>

@@ -255,31 +255,6 @@
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                                <!--
-                                  Supply key name with gpg.keyname property on command line if not default
-                                  https://maven.apache.org/plugins/maven-gpg-plugin/sign-mojo.html#keyname
-                                 -->
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-deploy-plugin</artifactId>
                         <configuration>
                             <skip>true</skip>
@@ -311,13 +286,6 @@
         <profile>
             <id>fast-build</id>
             <properties>
-                <checkstyle.skip>true</checkstyle.skip>
-                <enforcer.skip>true</enforcer.skip>
-                <jacoco.skip>true</jacoco.skip>
-                <!--surefire-->
-                <skipTests>true</skipTests>
-                <!--failsafe-->
-                <skipITs>true</skipITs>
                 <!-- Custom property for the fine-tuning of skip executions -->
                 <lime.fast-build>true</lime.fast-build>
             </properties>

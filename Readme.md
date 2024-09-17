@@ -1,18 +1,20 @@
 # Build Charter
 
 1. The build enforces our development standards to reduce the code review load.
-1. The build must have a simple developer interface – ```mvn clean install```.
-1. If the clean install passes – we can move to source Pull Request (PR).
-1. PR is important, as when a PR is merged we may automatically deploy to production.
-1. Creating a new project or module must not require a lot of configuration (“xml hell”).
-1. A module must not depend on another running Lime Mojito module for testing.
-1. Any stub resources for testing must be a docker image.
+2. The build must have a simple developer interface – ```mvn clean install```.
+3. If the clean install passes – we can move to source Pull Request (PR).
+4. PR is important, as when a PR is merged we may automatically deploy to production.
+5. Creating a new project or module must not require a lot of configuration (“xml hell”).
+6. A module must not depend on another running Lime Mojito module for testing.
+7. Any stub resources for testing must be a docker image.
     * Postgres, Localstack, etc
-1. Stubs will be managed by the build process for integration test phase.
+8. Stubs will be managed by the build process for integration test phase.
     * ie if you’re using stubs, you’re building a failsafe maven plugin IT test case.
-1. The build will handle style and code metric checks (CheckStyle, Maven Enforcer, etc) so that we do not waste time in
+9. The build will handle style and code metric checks (CheckStyle, Maven Enforcer, etc) so that we do not waste time in
    PR reviews.
-1. For open source, we will post to Maven Central on a Release Build.
+10. For open source, we will post to Maven Central on a Release Build.
+
+---
 
 # Open Source Standards For Our Maven Builds
 
@@ -24,6 +26,35 @@ The base POM files are also available on the Maven Central Repository if you wan
 builds.
 
 https://repo.maven.apache.org/maven2/com/limemojito/oss/standards/
+      
+---
+
+# Maven Profiles
+
+These profiles add capabilities to our builds or allow "quick checks" as wanted by the developer.
+
+| Profile    | Actions                                                                         |
+|------------|---------------------------------------------------------------------------------|
+|            | Perform a "merge" build.  Checks and installs suitable for a release candidate. |
+| fast-build | Quickly build the devliverables.  No deployments, checks, tests, etc.           |
+| release    | Perform a release build with all checks enabled and deployments.                |
+
+---
+
+# Maven Archetypes
+
+Our Open Source Standards library supports the following module types (archetypes) out of the box:
+
+| Type                     | Description                                                                                                                                                                       |
+|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| java-development	        | Base POM used to configure deployment locations, checkstyle, enforcer, docker, plugin versions, profiles, etc. Designed to be extended for different archetypes (JAR, WAR, etc.). | 
+| jar-development	         | Build a jar file with test and docker support                                                                                                                                     |
+| jar-lambda-development	  | Build a Spring Boot Cloud Function jar suitable for lambda use (java 17 Runtime) with AWS dependencies added by default. Jar is shaded for simple upload.                         |
+| spring-boot-development	 | Spring boot jar constructed with the base spring-boot-starter and lime mojito aws-utilities for local stack support.                                                              |
+
+---
+
+# Examples
 
 ## Maven Example pom.xml for building a JAR library
 
@@ -88,15 +119,3 @@ they are managed by our modern Bill of Materials (BOM) style dependency setup.
     </dependencies>
 </project>
 ```
-
-# Archetypes
-
-Our Open Source Standards library supports the following module types (archetypes) out of the box:
-
-| Type                     | Description                                                                                                                                                                       |
-|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| java-development	        | Base POM used to configure deployment locations, checkstyle, enforcer, docker, plugin versions, profiles, etc. Designed to be extended for different archetypes (JAR, WAR, etc.). | 
-| jar-development	         | Build a jar file with test and docker support                                                                                                                                     |
-| jar-lambda-development	  | Build a Spring Boot Cloud Function jar suitable for lambda use (java 17 Runtime) with AWS dependencies added by default. Jar is shaded for simple upload.                         |
-| spring-boot-development	 | Spring boot jar constructed with the base spring-boot-starter and lime mojito aws-utilities for local stack support.                                                              |
-
