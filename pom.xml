@@ -35,11 +35,11 @@
         <lime.website.url>https://limemojito.com</lime.website.url>
         <staging.nexus.url>https://oss.sonatype.org</staging.nexus.url>
 
-        <checkstyle.version>10.17.0</checkstyle.version>
+        <checkstyle.version>10.18.1</checkstyle.version>
         <java.version>17</java.version>
         <!-- This has both library and build implications -->
-        <spring.boot.version>3.3.2</spring.boot.version>
-        <aws-cdk-lib.version>2.151.0</aws-cdk-lib.version>
+        <spring.boot.version>3.3.3</spring.boot.version>
+        <aws-cdk-lib.version>2.158.0</aws-cdk-lib.version>
         <lombok.version>1.18.34</lombok.version>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
     </properties>
