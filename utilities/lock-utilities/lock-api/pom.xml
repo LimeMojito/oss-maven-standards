@@ -28,7 +28,7 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>14.2.3-SNAPSHOT</version>
+        <version>14.3.0-SNAPSHOT</version>
         <relativePath>../../../jar-development/pom.xml</relativePath>
     </parent>
 
