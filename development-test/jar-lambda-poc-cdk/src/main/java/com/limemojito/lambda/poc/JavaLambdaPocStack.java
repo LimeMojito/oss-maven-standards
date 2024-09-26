@@ -42,10 +42,10 @@ import static software.amazon.awscdk.services.apigatewayv2.PayloadFormatVersion.
 import static software.amazon.awscdk.services.iam.ManagedPolicy.fromAwsManagedPolicyName;
 import static software.amazon.awscdk.services.lambda.Architecture.X86_64;
 import static software.amazon.awscdk.services.lambda.Code.fromAsset;
-import static software.amazon.awscdk.services.lambda.Runtime.JAVA_17;
+import static software.amazon.awscdk.services.lambda.Runtime.JAVA_21;
 
 @Slf4j
-public class JavaLambdaPocStack extends Stack {
+public final class JavaLambdaPocStack extends Stack {
 
     static final String LAMBDA_FUNCTION_ID = "jar-lambda-poc";
     private static final String LAMBDA_CODE_PATH = "target/dependency/%s.jar".formatted(LAMBDA_FUNCTION_ID);
@@ -71,13 +71,13 @@ public class JavaLambdaPocStack extends Stack {
                                                LAMBDA_FUNCTION_ID,
                                                FunctionProps.builder()
                                                             .functionName(LAMBDA_FUNCTION_ID)
-                                                            .description("Lambda example with Java 17")
+                                                            .description("Lambda example with Java 21")
                                                             .role(role)
                                                             .timeout(Duration.seconds(timeoutSeconds))
                                                             .memorySize(memorySize)
                                                             .environment(Map.of())
                                                             .code(assetCode)
-                                                            .runtime(JAVA_17)
+                                                            .runtime(JAVA_21)
                                                             .handler(LAMBDA_HANDLER)
                                                             .logRetention(RetentionDays.ONE_DAY)
                                                             .architecture(X86_64)

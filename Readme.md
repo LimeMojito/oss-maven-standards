@@ -51,6 +51,18 @@ Our Open Source Standards library supports the following module types (archetype
 | jar-development	         | Build a jar file with test and docker support                                                                                                                                     |
 | jar-lambda-development	  | Build a Spring Boot Cloud Function jar suitable for lambda use (java 17 Runtime) with AWS dependencies added by default. Jar is shaded for simple upload.                         |
 | spring-boot-development	 | Spring boot jar constructed with the base spring-boot-starter and lime mojito aws-utilities for local stack support.                                                              |
+   
+---
+# Version Updates
+   
+Requires manual check to avoid rc1, etc links.
+
+```shell
+mvn versions:display-plugin-updates | more
+mvn versions:use-latest-releases
+```
+Now check updates and avoid beta, rc and similar updates.
+
 
 ---
 

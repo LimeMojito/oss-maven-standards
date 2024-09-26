@@ -25,7 +25,7 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>oss-maven-standards</artifactId>
-        <version>14.3.1-SNAPSHOT</version>
+        <version>15.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -59,7 +59,7 @@
             <dependency>
                 <groupId>org.jetbrains</groupId>
                 <artifactId>annotations</artifactId>
-                <version>24.1.0</version>
+                <version>25.0.0</version>
             </dependency>
             <dependency>
                 <!-- Required for AWS eventing -->
@@ -71,7 +71,7 @@
                 <!-- Springdoc -> Spring Data conflict -->
                 <groupId>io.github.classgraph</groupId>
                 <artifactId>classgraph</artifactId>
-                <version>4.8.175</version>
+                <version>4.8.176</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
@@ -122,7 +122,7 @@
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.16.1</version>
+                <version>2.17.0</version>
             </dependency>
             <dependency>
                 <groupId>commons-logging</groupId>
@@ -154,7 +154,7 @@
             <dependency>
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-lambda-java-events</artifactId>
-                <version>3.13.0</version>
+                <version>3.14.0</version>
             </dependency>
             <dependency>
                 <groupId>com.amazonaws</groupId>
@@ -212,7 +212,7 @@
                 <!-- Guava secure -->
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava-bom</artifactId>
-                <version>33.3.0-jre</version>
+                <version>33.3.1-jre</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -243,7 +243,7 @@
                 <!-- AWS SDK V2-->
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>bom</artifactId>
-                <version>2.28.1</version>
+                <version>2.28.9</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -268,7 +268,7 @@
                 <!-- Spring Cloud AWS -->
                 <groupId>io.awspring.cloud</groupId>
                 <artifactId>spring-cloud-aws-dependencies</artifactId>
-                <version>3.1.1</version>
+                <version>3.2.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

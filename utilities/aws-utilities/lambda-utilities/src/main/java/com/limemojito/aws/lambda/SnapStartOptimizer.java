@@ -30,14 +30,11 @@ public abstract class SnapStartOptimizer implements Resource, ApplicationContext
     @Getter(value = PROTECTED)
     private ApplicationContext applicationContext;
 
-    public SnapStartOptimizer() {
-        Core.getGlobalContext().register(this);
-        log.info("SnapStart Optimizer {} registered", this.getClass().getSimpleName());
-    }
-
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
+        Core.getGlobalContext().register(this);
+        log.info("SnapStart Optimizer {} registered", this.getClass().getSimpleName());
     }
 
     @Override

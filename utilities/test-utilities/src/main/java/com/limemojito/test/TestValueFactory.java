@@ -24,7 +24,7 @@ import java.util.*;
 /**
  * Creates a test value for a given class.
  */
-public class TestValueFactory {
+public final class TestValueFactory {
 
     private final Map<Class<?>, Object> instanceStore;
 
@@ -64,7 +64,7 @@ public class TestValueFactory {
      * Create a new factory.
      */
     public TestValueFactory() {
-        instanceStore = new HashMap<>();
+        this.instanceStore = new HashMap<>();
         registerTestInstanceFor(UUID.class, UUID.randomUUID());
         registerTestInstanceFor(BigDecimal.class, new BigDecimal("99.999"));
         registerTestInstanceFor(BigInteger.class, new BigInteger("99"));

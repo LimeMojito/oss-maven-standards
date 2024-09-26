@@ -51,7 +51,7 @@ import java.util.zip.ZipOutputStream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.awaitility.Durations.FIVE_HUNDRED_MILLISECONDS;
-import static software.amazon.awssdk.services.lambda.model.Runtime.JAVA17;
+import static software.amazon.awssdk.services.lambda.model.Runtime.JAVA21;
 import static software.amazon.awssdk.services.lambda.model.Runtime.NODEJS20_X;
 
 /**
@@ -558,7 +558,7 @@ public class LambdaSupport {
                                   .description(desc)
                                   .memorySize(memoryMegabytes * MB)
                                   .handler(handler)
-                                  .runtime(JAVA17)
+                                  .runtime(JAVA21)
                                   .environment(e -> e.variables(spyEnvironment(environment,
                                                                                debugPort,
                                                                                memoryMegabytes)))
