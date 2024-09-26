@@ -54,6 +54,6 @@ runs:
           ${{ runner.os }}-maven-
 
     - name: Cache Docker images.
-      uses: ScribeMD/docker-cache@0.5
+      uses: ScribeMD/docker-cache@0.5.0
       with:
         key: docker-LimeMojito-OSS
