@@ -36,7 +36,7 @@ These profiles add capabilities to our builds or allow "quick checks" as wanted 
 | Profile    | Actions                                                                         |
 |------------|---------------------------------------------------------------------------------|
 |            | Perform a "merge" build.  Checks and installs suitable for a release candidate. |
-| fast-build | Quickly build the devliverables.  No deployments, checks, tests, etc.           |
+| fast-build | Quickly build the deliverables.  No deployments, checks, tests, etc.           |
 | release    | Perform a release build with all checks enabled and deployments.                |
 
 ---
@@ -97,7 +97,7 @@ This example will do all the below with only 6 lines of extra XML in your maven 
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>14.1.0</version>
+        <version>15.0.0</version>
         <relativePath/>
     </parent>
 </project>
@@ -120,7 +120,7 @@ they are managed by our modern Bill of Materials (BOM) style dependency setup.
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>14.1.0</version>
+        <version>15.0.0</version>
         <relativePath/>
     </parent>
     <dependencies>
