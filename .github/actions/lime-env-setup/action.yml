@@ -30,8 +30,6 @@ runs:
     - name: Install Python dependencies and CDK
       shell: bash
       run: |
-        python -m pip install --upgrade pip
-        # install your Python dependencies here
         npm install -g aws-cdk
 
     - name: Set up JDK
