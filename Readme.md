@@ -33,11 +33,15 @@ https://repo.maven.apache.org/maven2/com/limemojito/oss/standards/
 
 These profiles add capabilities to our builds or allow "quick checks" as wanted by the developer.
 
-| Profile    | Actions                                                                         |
-|------------|---------------------------------------------------------------------------------|
+| Profile    | Actions                                                                       |
+|------------|-------------------------------------------------------------------------------|
 |            | Perform a "merge" build.  Checks and installs suitable for a release candidate. |
-| fast-build | Quickly build the deliverables.  No deployments, checks, tests, etc.           |
-| release    | Perform a release build with all checks enabled and deployments.                |
+| fast-build | Quickly build the deliverables.  No deployments, checks, tests, etc.          |
+| release    | Perform a release build with all checks enabled and deployments.              |
+           
+---
+# Building maintainable maven projects
+See [article](https://limemojito.com/maintainable-builds-with-maven/) here for why we use maven and how our the POM model works.
 
 ---
 
@@ -62,7 +66,6 @@ mvn versions:display-plugin-updates | more
 mvn versions:use-latest-releases
 ```
 Now check updates and avoid beta, rc and similar updates.
-
 
 ---
 
@@ -131,3 +134,11 @@ they are managed by our modern Bill of Materials (BOM) style dependency setup.
     </dependencies>
 </project>
 ```
+                 
+## Debugging java lambda with localstack
+Supported for testing with test-utilities and JavaSupport.class - see [Article](https://limemojito.com/deploying-java-lambda-with-localstack/).
+
+    
+## Using Ant to bend maven
+Using Ant to perform tasks without writing a maven plugin.  If statements and simple execs.
+[Article](https://limemojito.com/bending-maven-with-ant/)
