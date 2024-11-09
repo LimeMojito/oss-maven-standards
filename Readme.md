@@ -144,5 +144,5 @@ Using Ant to perform tasks without writing a maven plugin.  If statements and si
   
 ## AWS Lambdas and SnapStart
 * [Graal, native and why SnapStart](https://limemojito.com/native-java-aws-lambda-with-graal-vm/)
-* SnapStart Advanced Optimisation
-* SnapStart and SQL
+* [SnapStart Advanced Optimisation](https://limemojito.com/optimising-aws-snapstart-and-spring-boot-java-lambdas/)
+* [SnapStart and SQL](https://limemojito.com/optimising-aws-snapstart-and-spring-boot-java-lambdas/)
