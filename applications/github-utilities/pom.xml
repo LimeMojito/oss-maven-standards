@@ -28,7 +28,7 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>spring-boot-development</artifactId>
-        <version>15.0.1-SNAPSHOT</version>
+        <version>15.0.1</version>
         <relativePath>../../spring-boot-development/pom.xml</relativePath>
     </parent>
 
