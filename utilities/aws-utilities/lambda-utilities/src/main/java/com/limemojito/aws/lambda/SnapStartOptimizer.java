@@ -30,32 +30,52 @@ public abstract class SnapStartOptimizer implements Resource, ApplicationContext
     @Getter(value = PROTECTED)
     private ApplicationContext applicationContext;
 
+    /**
+     * Links the application context to CRaC lifecycle.
+     *
+     * @param applicationContext Spring application context.
+     * @throws BeansException if unable to register
+     */
     @Override
+    @SuppressWarnings("NullableProblems")
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
         Core.getGlobalContext().register(this);
         log.info("SnapStart Optimizer {} registered", this.getClass().getSimpleName());
     }
 
+    /**
+     * CRaC callback for pre checkpoint (AWS SnapStart snapshot)
+     *
+     * @param context CRaC context
+     * @throws Exception on a callback failure.
+     */
     @Override
     public final void beforeCheckpoint(Context<? extends Resource> context) throws Exception {
         log.info("Before Checkpoint");
         performBeforeCheckpoint();
     }
 
+    /**
+     * CRaC callback for pre checkpoint (AWS SnapStart snapshot)
+     *
+     * @param context CRaC context
+     * @throws Exception on a callback failure.
+     */
     @Override
     public final void afterRestore(Context<? extends Resource> context) throws Exception {
         log.info("After Restore");
-        performAfterCheckpoint();
+        performAfterRestore();
     }
 
     /**
      * Steps to execute to exercise system.  Run some code to exercise the system by loading classes, attempting network
      * connections, etc.
      *
+     * @throws Exception on a failure
      * @see #swallowError(Runnable)
      */
-    protected abstract void performBeforeCheckpoint();
+    protected abstract void performBeforeCheckpoint() throws Exception;
 
 
     /**
@@ -93,9 +113,10 @@ public abstract class SnapStartOptimizer implements Resource, ApplicationContext
      * Override if after checkpoint processing required.    Run some code to exercise the system by loading classes,
      * attempting network connections, etc.
      *
+     * @throws Exception on a failure
      * @see #swallowError(Runnable)
      */
-    protected void performAfterCheckpoint() {
+    protected void performAfterRestore() throws Exception {
 
     }
 }

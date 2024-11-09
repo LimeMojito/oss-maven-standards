@@ -137,8 +137,12 @@ they are managed by our modern Bill of Materials (BOM) style dependency setup.
                  
 ## Debugging java lambda with localstack
 Supported for testing with test-utilities and JavaSupport.class - see [Article](https://limemojito.com/deploying-java-lambda-with-localstack/).
-
     
 ## Using Ant to bend maven
 Using Ant to perform tasks without writing a maven plugin.  If statements and simple execs.
 [Article](https://limemojito.com/bending-maven-with-ant/)
+  
+## AWS Lambdas and SnapStart
+* [Graal, native and why SnapStart](https://limemojito.com/native-java-aws-lambda-with-graal-vm/)
+* SnapStart Advanced Optimisation
+* SnapStart and SQL
