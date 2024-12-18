@@ -22,6 +22,7 @@ jobs:
           aws-region: ${{ secrets.LIME_AWS_REGION }}
           role-to-assume: ${{ secrets.LIME_AWS_ROLE_ARN }}
           code-signing-key: ${{ secrets.LIME_SIGNING_KEY }}
+          code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
 
       - uses: actions/checkout@v4
         with:
@@ -29,4 +30,6 @@ jobs:
 
       - name: Build with Maven
         # install is required for framework as CDK is trying to load current library in another process.
-        run: mvn -B -Dstyle.color=always --file pom.xml -Dbuild.number=${{github.run_number}} -Dgpg.keyname='Lime Mojito Pty Ltd' install
+        run: |
+          export MAVEN_GPG_PASSPHRASE="${{ secrets.LIME_SIGNING_PASSPHRASE }}"
+          mvn -B -Dstyle.color=always --file pom.xml -Dbuild.number=${{github.run_number}} -Dgpg.keyname='Lime Mojito Pty Ltd' install

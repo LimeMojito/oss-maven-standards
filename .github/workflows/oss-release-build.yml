@@ -21,6 +21,7 @@ jobs:
           aws-region: ${{ secrets.LIME_AWS_REGION }}
           role-to-assume: ${{ secrets.LIME_AWS_ROLE_ARN }}
           code-signing-key: ${{ secrets.LIME_SIGNING_KEY }}
+          code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
 
       - name: Configure OSSRH Credentials
         id: maven_setup
@@ -49,5 +50,6 @@ jobs:
           role-to-assume: ${{ secrets.LIME_AWS_ROLE_ARN }}
           code-signing-key: ${{ secrets.LIME_SIGNING_KEY }}
           code-signing-key-name: Lime Mojito Pty Ltd
+          code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
           git-access-key: ${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}
           git-signing-key: ${{ secrets.LIME_BUILD_AGENT_GIT_SIGNING_KEY }}
