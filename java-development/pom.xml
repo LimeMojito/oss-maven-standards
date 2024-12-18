@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>oss-maven-standards</artifactId>
-        <version>15.0.2-SNAPSHOT</version>
+        <version>15.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -34,7 +34,7 @@
             <dependency>
                 <groupId>com.limemojito.oss.standards</groupId>
                 <artifactId>library</artifactId>
-                <version>15.0.2-SNAPSHOT</version>
+                <version>15.1.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -239,8 +239,22 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>properties</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <configuration>
+                        <!--suppress UnresolvedMavenProperty -->
+                        <!-- Setup for mockito as per https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3 -->
+                        <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
                         <!-- as Lombok generated classes are NOT seen by boot -->
                         <classesDirectory>${project.build.outputDirectory}</classesDirectory>
                     </configuration>
@@ -323,9 +337,10 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <configuration>
-                        <!-- Include set arglines such as jacoco.  Enable dynamic agents such as byte buddy for mockito -->
-                        <!--suppress MavenModelInspection -->
-                        <argLine>${argLine} -XX:+EnableDynamicAgentLoading</argLine>
+                        <!-- Include set argLine such as jacoco.-->
+                        <!--suppress UnresolvedMavenProperty -->
+                        <!-- Setup for mockito as per https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3 -->
+                        <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -396,6 +411,7 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
                     <configuration>
+                        <!--suppress MavenModelInspection -->
                         <skip>${sign.skip}</skip>
                     </configuration>
                     <executions>

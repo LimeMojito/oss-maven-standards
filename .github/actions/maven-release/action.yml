@@ -11,7 +11,10 @@ inputs:
     description: 'Code signing GPG key data'
     required: true
   code-signing-key-name:
-    description: 'Code signing GPT key name'
+    description: 'Code signing GPG key name'
+  code-signing-passphrase:
+    description: 'Code signing GPG passphrase'
+    required: true
   git-access-key:
     description: 'Github access key (SSH)'
     required: true
@@ -63,6 +66,7 @@ runs:
       run: |
         echo "Checking out ${{steps.git_release_version.outputs.lime-release-version}}"
         git checkout ${{steps.git_release_version.outputs.lime-release-version}}
+        export MAVEN_GPG_PASSPHRASE="${{ inputs.code-signing-passphrase }}"
         # deploy to OSSRH
         mvn -B ${{ inputs.extra-mvn-options }} -Dstyle.color=always -Prelease -Dbuild.number=${{github.run_number}} -Dgpg.keyname='${{inputs.code-signing-key-name}}' deploy
 
