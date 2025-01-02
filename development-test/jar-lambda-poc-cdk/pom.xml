@@ -16,7 +16,8 @@
   ~
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.limemojito.oss.standards.development-test</groupId>
@@ -25,9 +26,9 @@
 
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
-        <artifactId>jar-development</artifactId>
+        <artifactId>java-cdk-development</artifactId>
         <version>15.1.1-SNAPSHOT</version>
-        <relativePath>../../jar-development</relativePath>
+        <relativePath>../../java-cdk-development</relativePath>
     </parent>
 
     <properties>
@@ -36,78 +37,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>software.amazon.awscdk</groupId>
-            <artifactId>aws-cdk-lib</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.limemojito.oss.standards.development-test</groupId>
             <artifactId>jar-lambda-poc</artifactId>
             <version>15.1.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <configuration>
-                    <!-- For when we are called BY cdk -->
-                    <mainClass>${cdk.main.class}</mainClass>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>cdk-bootstrap</id>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <phase>post-integration-test</phase>
-                        <configuration>
-                            <environmentVariables>
-                                <JSII_SILENCE_WARNING_UNTESTED_NODE_VERSION>true
-                                </JSII_SILENCE_WARNING_UNTESTED_NODE_VERSION>
-                            </environmentVariables>
-                            <executable>cdk</executable>
-                            <commandlineArgs>--ci true bootstrap</commandlineArgs>
-                            <skip>${lime.fast-build}</skip>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>cdk-deploy</id>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <phase>post-integration-test</phase>
-                        <configuration>
-                            <environmentVariables>
-                                <JSII_SILENCE_WARNING_UNTESTED_NODE_VERSION>true
-                                </JSII_SILENCE_WARNING_UNTESTED_NODE_VERSION>
-                            </environmentVariables>
-                            <executable>cdk</executable>
-                            <commandlineArgs>--ci true deploy --require-approval never</commandlineArgs>
-                            <skip>${lime.fast-build}</skip>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <stripVersion>true</stripVersion>
-                            <excludeTransitive>true</excludeTransitive>
-                            <skip>${lime.fast-build}</skip>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 </project>
