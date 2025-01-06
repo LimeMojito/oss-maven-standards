@@ -33,15 +33,19 @@ https://repo.maven.apache.org/maven2/com/limemojito/oss/standards/
 
 These profiles add capabilities to our builds or allow "quick checks" as wanted by the developer.
 
-| Profile    | Actions                                                                       |
-|------------|-------------------------------------------------------------------------------|
+| Profile    | Actions                                                                         |
+|------------|---------------------------------------------------------------------------------|
 |            | Perform a "merge" build.  Checks and installs suitable for a release candidate. |
-| fast-build | Quickly build the deliverables.  No deployments, checks, tests, etc.          |
-| release    | Perform a release build with all checks enabled and deployments.              |
+| fast-build | Quickly build the deliverables.  No deployments, checks, tests, etc.            |
+| release    | Perform a release build with all checks enabled and deployments.                |
+
            
 ---
+
 # Building maintainable maven projects
-See [article](https://limemojito.com/maintainable-builds-with-maven/) here for why we use maven and how our the POM model works.
+
+See [article](https://limemojito.com/maintainable-builds-with-maven/) here for why we use maven and how our the POM
+model works.
 
 ---
 
@@ -49,22 +53,25 @@ See [article](https://limemojito.com/maintainable-builds-with-maven/) here for w
 
 Our Open Source Standards library supports the following module types (archetypes) out of the box:
 
-| Type                     | Description                                                                                                                                                                       |
-|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| java-development	        | Base POM used to configure deployment locations, checkstyle, enforcer, docker, plugin versions, profiles, etc. Designed to be extended for different archetypes (JAR, WAR, etc.). | 
-| jar-development	         | Build a jar file with test and docker support                                                                                                                                     |
-| jar-lambda-development	  | Build a Spring Boot Cloud Function jar suitable for lambda use (java 17 Runtime) with AWS dependencies added by default. Jar is shaded for simple upload.                         |
-| spring-boot-development	 | Spring boot jar constructed with the base spring-boot-starter and lime mojito aws-utilities for local stack support.                                                              |
-   
+| Type                     | Description                                                                                                                                                                           |
+|--------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| java-development	        | Base POM used to configure deployment locations, checkstyle, enforcer, docker, plugin versions, profiles, etc. Designed to be extended for different archetypes (JAR, WAR, etc.).     | 
+| jar-development	         | Build a jar file with test and docker support.                                                                                                                                        |
+| jar-lambda-development	  | Build a Spring Boot Cloud Function jar suitable for lambda use with AWS dependencies added by default. Jar is shaded for simple upload. . Example in development-test/jar-lambda-poc. |
+| spring-boot-development	 | Spring boot jar constructed with the base spring-boot-starter and lime mojito aws-utilities for local stack support.                                                                  |
+| java-cdk-development     | Lightweight support for Java jar based CDK deployments to AWS. Example in development-test/jar-lambda-poc-cdk.                                                                        |
+
 ---
+
 # Version Updates
-   
+
 Requires manual check to avoid rc1, etc links.
 
 ```shell
 mvn versions:display-plugin-updates | more
 mvn versions:use-latest-releases -DgenerateBackupPoms=false
 ```
+
 Now check updates and avoid beta, rc and similar updates.
 
 ---
@@ -100,7 +107,7 @@ This example will do all the below with only 6 lines of extra XML in your maven 
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>15.0.0</version>
+        <version>15.2.0</version>
         <relativePath/>
     </parent>
 </project>
@@ -123,7 +130,7 @@ they are managed by our modern Bill of Materials (BOM) style dependency setup.
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>15.0.0</version>
+        <version>15.2.0</version>
         <relativePath/>
     </parent>
     <dependencies>
@@ -134,15 +141,19 @@ they are managed by our modern Bill of Materials (BOM) style dependency setup.
     </dependencies>
 </project>
 ```
-                 
+
 ## Debugging java lambda with localstack
-Supported for testing with test-utilities and JavaSupport.class - see [Article](https://limemojito.com/deploying-java-lambda-with-localstack/).
-    
+
+Supported for testing with test-utilities and JavaSupport.class -
+see [Article](https://limemojito.com/deploying-java-lambda-with-localstack/).
+
 ## Using Ant to bend maven
-Using Ant to perform tasks without writing a maven plugin.  If statements and simple execs.
+
+Using Ant to perform tasks without writing a maven plugin. If statements and simple execs.
 [Article](https://limemojito.com/bending-maven-with-ant/)
-  
+
 ## AWS Lambdas and SnapStart
+
 * [Graal, native and why SnapStart](https://limemojito.com/native-java-aws-lambda-with-graal-vm/)
 * [SnapStart Advanced Optimisation](https://limemojito.com/optimising-aws-snapstart-and-spring-boot-java-lambdas/)
 * [SnapStart and SQL](https://limemojito.com/optimising-aws-snapstart-and-spring-boot-java-lambdas/)
