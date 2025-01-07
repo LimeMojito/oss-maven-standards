@@ -25,15 +25,15 @@
     <version>15.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>
-        *  A basic setup for cdk development using a simple automated deployment to the "current" account as setup in
-        aws credentials.  Requires cdk.json file to be configured to match pom.xml.  Example cdk.json file included
-        for java based cdk deployment using maven.  Note JAVA_HOME must be set to match the version of java in use so
+        * A basic setup for cdk development using a simple automated deployment to the "current" account as setup in
+        aws credentials. Requires cdk.json file to be configured to match pom.xml. Example cdk.json file included
+        for java based cdk deployment using maven. Note JAVA_HOME must be set to match the version of java in use so
         that CDK's spawned maven process does not become confused with the compile java version.
-        *  Packaging for child projects should be jar.
-        *  Set cdk main class in properties of pom.xml.
-        *  Code jar dependencies as dependencies, these will be included in the build to target/dependencies which may
+        * Packaging for child projects should be jar.
+        * Set cdk main class in properties of pom.xml.
+        * Code jar dependencies as dependencies, these will be included in the build to target/dependencies which may
         be referenced from CDK code.
-        *  See development-test/jar-lambda-poc-cdk for an example.
+        * See development-test/jar-lambda-poc-cdk for an example.
     </description>
 
     <parent>
@@ -57,6 +57,36 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>check-for-cdk-skip</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>compile</phase>
+                        <configuration>
+                            <exportAntProperties>true</exportAntProperties>
+                            <target>
+                                <condition property="cdk.skip" else="false">
+                                    <or>
+                                        <equals arg1="${lime.fast-build}" arg2="true"/>
+                                        <not>
+                                            <!-- Skip CDK if no source -->
+                                            <available file="${project.build.sourceDirectory}"/>
+                                        </not>
+                                    </or>
+                                </condition>
+                                <!--suppress UnresolvedMavenProperty -->
+                                <echo level="info"
+                                      message="cdk.skip is ${cdk.skip}"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <configuration>
@@ -77,7 +107,7 @@
                             </environmentVariables>
                             <executable>cdk</executable>
                             <commandlineArgs>--ci true bootstrap</commandlineArgs>
-                            <skip>${lime.fast-build}</skip>
+                            <skip>${cdk.skip}</skip>
                         </configuration>
                     </execution>
                     <execution>
@@ -87,13 +117,13 @@
                         </goals>
                         <phase>post-integration-test</phase>
                         <configuration>
+                            <skip>${cdk.skip}</skip>
                             <environmentVariables>
                                 <JSII_SILENCE_WARNING_UNTESTED_NODE_VERSION>true
                                 </JSII_SILENCE_WARNING_UNTESTED_NODE_VERSION>
                             </environmentVariables>
                             <executable>cdk</executable>
                             <commandlineArgs>--ci true deploy --require-approval never</commandlineArgs>
-                            <skip>${lime.fast-build}</skip>
                         </configuration>
                     </execution>
                 </executions>
@@ -111,7 +141,7 @@
                         <configuration>
                             <stripVersion>true</stripVersion>
                             <excludeTransitive>true</excludeTransitive>
-                            <skip>${lime.fast-build}</skip>
+                            <skip>${cdk.skip}</skip>
                         </configuration>
                     </execution>
                 </executions>
