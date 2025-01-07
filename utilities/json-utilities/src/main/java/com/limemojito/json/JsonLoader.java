@@ -22,6 +22,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Writer;
 
 
 /**
@@ -46,8 +48,8 @@ public class JsonLoader {
     /**
      * Parses the supplied string json to an object value.
      *
-     * @param json  String json to convert
-     * @param clazz Class type to convert to
+     * @param json  String json to convert.
+     * @param clazz Class type to convert to.
      * @param <T>   Instance type expected.
      * @return Instance of the supplied class.
      */
@@ -59,14 +61,99 @@ public class JsonLoader {
     /**
      * Parses the supplied string json to an object value.
      *
-     * @param json          String json to convert
-     * @param typeReference Jackson compatible type to convert to
+     * @param json  byte array of json to convert (Assuming UTF-8).
+     * @param clazz Class type to convert to.
+     * @param <T>   Instance type expected.
+     * @return Instance of the supplied class.
+     */
+    @SneakyThrows
+    public <T> T convert(byte[] json, Class<T> clazz) {
+        return objectMapper.readValue(json, clazz);
+    }
+
+    /**
+     * Parses the supplied input stream as json to an object value.
+     *
+     * @param json  InputStream of json to convert.
+     * @param clazz Class type to convert to.
+     * @param <T>   Instance type expected.
+     * @return Instance of the supplied class.
+     */
+    @SneakyThrows
+    public <T> T convert(InputStream json, Class<T> clazz) {
+        return objectMapper.readValue(json, clazz);
+    }
+
+    /**
+     * Parses the supplied string json to an object value.
+     *
+     * @param json          String json to convert.
+     * @param typeReference Jackson compatible type to convert to.
      * @param <T>           Instance type expected.
      * @return Instance of the supplied class.
      */
     @SneakyThrows
     public <T> T convert(String json, TypeReference<T> typeReference) {
         return objectMapper.readValue(json, typeReference);
+    }
+
+    /**
+     * Parses the supplied input stream as json to an object value.
+     *
+     * @param json          InputStream of json to convert.
+     * @param typeReference Jackson compatible type to convert to.
+     * @param <T>           Instance type expected.
+     * @return Instance of the supplied class.
+     */
+    @SneakyThrows
+    public <T> T convert(InputStream json, TypeReference<T> typeReference) {
+        return objectMapper.readValue(json, typeReference);
+    }
+
+    /**
+     * Parses the supplied string json to an object value.
+     *
+     * @param json          byte array of json to convert (Assuming UTF-8).
+     * @param typeReference Jackson compatible type to convert to.
+     * @param <T>           Instance type expected.
+     * @return Instance of the supplied class.
+     */
+    @SneakyThrows
+    public <T> T convert(byte[] json, TypeReference<T> typeReference) {
+        return objectMapper.readValue(json, typeReference);
+    }
+
+    /**
+     * Converts an object instance to a Json string.
+     *
+     * @param instance Instance to convert.
+     * @return String in json format.
+     */
+    @SneakyThrows
+    public String toJson(Object instance) {
+        return objectMapper.writeValueAsString(instance);
+    }
+
+    /**
+     * Writes an object instance to a Json string to the output stream.
+     *
+     * @param output   Output Stream to write to.
+     * @param instance Instance to convert.
+     */
+    @SneakyThrows
+    public void toJson(OutputStream output, Object instance) {
+        objectMapper.writeValue(output, instance);
+    }
+
+    /**
+     * Writes an object instance to a Json string to the output stream.
+     *
+     * @param outputWriter Writer to write to.
+     * @param instance     Instance to convert.
+     */
+    @SneakyThrows
+    public void toJson(Writer outputWriter, Object instance) {
+        objectMapper.writeValue(outputWriter, instance);
     }
 
     /**
