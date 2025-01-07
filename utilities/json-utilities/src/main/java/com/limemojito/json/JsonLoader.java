@@ -26,7 +26,8 @@ import java.io.InputStream;
 
 /**
  * A utility class for loading JSON data from a resource using the Jackson library.
- * Uses an instance of ObjectMapper to perform the deserialization.
+ * Uses an instance of ObjectMapper to perform the deserialization.  Exceptions are converted to runtime
+ * to assist with functional style programming.
  */
 public class JsonLoader {
 
@@ -40,6 +41,32 @@ public class JsonLoader {
      */
     public JsonLoader(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
+    }
+
+    /**
+     * Parses the supplied string json to an object value.
+     *
+     * @param json  String json to convert
+     * @param clazz Class type to convert to
+     * @param <T>   Instance type expected.
+     * @return Instance of the supplied class.
+     */
+    @SneakyThrows
+    public <T> T convert(String json, Class<T> clazz) {
+        return objectMapper.readValue(json, clazz);
+    }
+
+    /**
+     * Parses the supplied string json to an object value.
+     *
+     * @param json          String json to convert
+     * @param typeReference Jackson compatible type to convert to
+     * @param <T>           Instance type expected.
+     * @return Instance of the supplied class.
+     */
+    @SneakyThrows
+    public <T> T convert(String json, TypeReference<T> typeReference) {
+        return objectMapper.readValue(json, typeReference);
     }
 
     /**

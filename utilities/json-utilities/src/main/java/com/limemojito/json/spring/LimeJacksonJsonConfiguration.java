@@ -34,7 +34,7 @@ import org.springframework.context.annotation.Import;
 public class LimeJacksonJsonConfiguration {
 
     /**
-     * Creates a new json loader delegating tp tje supplied object mapper.
+     * Creates a new json loader delegating to the supplied object mapper.
      *
      * @param objectMapper Jackson objet mapper to delegate JSON parsing to.
      * @return a json loader bean.
