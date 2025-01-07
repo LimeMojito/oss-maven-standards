@@ -71,8 +71,9 @@ Requires manual check to avoid rc1, etc links.
 mvn versions:display-plugin-updates | more
 mvn versions:use-latest-releases -DgenerateBackupPoms=false
 ```
-
 Now check updates and avoid beta, rc and similar updates.
+
+Check version properties (main pom.xml) manually against central.
 
 ---
 
