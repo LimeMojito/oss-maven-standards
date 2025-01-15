@@ -69,6 +69,7 @@ Requires manual check to avoid rc1, etc links.
 
 ```shell
 mvn versions:display-plugin-updates | more
+mvn versions:update-properties -DgenerateBackupPoms=false
 mvn versions:use-latest-releases -DgenerateBackupPoms=false
 ```
 Now check updates and avoid beta, rc and similar updates.
