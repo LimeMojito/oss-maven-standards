@@ -300,35 +300,35 @@
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>versions-maven-plugin</artifactId>
                     <version>2.18.0</version>
-					<configuration>
-						<ruleSet>
-							<ignoreVersion>
-								<type>regex</type>
-								<!-- Ignore alpha and beta -->
-								<version>.+-(alpha|beta).+</version>
-							</ignoreVersion>
-							<ignoreVersion>
-								<type>regex</type>
-								<!-- Old date format ignored -->
-								<version>20\d\d\d\d\d\d.*</version>
-							</ignoreVersion>
-							<ignoreVersion>
-								<type>regex</type>
-								<!-- Old date format ignored -->
-								<version>.+-does-not-exist</version>
-							</ignoreVersion>
-							<ignoreVersion>
-								<type>regex</type>
-								<!-- Release Candidate ignored -->
-								<version>.+(rc|RC).*</version>
-							</ignoreVersion>
-							<ignoreVersion>
-								<type>regex</type>
-								<!-- milestone ignored -->
-								<version>.+(M|m).*</version>
-							</ignoreVersion>
-						</ruleSet>
-					</configuration>
+                        <configuration>
+                        	<ruleSet>
+                        		<ignoreVersion>
+                        			<type>regex</type>
+                        			<!-- Ignore alpha and beta -->
+                        			<version>.+-(alpha|beta).+</version>
+                        		</ignoreVersion>
+                        		<ignoreVersion>
+                        			<type>regex</type>
+                        			<!-- Old date format ignored -->
+                        			<version>20\d\d\d\d\d\d.*</version>
+                        		</ignoreVersion>
+                        		<ignoreVersion>
+                        			<type>regex</type>
+                        			<!-- Old date format ignored -->
+                        			<version>.+-does-not-exist</version>
+                        		</ignoreVersion>
+                        		<ignoreVersion>
+                        			<type>regex</type>
+                        			<!-- Release Candidate ignored -->
+                        			<version>.+(rc|RC).*</version>
+                        		</ignoreVersion>
+                        		<ignoreVersion>
+                        			<type>regex</type>
+                        			<!-- milestone ignored -->
+                        			<version>.+(M|m).*</version>
+                        		</ignoreVersion>
+                        	</ruleSet>
+                        </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
