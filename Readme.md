@@ -65,16 +65,15 @@ Our Open Source Standards library supports the following module types (archetype
 
 # Version Updates
 
-Requires manual check to avoid rc1, etc links.
+* The plugin update requires manual checks as it is a report.
+* Version updates automatic and are configured to skip alpha, beta, rc and old date format versions.
 
 ```shell
 mvn versions:display-plugin-updates | more
 mvn versions:update-properties -DgenerateBackupPoms=false
 mvn versions:use-latest-releases -DgenerateBackupPoms=false
 ```
-Now check updates and avoid beta, rc and similar updates.
 
-Check version properties (main pom.xml) manually against central.
 
 ---
 
