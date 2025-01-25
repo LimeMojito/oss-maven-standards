@@ -1,0 +1,56 @@
+name: Lime OSS Update Maven Versions and PR
+
+on:
+  workflow_call:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Environment Setup
+        uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup@master
+        with:
+          aws-region: ${{ secrets.LIME_AWS_REGION }}
+          role-to-assume: ${{ secrets.LIME_AWS_ROLE_ARN }}
+          code-signing-key: ${{ secrets.LIME_SIGNING_KEY }}
+          code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
+
+      - uses: actions/checkout@v4
+        with:
+          ssh-key: "${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}"
+
+      - name: Update Maven Versions
+        # See https://limemojito.com/version-dependency-updates-automated-in-maven/
+        # Plugins are an interactive report:  mvn versions:display-plugin-updates | more
+        run: |
+          mvn versions:update-properties -DgenerateBackupPoms=false 
+          mvn versions:use-latest-releases -DgenerateBackupPoms=false
+
+      - name: Import GPG key for Version Update
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.LIME_BUILD_AGENT_GIT_SIGNING_KEY }}
+          git_committer_email: "build@limemojito.com"
+          git_committer_name: "Lime Build Agent"
+          git_user_signingkey: true
+          git_push_gpgsign: false
+          git_tag_gpgsign: true
+          git_commit_gpgsign: true
+          git_config_global: true
+
+      - name: PR required
+        uses: peter-evans/create-pull-request@v7
+        with:
+            sign-commits: true
+            committer: "Lime Build Agent <build@limemojito.com>"
+            author: "Lime Build Agent <build@limemojito.com>"
+            commit-message: "Lime Versions: Update."
+            branch: "feature/version-update"
+            delete-branch: true
+            title: "Lime Version Update"
+            body: "I have detected patch version updates.  Poms updated for patch versions."
+

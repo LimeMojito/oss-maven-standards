@@ -1,0 +1,12 @@
+name: OSS Maven Standards Release Build
+
+on:
+  schedule:
+    - cron: "25 17 * * *"
+    # at 5:25PM GMT or 3:25AM (+1) AEST
+
+
+jobs:
+  version-update:
+    uses: ./.github/workflows/oss-maven-patch-version.yml
+    secrets: inherit

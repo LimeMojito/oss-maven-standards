@@ -73,7 +73,10 @@ mvn versions:display-plugin-updates | more
 mvn versions:update-properties -DgenerateBackupPoms=false
 mvn versions:use-latest-releases -DgenerateBackupPoms=false
 ```
-
+## Github Workflow
+For just running version updates on git using OSS lime mojito, there is a pre-canned workflow at .github/actions/oss-maven-patch-version.yml that updates and creates a PR.  Suggest configuring to run daily on a repository.
+                           
+See Article: https://limemojito.com/version-dependency-updates-automated-in-maven/
 
 ---
 
