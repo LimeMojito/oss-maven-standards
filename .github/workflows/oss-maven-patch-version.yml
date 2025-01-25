@@ -6,6 +6,8 @@ on:
 permissions:
   id-token: write
   contents: read
+  # allow for creating PR
+  pull-requests: write
 
 jobs:
   build:
