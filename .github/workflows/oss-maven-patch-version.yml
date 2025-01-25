@@ -47,12 +47,15 @@ jobs:
       - name: PR required
         uses: peter-evans/create-pull-request@v7
         with:
-            sign-commits: true
-            committer: "Lime Build Agent <build@limemojito.com>"
-            author: "Lime Build Agent <build@limemojito.com>"
-            commit-message: "Lime Versions: Update."
-            branch: "feature/version-update"
-            delete-branch: true
-            title: "Lime Version Update"
-            body: "I have detected patch version updates.  Poms updated for patch versions."
+          sign-commits: true
+          committer: "Lime Build Agent <build@limemojito.com>"
+          author: "Lime Build Agent <build@limemojito.com>"
+          commit-message: "Lime Versions: Update."
+          branch: "feature/version-update"
+          delete-branch: true
+          title: "Lime Version Update"
+          body: "I have detected patch version updates.  Poms updated for patch versions."
+          # set to not draft to trigger a workflow on Github Portal.
+          # see for reasons:  https://github.com/peter-evans/create-pull-request/blob/main/docs/concepts-guidelines.md#triggering-further-workflow-runs
+          draft: always-true
 
