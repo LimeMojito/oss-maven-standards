@@ -1,4 +1,4 @@
-name: Lime OSS Update Maven Versions and PR
+name: Lime OSS Update Maven Versions
 
 on:
   workflow_call:
