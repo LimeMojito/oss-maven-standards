@@ -1,7 +1,7 @@
 name: OSS Maven Standards Versions Update
 
 on:
-  workflow_call:
+  workflow_dispatch:
   schedule:
     - cron: "25 17 * * *"
     # at 5:25PM GMT or 3:25AM (+1) AEST
