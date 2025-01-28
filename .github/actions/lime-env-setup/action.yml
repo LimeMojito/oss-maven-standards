@@ -1,5 +1,5 @@
 name: "Lime Environment Setup"
-description: "Configures the build environment to work with Lime resources."
+description: "Configures the build environment to work with Lime resources including Docker (ARM)."
 inputs:
   aws-region:
     description: 'AWS Region name'
@@ -17,43 +17,19 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4
+    - name: Lime Setup
+      uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-no-docker@master
       with:
         aws-region: ${{ inputs.aws-region }}
         role-to-assume: ${{ inputs.role-to-assume }}
-        role-session-name: "${{ github.repository_id }}-${{ github.run_id }}"
+        code-signing-key: ${{ inputs.code-signing-key }}
+        code-signing-passphrase: ${{ inputs.code-signing-passphrase }}
 
     - uses: docker/setup-qemu-action@v3
       with:
         platforms: 'arm64'
 
     - uses: docker/setup-buildx-action@v3
-
-    - name: Install Python dependencies and CDK
-      shell: bash
-      run: |
-        npm install -g aws-cdk
-
-    - name: Set up JDK
-      uses: actions/setup-java@v4
-      with:
-        java-version: '21'
-        distribution: 'corretto'
-
-    - name: Import GPG key
-      uses: crazy-max/ghaction-import-gpg@v6
-      with:
-        gpg_private_key: ${{ inputs.code-signing-key }}
-        passphrase: ${{ inputs.code-signing-passphrase }}
-
-    - name: Cache local Maven repository
-      uses: actions/cache@v4
-      with:
-        path: ~/.m2/repository
-        key: "${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}"
-        restore-keys: |
-          ${{ runner.os }}-maven-
 
     - name: Cache Docker images.
       uses: ScribeMD/docker-cache@0.5.0
