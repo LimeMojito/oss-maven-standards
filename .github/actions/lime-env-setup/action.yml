@@ -1,5 +1,5 @@
 name: "Lime Environment Setup"
-description: "Configures the build environment to work with Lime resources including Docker (ARM)."
+description: "Configures the build environment to work with Lime resources ( Java, AWS, Docker[ARM] )."
 inputs:
   aws-region:
     description: 'AWS Region name'
@@ -17,8 +17,8 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Lime Setup
-      uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-no-docker@master
+    - name: Lime Setup AWS
+      uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-aws@master
       with:
         aws-region: ${{ inputs.aws-region }}
         role-to-assume: ${{ inputs.role-to-assume }}

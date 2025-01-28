@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Environment Setup
-        uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-no-docker@master
+        uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-java@master
         with:
           aws-region: ${{ secrets.LIME_AWS_REGION }}
           role-to-assume: ${{ secrets.LIME_AWS_ROLE_ARN }}

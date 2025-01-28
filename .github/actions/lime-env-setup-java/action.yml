@@ -1,0 +1,32 @@
+name: "Lime Environment Setup (Java)"
+description: "Configures the build environment to work with Lime resources (Java, Maven)."
+inputs:
+  code-signing-key:
+    description: 'Code signing GPG key data'
+    required: true
+  code-signing-passphrase:
+    description: 'Code signing GPG passphrase'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'corretto'
+
+    - name: Import GPG key
+      uses: crazy-max/ghaction-import-gpg@v6
+      with:
+        gpg_private_key: ${{ inputs.code-signing-key }}
+        passphrase: ${{ inputs.code-signing-passphrase }}
+
+    - name: Cache local Maven repository
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2/repository
+        key: "${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}"
+        restore-keys: |
+          ${{ runner.os }}-maven-
