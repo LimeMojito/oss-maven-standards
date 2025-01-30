@@ -67,11 +67,19 @@ Our Open Source Standards library supports the following module types (archetype
 
 * The plugin update requires manual checks as it is a report.
 * Version updates automatic and are configured to skip alpha, beta, rc and old date format versions.
+* maven-versions-plugin has backup poms disabled as VCS is here.
 
+## Report on what plugin updates are available
 ```shell
-mvn versions:display-plugin-updates | more
-mvn versions:update-properties -DgenerateBackupPoms=false
-mvn versions:use-latest-releases -DgenerateBackupPoms=false
+   mvn versions:display-plugin-updates | more
+
+```
+                                              
+## Update all library versions and parent dependencies
+```shell
+mvn versions:update-parent
+mvn versions:update-properties
+mvn versions:use-latest-releases
 ```
 ## Github Workflow
 For just running version updates on git using OSS lime mojito, there is a pre-canned workflow at .github/actions/oss-maven-patch-version.yml that updates and creates a PR.  Suggest configuring to run daily on a repository.

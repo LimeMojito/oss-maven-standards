@@ -301,6 +301,8 @@
                     <artifactId>versions-maven-plugin</artifactId>
                     <version>2.18.0</version>
                     <configuration>
+                        <!-- We have version control systems. -->
+                        <generateBackupPoms>false</generateBackupPoms>
                         <ruleSet>
                             <ignoreVersion>
                                 <type>regex</type>

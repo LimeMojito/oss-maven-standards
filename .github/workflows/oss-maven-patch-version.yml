@@ -28,9 +28,11 @@ jobs:
       - name: Update Maven Versions
         # See https://limemojito.com/version-dependency-updates-automated-in-maven/
         # Plugins are an interactive report:  mvn versions:display-plugin-updates | more
+        # generateBackupPoms is disabled in the configuration of the maven-versions-plugin.
         run: |
-          mvn versions:update-properties -DgenerateBackupPoms=false 
-          mvn versions:use-latest-releases -DgenerateBackupPoms=false
+          mvn versions:update-parent  
+          mvn versions:update-properties 
+          mvn versions:use-latest-releases
 
       - name: Import GPG key for Version Update
         uses: crazy-max/ghaction-import-gpg@v6
