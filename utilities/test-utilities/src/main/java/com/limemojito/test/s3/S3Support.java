@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.core.sync.ResponseTransformer;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.S3Uri;
 import software.amazon.awssdk.services.s3.model.BucketAlreadyOwnedByYouException;
 import software.amazon.awssdk.services.s3.model.ListObjectsResponse;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
@@ -61,6 +60,8 @@ public class S3Support {
      * @param bucketName the name of the bucket to be wiped
      */
     public void wipeBucket(String bucketName) {
+        // no op if bucket exists.
+        this.createBucket(bucketName);
         log.info("Wiping bucket {}", bucketName);
         ListObjectsResponse objectListing;
         int deleted = 0;
@@ -76,11 +77,20 @@ public class S3Support {
     }
 
     /**
+     * Wipes all objects from the specified bucket.
+     *
+     * @param uri S3 URI containing the bucket name to wipe
+     */
+    public void wipeBucket(URI uri) {
+        wipeBucket(bucket(uri));
+    }
+
+    /**
      * Uploads data to a specified location in a bucket.
      *
-     * @param bucketName the name of the bucket where the data will be uploaded.
-     * @param key the key or path of the file in the bucket.
-     * @param input the input stream containing the data to be uploaded.
+     * @param bucketName  the name of the bucket where the data will be uploaded.
+     * @param key         the key or path of the file in the bucket.
+     * @param input       the input stream containing the data to be uploaded.
      * @param inputLength the length of the input stream in bytes.
      * @param contentType the content type of the data to be uploaded.
      */
@@ -103,10 +113,7 @@ public class S3Support {
     @SneakyThrows
     public void putData(URI uri, String contentType, byte[] data) {
         try (ByteArrayInputStream inputStream = new ByteArrayInputStream(data)) {
-            final S3Uri s3Uri = s3.utilities().parseUri(uri);
-            final String bucketName = s3Uri.bucket().orElseThrow();
-            final String key = s3Uri.key().orElseThrow();
-            putData(bucketName, key, inputStream, data.length, contentType);
+            putData(bucket(uri), key(uri), inputStream, data.length, contentType);
         }
     }
 
@@ -122,6 +129,30 @@ public class S3Support {
      */
     public void putClasspathBinary(String bucketName, String key, String classpathResourcePath) {
         putClasspathResourceAs(bucketName, key, classpathResourcePath, "application/octet-stream");
+    }
+
+    /**
+     * Puts a classpath binary resource into the specified S3 bucket with the given key.
+     * The classpath resource is identified by its resource path.
+     * This method calls the putClasspathResourceAs method internally with the content type set to "application/octet-stream".
+     *
+     * @param s3Uri                 S3 Uri for the key (s3://bucketName/keyPath)
+     * @param classpathResourcePath the resource path of the classpath binary resource to be stored,
+     *                              relative to the classpath root
+     */
+    public void putClasspathBinary(URI s3Uri, String classpathResourcePath) {
+        putClasspathResourceAs(s3Uri, classpathResourcePath, "application/octet-stream");
+    }
+
+    /**
+     * Uploads a classpath resource to the specified S3 bucket with the given key and MIME type.
+     *
+     * @param s3Uri                 S3 Uri for the key (s3://bucketName/keyPath)
+     * @param classpathResourcePath the path of the classpath resource to upload
+     * @param mimeType              the MIME type of the resource
+     */
+    public void putClasspathResourceAs(URI s3Uri, String classpathResourcePath, String mimeType) {
+        putClasspathResourceAs(bucket(s3Uri), key(s3Uri), classpathResourcePath, mimeType);
     }
 
     /**
@@ -163,6 +194,16 @@ public class S3Support {
     }
 
     /**
+     * Checks if a key exists in a given bucket.
+     *
+     * @param s3Uri S3 Uri for the key (s3://bucketName/keyPath)
+     * @return {@code true} if the key exists in the bucket, {@code false} otherwise
+     */
+    public boolean keyExists(URI s3Uri) {
+        return keyExists(bucket(s3Uri), key(s3Uri));
+    }
+
+    /**
      * Retrieves data from the specified bucket and key.
      *
      * @param bucketName the name of the bucket
@@ -172,6 +213,16 @@ public class S3Support {
     public InputStream getData(String bucketName, String key) {
         log.info("Retrieving {}->{}", bucketName, key);
         return s3.getObject(r -> r.bucket(bucketName).key(key), ResponseTransformer.toInputStream());
+    }
+
+    /**
+     * Retrieves data from the specified bucket and key.
+     *
+     * @param s3Uri S3 Uri for the key (s3://bucketName/keyPath)
+     * @return an InputStream of the retrieved data.  Should be closed by caller.
+     */
+    public InputStream getData(URI s3Uri) {
+        return getData(bucket(s3Uri), key(s3Uri));
     }
 
     /**
@@ -209,5 +260,13 @@ public class S3Support {
         } catch (BucketAlreadyOwnedByYouException e) {
             log.info("Bucket already created.");
         }
+    }
+
+    private String key(URI uri) {
+        return s3.utilities().parseUri(uri).key().orElseThrow();
+    }
+
+    private String bucket(URI uri) {
+        return s3.utilities().parseUri(uri).bucket().orElseThrow();
     }
 }

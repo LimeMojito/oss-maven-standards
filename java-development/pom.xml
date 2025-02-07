@@ -50,6 +50,7 @@
         <coverage.exclude.pattern.5/>
 
         <!-- docker test configuration defaults -->
+        <docker.unit.test>false</docker.unit.test>
         <docker.test.compose.dir>${project.basedir}/src/test/docker</docker.test.compose.dir>
         <docker.test.compose.file>${docker.test.compose.dir}/docker-compose.yml</docker.test.compose.file>
 
@@ -130,7 +131,32 @@
                             </configuration>
                         </execution>
                         <execution>
-                            <id>docker-up</id>
+                            <id>docker-up-unit-test</id>
+                            <!--
+                             NOTE THAT LIFECYCLE CHECKS IN DOCKER COMPOSE FILES ARE REQUIRED
+                             AS NO WAIT AFTER STARTUP BEFORE TESTING BEGINS.
+                             -->
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <phase>test-compile</phase>
+                            <configuration>
+                                <!--suppress MavenModelInspection -->
+                                <skip>${docker.test.compose.skip}</skip>
+                                <target if="${docker.unit.test}">
+                                    <exec executable="docker"
+                                          dir="${docker.test.compose.dir}"
+                                          failifexecutionfails="true"
+                                          failonerror="true">
+                                        <arg value="compose"/>
+                                        <arg value="up"/>
+                                        <arg value="--detach"/>
+                                    </exec>
+                                </target>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>docker-up-integration-test</id>
                             <!--
                              NOTE THAT LIFECYCLE CHECKS IN DOCKER COMPOSE FILES ARE REQUIRED
                              AS NO WAIT AFTER STARTUP BEFORE TESTING BEGINS.
@@ -142,7 +168,7 @@
                             <configuration>
                                 <!--suppress MavenModelInspection -->
                                 <skip>${docker.test.compose.skip}</skip>
-                                <target>
+                                <target unless="${docker.unit.test}">
                                     <exec executable="docker"
                                           dir="${docker.test.compose.dir}"
                                           failifexecutionfails="true"
@@ -159,7 +185,11 @@
                             <goals>
                                 <goal>run</goal>
                             </goals>
-                            <phase>post-integration-test</phase>
+                            <!--
+                                Docker down in install phase to cover unit test only modules - these may not have
+                                an integration-test phase
+                            -->
+                            <phase>install</phase>
                             <configuration>
                                 <!--suppress MavenModelInspection -->
                                 <skip>${docker.test.compose.skip}</skip>

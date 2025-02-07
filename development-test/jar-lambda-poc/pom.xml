@@ -34,6 +34,9 @@
     <properties>
         <start-class>com.limemojito.lambda.poc.Application</start-class>
 
+        <!-- Test docker unit test... -->
+        <docker.unit.test>true</docker.unit.test>
+
         <!-- Missing the main method -->
         <coverage.line.ratio>0.75</coverage.line.ratio>
     </properties>
