@@ -93,6 +93,18 @@ public class SnsSupport {
     }
 
     /**
+     * Creates a topic in the Amazon Simple Notification Service (SNS) based on the supplied arn (pre configured)
+     *
+     * @param arn the name of the topic
+     * @return the topic Name extracted from the arn.
+     */
+    public String createFromArn(String arn) {
+        final String topicName = arn.substring(arn.lastIndexOf(':') + 1);
+        create(topicName);
+        return topicName;
+    }
+
+    /**
      * Retrieves the Amazon Resource Name (ARN) of a topic in the Amazon Simple Notification Service (SNS) based on the given topic name.
      * The topic name is used to identify the topic for which the ARN is retrieved.
      *
