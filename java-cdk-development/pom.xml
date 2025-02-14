@@ -22,7 +22,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>java-cdk-development</artifactId>
-    <version>15.2.4</version>
+    <version>15.2.5-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>
         * A basic setup for cdk development using a simple automated deployment to the "current" account as setup in
@@ -39,7 +39,7 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>15.2.4</version>
+        <version>15.2.5-SNAPSHOT</version>
         <relativePath>../jar-development</relativePath>
     </parent>
 

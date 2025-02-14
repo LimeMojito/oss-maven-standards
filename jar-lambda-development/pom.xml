@@ -33,7 +33,7 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>15.2.4</version>
+        <version>15.2.5-SNAPSHOT</version>
         <relativePath>../jar-development</relativePath>
     </parent>
 
@@ -61,14 +61,14 @@
         <dependency>
             <groupId>com.limemojito.oss.standards.aws</groupId>
             <artifactId>lambda-utilities</artifactId>
-            <version>15.2.4</version>
+            <version>15.2.5-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <!-- Access primarily for LambdaSupport -->
             <groupId>com.limemojito.oss.test</groupId>
             <artifactId>test-utilities</artifactId>
-            <version>15.2.4</version>
+            <version>15.2.5-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
