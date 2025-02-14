@@ -102,7 +102,7 @@
             <dependency>
                 <groupId>org.wiremock</groupId>
                 <artifactId>wiremock</artifactId>
-                <version>3.11.0</version>
+                <version>3.12.0</version>
             </dependency>
             <dependency>
                 <groupId>org.ow2.asm</groupId>
@@ -154,7 +154,7 @@
             <dependency>
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-lambda-java-events</artifactId>
-                <version>3.14.0</version>
+                <version>3.15.0</version>
             </dependency>
             <dependency>
                 <groupId>com.amazonaws</groupId>
@@ -235,7 +235,7 @@
                 <!-- AWS SDK V1-->
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-java-sdk-bom</artifactId>
-                <version>1.12.780</version>
+                <version>1.12.781</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -243,7 +243,7 @@
                 <!-- AWS SDK V2-->
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>bom</artifactId>
-                <version>2.30.17</version>
+                <version>2.30.20</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
