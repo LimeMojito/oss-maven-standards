@@ -28,13 +28,25 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
+/**
+ * Enables method level security for AWS lambdas.  API Gateway Event request contexts are used to extract
+ * principals, roles, etc.
+ *
+ * @see ApiGatewayAuthenticationMapper
+ */
 @EnableMethodSecurity
 @Configuration
 @Import({LimeJacksonJsonConfiguration.class, ApiGatewayResponseDecoratorFactory.class})
-@ComponentScan(basePackageClasses = ApiGatewayAuthenticationManager.class)
+@ComponentScan(basePackageClasses = ApiGatewayAuthenticationMapper.class)
 @Slf4j
 public class AwsCloudFunctionSpringSecurityConfiguration {
 
+    /**
+     * Exception mapper capable of converting @ResponseStatus annotated exceptions, security exceptions and
+     * general failures to API Gateway HTTP compatible error codes.  May be overridden with your own bean definition.
+     *
+     * @return the mapper.
+     */
     @ConditionalOnMissingBean({ApiGatewayExceptionMapper.class})
     @Bean
     public ApiGatewayExceptionMapper defaultApiGatewayExceptionMapper() {

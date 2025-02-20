@@ -1,0 +1,23 @@
+{
+  "version": "2.0",
+  "routeKey": "GET /v1/user/{proxy+}",
+  "rawPath": "/v1/user/",
+  "rawQueryString": "",
+  "headers": {
+    "accept": "*/*",
+    "authorization": "Bearer somejwtencodedtoken"
+  },
+  "requestContext": {
+    "http": {
+      "method": "GET",
+      "path": "/v1/user/",
+      "protocol": "HTTP/1.1"
+    },
+    "requestId": "chxOMhPyPHcEMGA=",
+    "routeKey": "GET /v1/user/{proxy+}",
+    "stage": "api",
+    "time": "15/Aug/2024:02:05:14 +0000",
+    "timeEpoch": 1723687514569
+  },
+  "isBase64Encoded": false
+}

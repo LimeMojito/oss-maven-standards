@@ -18,6 +18,7 @@
 package com.limemojito.aws.lambda;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
+import com.limemojito.aws.lambda.security.ApiGatewayAuthenticationMapper;
 import com.limemojito.json.JsonLoader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,7 @@ import java.util.function.Function;
 public class ApiGatewayResponseDecoratorFactory {
     private final JsonLoader jsonMapper;
     private final ApiGatewayExceptionMapper exceptionMapper;
+    private final ApiGatewayAuthenticationMapper authenticationMapper;
 
     /**
      * Create a new decorator returning APIGatewayV2HttpResponse from your function output or RuntimeException.
@@ -45,8 +47,10 @@ public class ApiGatewayResponseDecoratorFactory {
      * @param <Input>   Input Type
      * @param <Output>> Output Type
      * @param function  function to chain with
+     * @return Output function that maps to APIGateway responses (including errors).
      * @see ApiGatewayResponseDecorator
      * @see ApiGatewayResponseDecorator#DEFAULT_CONTENT_TYPE
+     * @see APIGatewayV2HTTPResponse
      */
     public <Input, Output> Function<Input, APIGatewayV2HTTPResponse> create(Function<Input, Output> function) {
         return create(ApiGatewayResponseDecorator.DEFAULT_CONTENT_TYPE, function);
@@ -59,11 +63,17 @@ public class ApiGatewayResponseDecoratorFactory {
      * @param <Output>>   Output Type
      * @param contentType contentType for success data.  Errors are always an application/json lambda event.
      * @param function    function to chain with
+     * @return Output function that maps to APIGateway responses (including errors).
      * @see ApiGatewayResponseDecorator
      * @see ApiGatewayResponseDecorator#DEFAULT_CONTENT_TYPE
+     * @see APIGatewayV2HTTPResponse
      */
     public <Input, Output> Function<Input, APIGatewayV2HTTPResponse> create(String contentType,
                                                                             Function<Input, Output> function) {
-        return new ApiGatewayResponseDecorator<>(exceptionMapper, jsonMapper, contentType, function);
+        return new ApiGatewayResponseDecorator<>(authenticationMapper,
+                                                 exceptionMapper,
+                                                 jsonMapper,
+                                                 contentType,
+                                                 function);
     }
 }

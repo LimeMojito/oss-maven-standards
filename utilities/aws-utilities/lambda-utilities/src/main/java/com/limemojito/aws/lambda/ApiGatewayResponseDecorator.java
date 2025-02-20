@@ -17,12 +17,16 @@
 
 package com.limemojito.aws.lambda;
 
+import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
+import com.limemojito.aws.lambda.security.ApiGatewayAuthenticationMapper;
 import com.limemojito.json.JsonLoader;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.ByteArrayOutputStream;
@@ -60,6 +64,7 @@ public class ApiGatewayResponseDecorator<Input> implements Function<Input, APIGa
      */
     public static final String DEFAULT_CONTENT_TYPE = "application/json";
 
+    private final ApiGatewayAuthenticationMapper authMapper;
     private final ApiGatewayExceptionMapper exceptionMapper;
     private final JsonLoader json;
     private final String contentType;
@@ -76,6 +81,11 @@ public class ApiGatewayResponseDecorator<Input> implements Function<Input, APIGa
     @Override
     public APIGatewayV2HTTPResponse apply(Input input) {
         try {
+            if (input instanceof APIGatewayV2HTTPEvent) {
+                log.debug("Decorated function received APIGatewayV2HTTPEvent - checking security context");
+                Authentication authentication = authMapper.convertToAuthentication((APIGatewayV2HTTPEvent) input);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
             Object output = next.apply(input);
             if (output instanceof APIGatewayV2HTTPResponse) {
                 log.debug("Decorated function returned APIGatewayV2HTTPResponse");

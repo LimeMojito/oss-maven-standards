@@ -21,6 +21,7 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.limemojito.aws.lambda.security.ApiGatewayAuthenticationMapper;
 import com.limemojito.json.JsonLoader;
 import com.limemojito.json.ObjectMapperPrototype;
 import jakarta.validation.ConstraintViolationException;
@@ -47,14 +48,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ApiGatewayResponseDecoratorTest {
 
     private static final String JSON = "application/json";
-    private final ObjectMapper mapper = ObjectMapperPrototype.buildBootLikeMapper();
-    private final ApiGatewayResponseDecoratorFactory factory = new ApiGatewayResponseDecoratorFactory(new JsonLoader(
-            mapper), new ApiGatewayExceptionMapper() {
-    });
-    private final TypeReference<Map<String, Object>> jsonMap = new TypeReference<>() {
-    };
+    private final ObjectMapper mapper;
+    private final ApiGatewayResponseDecoratorFactory factory;
+    private final TypeReference<Map<String, Object>> jsonMap;
+    private final Validator validator;
+
     @SuppressWarnings("resource")
-    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+    public ApiGatewayResponseDecoratorTest() {
+        mapper = ObjectMapperPrototype.buildBootLikeMapper();
+        factory = new ApiGatewayResponseDecoratorFactory(new JsonLoader(mapper),
+                                                         new ApiGatewayExceptionMapper() {
+                                                         },
+                                                         new ApiGatewayAuthenticationMapper("cognito:groups",
+                                                                                            "ANON", "anon",
+                                                                                            "PUBLIC"));
+        jsonMap = new TypeReference<>() {
+        };
+        validator = Validation.buildDefaultValidatorFactory().getValidator();
+    }
 
     @Test
     public void shouldCreateFromFactory() throws IOException {
