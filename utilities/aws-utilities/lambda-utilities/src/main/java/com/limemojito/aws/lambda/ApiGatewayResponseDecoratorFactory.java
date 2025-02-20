@@ -18,19 +18,25 @@
 package com.limemojito.aws.lambda;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.limemojito.json.JsonLoader;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
 
 /**
- * Generates a response decorator for a lambda function.  Should be created one for each function bean.
+ * Generates a response decorator for a lambda function.  Should be created one for each function bean.  Note that
+ * the exception mapper can be overridden in bean configuration with your own version if desired.
+ *
+ * @see ApiGatewayExceptionMapper
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ApiGatewayResponseDecoratorFactory {
-    private final ObjectMapper jsonMapper;
+    private final JsonLoader jsonMapper;
+    private final ApiGatewayExceptionMapper exceptionMapper;
 
     /**
      * Create a new decorator returning APIGatewayV2HttpResponse from your function output or RuntimeException.
@@ -58,6 +64,6 @@ public class ApiGatewayResponseDecoratorFactory {
      */
     public <Input, Output> Function<Input, APIGatewayV2HTTPResponse> create(String contentType,
                                                                             Function<Input, Output> function) {
-        return new ApiGatewayResponseDecorator<>(jsonMapper, contentType, function);
+        return new ApiGatewayResponseDecorator<>(exceptionMapper, jsonMapper, contentType, function);
     }
 }

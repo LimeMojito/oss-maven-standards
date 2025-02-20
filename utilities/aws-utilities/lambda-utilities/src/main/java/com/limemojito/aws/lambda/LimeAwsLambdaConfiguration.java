@@ -18,10 +18,11 @@
 package com.limemojito.aws.lambda;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
+import com.limemojito.aws.lambda.security.AwsCloudFunctionSpringSecurityConfiguration;
+import com.limemojito.json.spring.LimeJacksonJsonConfiguration;
 import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.cloud.function.adapter.aws.FunctionInvoker;
 import org.springframework.cloud.function.context.config.ContextFunctionCatalogAutoConfiguration;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -29,13 +30,15 @@ import org.springframework.context.annotation.Import;
  * Some native hints for working with AWS lambda.  We avoid native after issue with runtimes, etc. SnapStart is preferred.
  */
 @Configuration
-@Import({ContextFunctionCatalogAutoConfiguration.class})
-@ComponentScan(basePackageClasses = ApiGatewayResponseDecoratorFactory.class)
+@Import({ContextFunctionCatalogAutoConfiguration.class,
+        LimeJacksonJsonConfiguration.class,
+        AwsCloudFunctionSpringSecurityConfiguration.class})
 @RegisterReflectionForBinding({org.joda.time.DateTime.class, APIGatewayV2HTTPEvent.class})
 public class LimeAwsLambdaConfiguration {
     /**
      * Default lambda handler for spring cloud functions.  Currently, FunctionInvoker, you can use the
      * ApiGatewayResponseDecorator to pipeline error handling to a good AWS Lambda integration experience.
+     *
      * @see FunctionInvoker
      * @see ApiGatewayResponseDecoratorFactory
      */

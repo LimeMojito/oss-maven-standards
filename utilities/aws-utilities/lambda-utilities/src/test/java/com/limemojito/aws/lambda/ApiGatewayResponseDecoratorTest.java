@@ -21,6 +21,7 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.limemojito.json.JsonLoader;
 import com.limemojito.json.ObjectMapperPrototype;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
@@ -31,6 +32,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.IOException;
@@ -46,7 +48,9 @@ public class ApiGatewayResponseDecoratorTest {
 
     private static final String JSON = "application/json";
     private final ObjectMapper mapper = ObjectMapperPrototype.buildBootLikeMapper();
-    private final ApiGatewayResponseDecoratorFactory factory = new ApiGatewayResponseDecoratorFactory(mapper);
+    private final ApiGatewayResponseDecoratorFactory factory = new ApiGatewayResponseDecoratorFactory(new JsonLoader(
+            mapper), new ApiGatewayExceptionMapper() {
+    });
     private final TypeReference<Map<String, Object>> jsonMap = new TypeReference<>() {
     };
     @SuppressWarnings("resource")
@@ -92,6 +96,19 @@ public class ApiGatewayResponseDecoratorTest {
         assertResponse(apiGateway,
                        "{\"errorMessage\":\"Bang\",\"errorType\":\"java.lang.RuntimeException\"}",
                        500);
+    }
+
+    @Test
+    public void shouldReturnForbiddenOnSpringSecurityExceptionThrow() throws Exception {
+        Function<Object, APIGatewayV2HTTPResponse> responseFunction = factory.create(object -> {
+            throw new AccessDeniedException("Spring Security says NO");
+        });
+
+        APIGatewayV2HTTPResponse apiGateway = responseFunction.apply("anything");
+
+        assertResponse(apiGateway,
+                       "{\"errorMessage\":\"Spring Security says NO\",\"errorType\":\"org.springframework.security.access.AccessDeniedException\"}",
+                       403);
     }
 
     @Test

@@ -18,10 +18,9 @@
 package com.limemojito.aws.lambda;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.limemojito.json.JsonLoader;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -37,7 +36,7 @@ import java.util.function.Function;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static org.apache.logging.log4j.util.Strings.isBlank;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.OK;
 
 /**
  * A decorator for APIGatewayV2HTTPResponse that converts the output of a function into an APIGatewayV2HTTPResponse.
@@ -61,7 +60,8 @@ public class ApiGatewayResponseDecorator<Input> implements Function<Input, APIGa
      */
     public static final String DEFAULT_CONTENT_TYPE = "application/json";
 
-    private final ObjectMapper mapper;
+    private final ApiGatewayExceptionMapper exceptionMapper;
+    private final JsonLoader json;
     private final String contentType;
     private final Function<Input, ?> next;
 
@@ -85,37 +85,7 @@ public class ApiGatewayResponseDecorator<Input> implements Function<Input, APIGa
             }
         } catch (Throwable e) {
             log.error("Building failure response for {} {}", e.getClass().getSimpleName(), e.getMessage(), e);
-            return create(DEFAULT_CONTENT_TYPE, false, newError(mapper, e), statusFor(e));
-        }
-    }
-
-    /**
-     * INTERNAL_SERVER_ERROR by default.
-     * Or @ResponseStatus if he annotation is present on the exception
-     * 400 for ConstraintViolationException
-     *
-     * @param e Throwable to convert
-     * @return an http error code.
-     * @see ConstraintViolationException
-     * @see ResponseStatus
-     */
-    public static HttpStatus statusFor(Throwable e) {
-        final ResponseStatus responseStatusType = e.getClass().getAnnotation(ResponseStatus.class);
-        if (responseStatusType != null) {
-            // these can be set to different values.  We pay attention if not the default (500).
-            if (responseStatusType.code() != INTERNAL_SERVER_ERROR) {
-                return responseStatusType.code();
-            }
-            if (responseStatusType.value() != INTERNAL_SERVER_ERROR) {
-                return responseStatusType.value();
-            } else {
-                return INTERNAL_SERVER_ERROR;
-            }
-        } else {
-            if (e instanceof ConstraintViolationException) {
-                return BAD_REQUEST;
-            }
-            return INTERNAL_SERVER_ERROR;
+            return create(DEFAULT_CONTENT_TYPE, false, newError(json, e), exceptionMapper.map(e));
         }
     }
 
@@ -155,10 +125,9 @@ public class ApiGatewayResponseDecorator<Input> implements Function<Input, APIGa
         }
     }
 
-    @SneakyThrows
-    private static String newError(ObjectMapper mapper, Throwable e) {
-        return mapper.writeValueAsString(new TreeMap<>(Map.of("errorMessage", messageFor(e),
-                                                              "errorType", e.getClass().getName())));
+    private static String newError(JsonLoader mapper, Throwable e) {
+        return mapper.toJson(new TreeMap<>(Map.of("errorMessage", messageFor(e),
+                                                  "errorType", e.getClass().getName())));
     }
 
     private APIGatewayV2HTTPResponse rebuildOutputJson(Object functionOutput) throws IOException {
@@ -166,7 +135,7 @@ public class ApiGatewayResponseDecorator<Input> implements Function<Input, APIGa
         String body;
         boolean isBase64Encoded;
         if (contentType.toLowerCase().contains(DEFAULT_CONTENT_TYPE)) {
-            body = mapper.writeValueAsString(functionOutput);
+            body = json.toJson(functionOutput);
             isBase64Encoded = false;
         } else {
             byte[] data = writeDataAsBytes(functionOutput);

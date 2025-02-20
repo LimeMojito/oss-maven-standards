@@ -24,6 +24,7 @@ import lombok.SneakyThrows;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.util.Map;
 
 
 /**
@@ -32,6 +33,12 @@ import java.io.Writer;
  * to assist with functional style programming.
  */
 public class JsonLoader {
+
+    /**
+     * A type reference to use to convert to a Map object.
+     */
+    public final TypeReference<Map<String, Object>> MAP_TYPE = new TypeReference<>() {
+    };
 
     private final ObjectMapper objectMapper;
 
@@ -121,6 +128,15 @@ public class JsonLoader {
     @SneakyThrows
     public <T> T convert(byte[] json, TypeReference<T> typeReference) {
         return objectMapper.readValue(json, typeReference);
+    }
+
+    /**
+     * Converts the supplied JSON to a map
+     *
+     * @param json json to convert
+     */
+    public Map<String, Object> convertToMap(String json) {
+        return convert(json, MAP_TYPE);
     }
 
     /**

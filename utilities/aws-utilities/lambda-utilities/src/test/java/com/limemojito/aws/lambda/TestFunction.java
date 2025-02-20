@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import java.util.function.Function;
 
 @SpringBootApplication
-@Import(TestFunction.ValidatingService.class)
+@Import({TestFunction.ValidatingService.class, LimeAwsLambdaConfiguration.class})
 public class TestFunction {
     public static void main(String[] args) {
         SpringApplication.run(TestFunction.class, args);
