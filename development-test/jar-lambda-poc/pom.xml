@@ -40,13 +40,4 @@
         <!-- Missing the main method -->
         <coverage.line.ratio>0.75</coverage.line.ratio>
     </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.limemojito.oss.standards</groupId>
-            <artifactId>json-utilities</artifactId>
-            <version>15.2.5-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
 </project>
