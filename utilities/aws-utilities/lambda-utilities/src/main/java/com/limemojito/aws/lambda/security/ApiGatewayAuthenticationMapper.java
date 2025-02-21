@@ -22,14 +22,11 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent.Reques
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Convert an HTTP API Event from a JWT authorizer to an authentication object by reading the event request context.
@@ -44,7 +41,7 @@ public class ApiGatewayAuthenticationMapper {
 
     private final String claimsKey;
     @Getter
-    private final AnonymousAuthenticationToken anonymousAuthentication;
+    private final ApiGatewayAuthentication anonymousAuthentication;
 
     /**
      * Create a new mapper using the supplied claims key to extract group information.  Assumes string value embedded as
@@ -60,16 +57,11 @@ public class ApiGatewayAuthenticationMapper {
                                           @Value("${com.limemojito.aws.lambda.security.anonymous.userName:anonymous}") String anonymousUserName,
                                           @Value("${com.limemojito.aws.lambda.security.anonymous.authority:ANONYMOUS}") String anonymousAuthority) {
         this.claimsKey = claimsKey;
-        final ApiGatewayAuthentication.ApiGatewayPrincipal anonPrincipal = new ApiGatewayAuthentication.ApiGatewayPrincipal(
-                anonymousSub,
-                anonymousUserName,
-                Set.of(anonymousAuthority));
-        final ApiGatewayAuthentication anonApi = new ApiGatewayAuthentication(anonymousSub,
-                                                                              anonymousUserName,
-                                                                              Set.of(anonymousAuthority));
-        this.anonymousAuthentication = new AnonymousAuthenticationToken(this.getClass().getName(),
-                                                                        anonApi.getPrincipal(),
-                                                                        anonApi.getAuthorities()) {
+        this.anonymousAuthentication = new ApiGatewayAuthentication(anonymousSub,
+                                                                    anonymousUserName,
+                                                                    Set.of(anonymousAuthority),
+                                                                    null,
+                                                                    Map.of()) {
             /**
              * Block setting authenticated to true.
              * @return always false
@@ -80,10 +72,10 @@ public class ApiGatewayAuthenticationMapper {
             }
         };
         log.info("ApiGatewayAuthenticationMapper claimsKey set to {}, anon authority set to {}:{}:{}",
-                  claimsKey,
-                  anonymousUserName,
-                  anonymousSub,
-                  anonymousAuthority);
+                 claimsKey,
+                 anonymousUserName,
+                 anonymousSub,
+                 anonymousAuthority);
     }
 
     /**
@@ -105,21 +97,32 @@ public class ApiGatewayAuthenticationMapper {
             final String userName = fetchClaimValue(claimsMap, "username");
             final String sub = fetchClaimValue(claimsMap, "sub");
             final Set<String> groups = authoritiesFromOptionalGroupsClaim(claimsMap);
+            final Optional<String> accessToken = optionalAccessTokenFromAuthorizationHeader(input);
             log.info("Found user {} with groups {} in httpEvent", userName, groups);
-            final ApiGatewayAuthentication authentication = new ApiGatewayAuthentication(sub, userName, groups);
+            final ApiGatewayAuthentication authentication = new ApiGatewayAuthentication(sub,
+                                                                                         userName,
+                                                                                         groups,
+                                                                                         accessToken.orElse(null),
+                                                                                         claimsMap);
             authentication.setAuthenticated(true);
             return authentication;
         }
     }
 
-    private Set<String> authoritiesFromOptionalGroupsClaim(Map<String, String> claims) {
-        Optional<String> groupsValue = Optional.ofNullable(claims.get(claimsKey));
-        if (groupsValue.isEmpty() || "[]".equals(groupsValue.get())) {
-            return Set.of();
+    private Optional<String> optionalAccessTokenFromAuthorizationHeader(APIGatewayV2HTTPEvent input) {
+        final Map<String, String> headers = input.getHeaders();
+        if (headers != null) {
+            // lowercase as API gateway lowers everything
+            final String authHeader = headers.get("authorization");
+            final int bearerLength = 7;
+            return Optional.ofNullable(authHeader != null ? authHeader.substring(bearerLength) : null);
         }
-        final String value = groupsValue.get().substring(1, groupsValue.get().length() - 1);
-        log.debug("received groups value of {} ", value);
-        final Set<String> groups = Set.of(value.split(","));
+        return Optional.empty();
+    }
+
+    private Set<String> authoritiesFromOptionalGroupsClaim(Map<String, String> claims) {
+        List<String> arrayValues = ApiGatewayAuthentication.arrayValuesOf(claims, claimsKey);
+        final Set<String> groups = new TreeSet<>(arrayValues);
         log.debug("converted to groups {}", groups);
         return groups;
     }

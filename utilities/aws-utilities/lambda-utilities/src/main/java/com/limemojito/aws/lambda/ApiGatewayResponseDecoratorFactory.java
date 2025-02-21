@@ -76,4 +76,19 @@ public class ApiGatewayResponseDecoratorFactory {
                                                  contentType,
                                                  function);
     }
+
+    /**
+     * This method can be used to retrieve the {@link com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent}
+     * information in a parsed form where Spring Security is being used, or direct claims access is required.
+     * <pre>
+     *     factory.create(object -> {ApiGatewayContext ctx = factory.getCurrentApiGatewayContext(); ... });
+     * </pre>
+     * The context can be used to retire authorisation principals, claims, raw event, etc.
+     *
+     * @return a new context.  Never null, mau be "invalid" {@link ApiGatewayContext#isValid()};.
+     */
+    public ApiGatewayContext getCurrentApiGatewayContext() {
+        return new ApiGatewayContext(ApiGatewayResponseDecorator.getCurrentAuthentication(),
+                                     ApiGatewayResponseDecorator.getCurrentEvent());
+    }
 }

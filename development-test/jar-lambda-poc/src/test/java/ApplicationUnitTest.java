@@ -19,6 +19,7 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
 import com.limemojito.aws.lambda.ApiGatewayExceptionMapper;
 import com.limemojito.aws.lambda.ApiGatewayResponseDecoratorFactory;
+import com.limemojito.aws.lambda.security.ApiGatewayAuthenticationMapper;
 import com.limemojito.json.JsonLoader;
 import com.limemojito.json.ObjectMapperPrototype;
 import com.limemojito.lambda.poc.Application;
@@ -34,13 +35,17 @@ public class ApplicationUnitTest {
     private final ApiGatewayExceptionMapper exceptionMapper = new ApiGatewayExceptionMapper() {
     };
     private final ApiGatewayResponseDecoratorFactory factory = new ApiGatewayResponseDecoratorFactory(json,
-                                                                                                      exceptionMapper);
+                                                                                                      exceptionMapper,
+                                                                                                      new ApiGatewayAuthenticationMapper(
+                                                                                                              "",
+                                                                                                              "",
+                                                                                                              "",
+                                                                                                              "ANON"));
     private final Function<APIGatewayV2HTTPEvent, APIGatewayV2HTTPResponse> hello = new Application().hello(factory);
 
     @Test
     public void shouldTestCall() {
-        final APIGatewayV2HTTPEvent inputEvent = APIGatewayV2HTTPEvent.builder()
-                                                                      .build();
+        final APIGatewayV2HTTPEvent inputEvent = json.loadFrom("/events/getApiEvent.json", APIGatewayV2HTTPEvent.class);
         final APIGatewayV2HTTPResponse outputEvent = hello.apply(inputEvent);
 
         final String stringJson = "\"world\"";

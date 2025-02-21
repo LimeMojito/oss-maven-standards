@@ -32,7 +32,7 @@
     </parent>
 
     <properties>
-        <coverage.line.ratio>0.9</coverage.line.ratio>
+        <coverage.line.ratio>0.90</coverage.line.ratio>
 
         <coverage.exclude.pattern.1>*Configuration</coverage.exclude.pattern.1>
         <coverage.exclude.pattern.2>*SnapStartOptimizer</coverage.exclude.pattern.2>

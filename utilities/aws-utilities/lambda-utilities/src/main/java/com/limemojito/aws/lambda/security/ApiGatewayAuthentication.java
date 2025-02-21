@@ -8,27 +8,32 @@
 
 package com.limemojito.aws.lambda.security;
 
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.security.Principal;
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.stream.Collectors.toSet;
+import static software.amazon.awssdk.utils.StringUtils.isBlank;
 
 /**
  * Authentication object that maps a HttpApiEvent to a simple principal object.
  *
- * @see ApiGatewayAuthentication.ApiGatewayPrincipal
+ * @see ApiGatewayPrincipal
  */
+@Slf4j
 public class ApiGatewayAuthentication extends AbstractAuthenticationToken {
 
     /**
      * Principal used for the authentication.
      */
     private final ApiGatewayPrincipal principal;
+    private final String accessToken;
+    @Getter
+    private final Map<String, String> claims;
 
     /**
      * Key identifiers (based on Cognito user)
@@ -36,20 +41,73 @@ public class ApiGatewayAuthentication extends AbstractAuthenticationToken {
      * @param sub      primary key in identity pool.
      * @param userName optionally unfixed userName.
      * @param groups   groups/authorities granted to user.  Assuming 1:1.
+     * @param claims   Claims map from the HttpEvent's jwt authorization
      */
-    public ApiGatewayAuthentication(String sub, String userName, Set<String> groups) {
+    public ApiGatewayAuthentication(String sub,
+                                    String userName,
+                                    Set<String> groups,
+                                    String accessToken,
+                                    Map<String, String> claims) {
         super(newAuthoritiesFor(groups));
+        this.claims = claims;
         this.principal = new ApiGatewayPrincipal(sub, userName, groups);
+        this.accessToken = accessToken;
     }
 
     /**
-     * Hard coded to return "HTTP_EVENT" representing the pre-authentication by API Gateway.
+     * Gets the value of a claim in the claims map
      *
-     * @return credentials ("HTTP_EVENT").
+     * @param key To search
+     * @return Optional value of claim.
+     */
+    public Optional<String> getClaim(String key) {
+        return Optional.ofNullable(claims.get(key));
+    }
+
+    /**
+     * Extract a list of values from a claims key where arrays are packed into a single value like "[ONE,TWO]".
+     *
+     * @param key key to find
+     * @return A List of values or an empty list if not found.
+     */
+    public List<String> getClaimValues(String key) {
+        return arrayValuesOf(claims, key);
+    }
+
+    /**
+     * Extract a list of values from a claims key where arrays are packed into a single value like "[ONE,TWO]".
+     *
+     * @param claims claims map to interrogate
+     * @param key    key to find
+     * @return A List of values or an empty list if not found.
+     */
+    static List<String> arrayValuesOf(Map<String, String> claims, String key) {
+        Optional<String> groupsValue = Optional.ofNullable(claims.get(key));
+        final List<String> arrayValues;
+        if (groupsValue.isEmpty() || "[]".equals(groupsValue.get())) {
+            arrayValues = Collections.emptyList();
+        } else {
+            final String packedValue = groupsValue.get();
+            if (packedValue.startsWith("[") && packedValue.endsWith("]")) {
+                final String value = packedValue.substring(1, groupsValue.get().length() - 1);
+                log.debug("received {} values of {} ", key, value);
+                arrayValues = List.of(value.split(","));
+            } else {
+                log.debug("received {} value of {} ", key, packedValue);
+                arrayValues = List.of(packedValue);
+            }
+        }
+        return arrayValues;
+    }
+
+    /**
+     * The access token encoded JWT or null if now JWT present.
+     *
+     * @return the JWT access token or null if not present.
      */
     @Override
     public Object getCredentials() {
-        return "HTTP_EVENT";
+        return accessToken;
     }
 
     /**
@@ -63,23 +121,15 @@ public class ApiGatewayAuthentication extends AbstractAuthenticationToken {
         return principal;
     }
 
-    /**
-     * Record representing the ApiGateway authenticated user. Note that sub is treated as the unique identifier.
-     *
-     * @param sub      Identity pool primary key
-     * @param userName username (optionally unfixed in Cognito)
-     * @param groups   groups/authorities allocated to user.
-     */
-    public record ApiGatewayPrincipal(String sub, String userName, Set<String> groups) implements Principal {
-        @Override
-        public String getName() {
-            return sub;
-        }
+    public Optional<String> credentialsToAccessToken() {
+        Object credentials = getCredentials();
+        // note anonymous returns an empty string for credentials here.
+        return credentials instanceof String && !isBlank((String) credentials)
+               ? Optional.of((String) credentials)
+               : Optional.empty();
     }
 
     private static Collection<? extends GrantedAuthority> newAuthoritiesFor(Set<String> groups) {
-        return groups.stream()
-                     .map(SimpleGrantedAuthority::new)
-                     .collect(toSet());
+        return groups.stream().map(SimpleGrantedAuthority::new).collect(toSet());
     }
 }

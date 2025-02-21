@@ -19,8 +19,8 @@ package com.limemojito.aws.lambda;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.limemojito.aws.lambda.security.ApiGatewayAuthentication;
-import com.limemojito.aws.lambda.security.ApiGatewayAuthentication.ApiGatewayPrincipal;
 import com.limemojito.aws.lambda.security.ApiGatewayAuthenticationMapper;
+import com.limemojito.aws.lambda.security.ApiGatewayPrincipal;
 import com.limemojito.json.JsonLoader;
 import com.limemojito.json.ObjectMapperPrototype;
 import org.junit.jupiter.api.Test;
@@ -72,21 +72,26 @@ public class ApiGatewayAuthenticationMapperTest {
     public void shouldMapToUserNoGroups() {
         final Authentication auth = mapper.convertToAuthentication(loadEvent("/event/httpEvent.json"));
 
-        assertAuthenticated(auth, "sub-bob@example.com", "bob@example.com", Set.of());
+        assertAuthenticated(auth, "sub-bob@example.com", "bob@example.com", Set.of(), "somejwtencodedtoken");
     }
 
     @Test
     public void shouldMapToUserToCognitoGroups() {
         final Authentication auth = mapper.convertToAuthentication(loadEvent("/event/httpEventWithWrongGroup.json"));
 
-        assertAuthenticated(auth, "sub-bob@example.com", "bob@example.com", Set.of("WRONG", "accounting", "PEABODY"));
+        assertAuthenticated(auth, "sub-bob@example.com", "bob@example.com", Set.of("WRONG", "accounting", "PEABODY"),
+                            "someJWTtokenencodedhere");
     }
 
-    private static void assertAuthenticated(Authentication auth, String sub, String userName, Set<String> groups) {
+    private static void assertAuthenticated(Authentication auth,
+                                            String sub,
+                                            String userName,
+                                            Set<String> groups,
+                                            String accessToken) {
         assertThat(auth).isInstanceOf(ApiGatewayAuthentication.class);
         ApiGatewayAuthentication apiAuth = (ApiGatewayAuthentication) auth;
         assertThat(apiAuth.isAuthenticated()).isTrue();
-        assertThat(apiAuth.getCredentials()).isEqualTo("HTTP_EVENT");
+        assertThat(apiAuth.getCredentials()).isEqualTo(accessToken);
         assertApiPrincipal(apiAuth.getPrincipal(), sub, userName, groups);
         assertThat(apiAuth.getAuthorities()
                           .stream()

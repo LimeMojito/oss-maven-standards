@@ -37,7 +37,7 @@ public class JsonLoader {
     /**
      * A type reference to use to convert to a Map object.
      */
-    public final TypeReference<Map<String, Object>> MAP_TYPE = new TypeReference<>() {
+    public static final TypeReference<Map<String, Object>> MAP_TYPE = new TypeReference<>() {
     };
 
     private final ObjectMapper objectMapper;
@@ -137,6 +137,15 @@ public class JsonLoader {
      */
     public Map<String, Object> convertToMap(String json) {
         return convert(json, MAP_TYPE);
+    }
+
+    /**
+     * Converts the supplied JSON to a map
+     *
+     * @param instance Object instance to convert
+     */
+    public Map<String, Object> convertToMap(Object instance) {
+        return objectMapper.convertValue(instance, MAP_TYPE);
     }
 
     /**

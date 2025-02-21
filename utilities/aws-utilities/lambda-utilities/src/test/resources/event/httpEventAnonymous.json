@@ -4,8 +4,7 @@
   "rawPath": "/v1/user/",
   "rawQueryString": "",
   "headers": {
-    "accept": "*/*",
-    "authorization": "Bearer somejwtencodedtoken"
+    "accept": "*/*"
   },
   "requestContext": {
     "http": {

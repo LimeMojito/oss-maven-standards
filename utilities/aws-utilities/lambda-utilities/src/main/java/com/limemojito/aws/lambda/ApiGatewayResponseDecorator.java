@@ -19,6 +19,7 @@ package com.limemojito.aws.lambda;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
+import com.limemojito.aws.lambda.security.ApiGatewayAuthentication;
 import com.limemojito.aws.lambda.security.ApiGatewayAuthenticationMapper;
 import com.limemojito.json.JsonLoader;
 import jakarta.validation.ConstraintViolationException;
@@ -69,6 +70,28 @@ public class ApiGatewayResponseDecorator<Input> implements Function<Input, APIGa
     private final JsonLoader json;
     private final String contentType;
     private final Function<Input, ?> next;
+    private static final ThreadLocal<APIGatewayV2HTTPEvent> CURRENT_EVENT = new ThreadLocal<>();
+
+    /**
+     * Retrieve the current authentication from Spring Security iff APIGatewayV2HTTPEvent used as input
+     *
+     * @return The API Gateway Authentication set by the application of the event, or null if APIGatewayV2HTTPEvent was not used.
+     * @see SecurityContextHolder#getContext()
+     */
+    public static ApiGatewayAuthentication getCurrentAuthentication() {
+        return (ApiGatewayAuthentication) SecurityContextHolder.getContext().getAuthentication();
+    }
+
+    /**
+     * Retrieve the current event that was used to initiate this thread.   Held in a thread local that is expunged at
+     * the end of the apply method.
+     *
+     * @return The API Gateway Authentication set by the application of a APIGatewayV2HTTPEvent input.  Otherwise, null.
+     * @see #apply(Object)
+     */
+    public static APIGatewayV2HTTPEvent getCurrentEvent() {
+        return CURRENT_EVENT.get();
+    }
 
     /**
      * Applies the next function in the pipeline to the given input and returns the result.
@@ -82,8 +105,10 @@ public class ApiGatewayResponseDecorator<Input> implements Function<Input, APIGa
     public APIGatewayV2HTTPResponse apply(Input input) {
         try {
             if (input instanceof APIGatewayV2HTTPEvent) {
+                CURRENT_EVENT.set((APIGatewayV2HTTPEvent) input);
                 log.debug("Decorated function received APIGatewayV2HTTPEvent - checking security context");
                 Authentication authentication = authMapper.convertToAuthentication((APIGatewayV2HTTPEvent) input);
+                // link to spring security context as a thread local variable.
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
             Object output = next.apply(input);
@@ -96,6 +121,10 @@ public class ApiGatewayResponseDecorator<Input> implements Function<Input, APIGa
         } catch (Throwable e) {
             log.error("Building failure response for {} {}", e.getClass().getSimpleName(), e.getMessage(), e);
             return create(DEFAULT_CONTENT_TYPE, false, newError(json, e), exceptionMapper.map(e));
+        } finally {
+            log.debug("Clean up thread local stores");
+            SecurityContextHolder.clearContext();
+            CURRENT_EVENT.remove();
         }
     }
 
@@ -127,8 +156,8 @@ public class ApiGatewayResponseDecorator<Input> implements Function<Input, APIGa
      */
     static byte[] writeDataAsBytes(Object functionOutput) throws IOException {
         final int bufferSize = 512;
-        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(bufferSize);
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream)) {
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(bufferSize); ObjectOutputStream objectOutputStream = new ObjectOutputStream(
+                byteArrayOutputStream)) {
             objectOutputStream.writeObject(functionOutput);
             objectOutputStream.flush();
             return byteArrayOutputStream.toByteArray();
@@ -136,8 +165,7 @@ public class ApiGatewayResponseDecorator<Input> implements Function<Input, APIGa
     }
 
     private static String newError(JsonLoader mapper, Throwable e) {
-        return mapper.toJson(new TreeMap<>(Map.of("errorMessage", messageFor(e),
-                                                  "errorType", e.getClass().getName())));
+        return mapper.toJson(new TreeMap<>(Map.of("errorMessage", messageFor(e), "errorType", e.getClass().getName())));
     }
 
     private APIGatewayV2HTTPResponse rebuildOutputJson(Object functionOutput) throws IOException {
@@ -157,7 +185,9 @@ public class ApiGatewayResponseDecorator<Input> implements Function<Input, APIGa
         return response;
     }
 
-    private static APIGatewayV2HTTPResponse create(String contentType, boolean isBase64Encoded, String body,
+    private static APIGatewayV2HTTPResponse create(String contentType,
+                                                   boolean isBase64Encoded,
+                                                   String body,
                                                    HttpStatus status) {
         return new APIGatewayV2HTTPResponse(status.value(),
                                             Map.of("content-type", contentType),
