@@ -27,7 +27,7 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>15.2.5</version>
+        <version>15.2.6-SNAPSHOT</version>
         <relativePath>../../../jar-development/pom.xml</relativePath>
     </parent>
 
@@ -130,7 +130,7 @@
         <dependency>
             <groupId>com.limemojito.oss.standards</groupId>
             <artifactId>json-utilities</artifactId>
-            <version>15.2.5</version>
+            <version>15.2.6-SNAPSHOT</version>
         </dependency>
 
         <!-- TEST DEPENDENCIES -->
