@@ -17,13 +17,17 @@
 
 package com.limemojito.aws.lambda;
 
+import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.limemojito.aws.lambda.security.ApiGatewayAuthentication;
+import com.limemojito.aws.lambda.security.ApiGatewayAuthenticationMapper;
+import com.limemojito.json.JsonLoader;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.ByteArrayOutputStream;
@@ -37,7 +41,7 @@ import java.util.function.Function;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static org.apache.logging.log4j.util.Strings.isBlank;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.OK;
 
 /**
  * A decorator for APIGatewayV2HTTPResponse that converts the output of a function into an APIGatewayV2HTTPResponse.
@@ -61,9 +65,33 @@ public class ApiGatewayResponseDecorator<Input> implements Function<Input, APIGa
      */
     public static final String DEFAULT_CONTENT_TYPE = "application/json";
 
-    private final ObjectMapper mapper;
+    private final ApiGatewayAuthenticationMapper authMapper;
+    private final ApiGatewayExceptionMapper exceptionMapper;
+    private final JsonLoader json;
     private final String contentType;
     private final Function<Input, ?> next;
+    private static final ThreadLocal<APIGatewayV2HTTPEvent> CURRENT_EVENT = new ThreadLocal<>();
+
+    /**
+     * Retrieve the current authentication from Spring Security iff APIGatewayV2HTTPEvent used as input
+     *
+     * @return The API Gateway Authentication set by the application of the event, or null if APIGatewayV2HTTPEvent was not used.
+     * @see SecurityContextHolder#getContext()
+     */
+    public static ApiGatewayAuthentication getCurrentAuthentication() {
+        return (ApiGatewayAuthentication) SecurityContextHolder.getContext().getAuthentication();
+    }
+
+    /**
+     * Retrieve the current event that was used to initiate this thread.   Held in a thread local that is expunged at
+     * the end of the apply method.
+     *
+     * @return The API Gateway Authentication set by the application of a APIGatewayV2HTTPEvent input.  Otherwise, null.
+     * @see #apply(Object)
+     */
+    public static APIGatewayV2HTTPEvent getCurrentEvent() {
+        return CURRENT_EVENT.get();
+    }
 
     /**
      * Applies the next function in the pipeline to the given input and returns the result.
@@ -76,6 +104,13 @@ public class ApiGatewayResponseDecorator<Input> implements Function<Input, APIGa
     @Override
     public APIGatewayV2HTTPResponse apply(Input input) {
         try {
+            if (input instanceof APIGatewayV2HTTPEvent) {
+                CURRENT_EVENT.set((APIGatewayV2HTTPEvent) input);
+                log.debug("Decorated function received APIGatewayV2HTTPEvent - checking security context");
+                Authentication authentication = authMapper.convertToAuthentication((APIGatewayV2HTTPEvent) input);
+                // link to spring security context as a thread local variable.
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
             Object output = next.apply(input);
             if (output instanceof APIGatewayV2HTTPResponse) {
                 log.debug("Decorated function returned APIGatewayV2HTTPResponse");
@@ -85,37 +120,11 @@ public class ApiGatewayResponseDecorator<Input> implements Function<Input, APIGa
             }
         } catch (Throwable e) {
             log.error("Building failure response for {} {}", e.getClass().getSimpleName(), e.getMessage(), e);
-            return create(DEFAULT_CONTENT_TYPE, false, newError(mapper, e), statusFor(e));
-        }
-    }
-
-    /**
-     * INTERNAL_SERVER_ERROR by default.
-     * Or @ResponseStatus if he annotation is present on the exception
-     * 400 for ConstraintViolationException
-     *
-     * @param e Throwable to convert
-     * @return an http error code.
-     * @see ConstraintViolationException
-     * @see ResponseStatus
-     */
-    public static HttpStatus statusFor(Throwable e) {
-        final ResponseStatus responseStatusType = e.getClass().getAnnotation(ResponseStatus.class);
-        if (responseStatusType != null) {
-            // these can be set to different values.  We pay attention if not the default (500).
-            if (responseStatusType.code() != INTERNAL_SERVER_ERROR) {
-                return responseStatusType.code();
-            }
-            if (responseStatusType.value() != INTERNAL_SERVER_ERROR) {
-                return responseStatusType.value();
-            } else {
-                return INTERNAL_SERVER_ERROR;
-            }
-        } else {
-            if (e instanceof ConstraintViolationException) {
-                return BAD_REQUEST;
-            }
-            return INTERNAL_SERVER_ERROR;
+            return create(DEFAULT_CONTENT_TYPE, false, newError(json, e), exceptionMapper.map(e));
+        } finally {
+            log.debug("Clean up thread local stores");
+            SecurityContextHolder.clearContext();
+            CURRENT_EVENT.remove();
         }
     }
 
@@ -147,18 +156,16 @@ public class ApiGatewayResponseDecorator<Input> implements Function<Input, APIGa
      */
     static byte[] writeDataAsBytes(Object functionOutput) throws IOException {
         final int bufferSize = 512;
-        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(bufferSize);
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream)) {
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(bufferSize); ObjectOutputStream objectOutputStream = new ObjectOutputStream(
+                byteArrayOutputStream)) {
             objectOutputStream.writeObject(functionOutput);
             objectOutputStream.flush();
             return byteArrayOutputStream.toByteArray();
         }
     }
 
-    @SneakyThrows
-    private static String newError(ObjectMapper mapper, Throwable e) {
-        return mapper.writeValueAsString(new TreeMap<>(Map.of("errorMessage", messageFor(e),
-                                                              "errorType", e.getClass().getName())));
+    private static String newError(JsonLoader mapper, Throwable e) {
+        return mapper.toJson(new TreeMap<>(Map.of("errorMessage", messageFor(e), "errorType", e.getClass().getName())));
     }
 
     private APIGatewayV2HTTPResponse rebuildOutputJson(Object functionOutput) throws IOException {
@@ -166,7 +173,7 @@ public class ApiGatewayResponseDecorator<Input> implements Function<Input, APIGa
         String body;
         boolean isBase64Encoded;
         if (contentType.toLowerCase().contains(DEFAULT_CONTENT_TYPE)) {
-            body = mapper.writeValueAsString(functionOutput);
+            body = json.toJson(functionOutput);
             isBase64Encoded = false;
         } else {
             byte[] data = writeDataAsBytes(functionOutput);
@@ -178,7 +185,9 @@ public class ApiGatewayResponseDecorator<Input> implements Function<Input, APIGa
         return response;
     }
 
-    private static APIGatewayV2HTTPResponse create(String contentType, boolean isBase64Encoded, String body,
+    private static APIGatewayV2HTTPResponse create(String contentType,
+                                                   boolean isBase64Encoded,
+                                                   String body,
                                                    HttpStatus status) {
         return new APIGatewayV2HTTPResponse(status.value(),
                                             Map.of("content-type", contentType),

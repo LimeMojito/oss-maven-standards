@@ -46,7 +46,7 @@ public class CanonicalAsserterTest {
 
     @Test(expected = AssertionError.class)
     public void shouldHaveDefaultToStringFailure() {
-        assertCanonical(new Object(), new Object(), "bob");
+        assertCanonical(new Object(), new Object(), "SecureTestConfiguration");
     }
 
 }

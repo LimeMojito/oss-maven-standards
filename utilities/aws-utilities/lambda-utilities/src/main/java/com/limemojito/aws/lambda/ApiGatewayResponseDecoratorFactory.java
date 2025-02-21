@@ -18,19 +18,27 @@
 package com.limemojito.aws.lambda;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.limemojito.aws.lambda.security.ApiGatewayAuthenticationMapper;
+import com.limemojito.json.JsonLoader;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
 
 /**
- * Generates a response decorator for a lambda function.  Should be created one for each function bean.
+ * Generates a response decorator for a lambda function.  Should be created one for each function bean.  Note that
+ * the exception mapper can be overridden in bean configuration with your own version if desired.
+ *
+ * @see ApiGatewayExceptionMapper
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ApiGatewayResponseDecoratorFactory {
-    private final ObjectMapper jsonMapper;
+    private final JsonLoader jsonMapper;
+    private final ApiGatewayExceptionMapper exceptionMapper;
+    private final ApiGatewayAuthenticationMapper authenticationMapper;
 
     /**
      * Create a new decorator returning APIGatewayV2HttpResponse from your function output or RuntimeException.
@@ -39,8 +47,10 @@ public class ApiGatewayResponseDecoratorFactory {
      * @param <Input>   Input Type
      * @param <Output>> Output Type
      * @param function  function to chain with
+     * @return Output function that maps to APIGateway responses (including errors).
      * @see ApiGatewayResponseDecorator
      * @see ApiGatewayResponseDecorator#DEFAULT_CONTENT_TYPE
+     * @see APIGatewayV2HTTPResponse
      */
     public <Input, Output> Function<Input, APIGatewayV2HTTPResponse> create(Function<Input, Output> function) {
         return create(ApiGatewayResponseDecorator.DEFAULT_CONTENT_TYPE, function);
@@ -53,11 +63,32 @@ public class ApiGatewayResponseDecoratorFactory {
      * @param <Output>>   Output Type
      * @param contentType contentType for success data.  Errors are always an application/json lambda event.
      * @param function    function to chain with
+     * @return Output function that maps to APIGateway responses (including errors).
      * @see ApiGatewayResponseDecorator
      * @see ApiGatewayResponseDecorator#DEFAULT_CONTENT_TYPE
+     * @see APIGatewayV2HTTPResponse
      */
     public <Input, Output> Function<Input, APIGatewayV2HTTPResponse> create(String contentType,
                                                                             Function<Input, Output> function) {
-        return new ApiGatewayResponseDecorator<>(jsonMapper, contentType, function);
+        return new ApiGatewayResponseDecorator<>(authenticationMapper,
+                                                 exceptionMapper,
+                                                 jsonMapper,
+                                                 contentType,
+                                                 function);
+    }
+
+    /**
+     * This method can be used to retrieve the {@link com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent}
+     * information in a parsed form where Spring Security is being used, or direct claims access is required.
+     * <pre>
+     *     factory.create(object -> {ApiGatewayContext ctx = factory.getCurrentApiGatewayContext(); ... });
+     * </pre>
+     * The context can be used to retire authorisation principals, claims, raw event, etc.
+     *
+     * @return a new context.  Never null, mau be "invalid" {@link ApiGatewayContext#isValid()};.
+     */
+    public ApiGatewayContext getCurrentApiGatewayContext() {
+        return new ApiGatewayContext(ApiGatewayResponseDecorator.getCurrentAuthentication(),
+                                     ApiGatewayResponseDecorator.getCurrentEvent());
     }
 }

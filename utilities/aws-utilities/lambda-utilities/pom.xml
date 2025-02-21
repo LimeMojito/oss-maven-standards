@@ -32,9 +32,10 @@
     </parent>
 
     <properties>
-        <coverage.line.ratio>0</coverage.line.ratio>
+        <coverage.line.ratio>0.90</coverage.line.ratio>
 
-        <coverage.exclude.pattern.1>*LimeAwsLambdaConfiguration</coverage.exclude.pattern.1>
+        <coverage.exclude.pattern.1>*Configuration</coverage.exclude.pattern.1>
+        <coverage.exclude.pattern.2>*SnapStartOptimizer</coverage.exclude.pattern.2>
     </properties>
 
     <build>
@@ -113,6 +114,10 @@
             <artifactId>spring-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+        </dependency>
+        <dependency>
             <!-- support ConstraintViolation exceptions -->
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
@@ -121,6 +126,11 @@
             <!-- SnapStart optimization -->
             <groupId>org.crac</groupId>
             <artifactId>crac</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.limemojito.oss.standards</groupId>
+            <artifactId>json-utilities</artifactId>
+            <version>15.2.5-SNAPSHOT</version>
         </dependency>
 
         <!-- TEST DEPENDENCIES -->
@@ -142,12 +152,6 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.limemojito.oss.standards</groupId>
-            <artifactId>json-utilities</artifactId>
-            <version>15.2.5-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

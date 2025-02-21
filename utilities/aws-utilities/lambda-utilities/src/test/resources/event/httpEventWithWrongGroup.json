@@ -1,0 +1,35 @@
+{
+  "version": "2.0",
+  "routeKey": "GET /v1/user/{proxy+}",
+  "rawPath": "/v1/user/",
+  "rawQueryString": "",
+  "headers": {
+    "authorization": "Bearer someJWTtokenencodedhere",
+    "x-amzn-trace-id": "Root=1-66bd625a-6568490c248e78e740d5c2b8",
+    "x-forwarded-port": "443",
+    "x-forwarded-proto": "https"
+  },
+  "requestContext": {
+    "authorizer": {
+      "jwt": {
+        "claims": {
+          "sub": "sub-bob@example.com",
+          "username": "bob@example.com",
+          "cognito:groups": "[WRONG,PEABODY,accounting]"
+        },
+        "scopes": null
+      }
+    },
+    "http": {
+      "method": "GET",
+      "path": "/v1/user/",
+      "protocol": "HTTP/1.1"
+    },
+    "requestId": "chxOMhPyPHcEMGA=",
+    "routeKey": "GET /v1/user/{proxy+}",
+    "stage": "api",
+    "time": "15/Aug/2024:02:05:14 +0000",
+    "timeEpoch": 1723687514569
+  },
+  "isBase64Encoded": false
+}

@@ -28,17 +28,24 @@ import java.net.URI;
 
 /**
  * This lives in the localstack package to avoid scan conflicts with LimeAwsLambdaConfiguration.
+ *
  * @see com.limemojito.aws.lambda.LimeAwsLambdaConfiguration
  */
 @Profile("integration-test")
 @Configuration
 public class LocalstackLambdaConfig {
 
+    /**
+     * Localstack endpoint overridden AWS client.
+     *
+     * @param localStackUrl URL to localstack  (localstack.url)
+     * @return the lambda client.
+     */
     @Primary
     @Bean(destroyMethod = "close")
-    public LambdaClient lambdaClient(@Value("${localstack.url}") URI localStackS3Url) {
+    public LambdaClient lambdaClient(@Value("${localstack.url}") URI localStackUrl) {
         return LambdaClient.builder()
-                           .endpointOverride(localStackS3Url)
+                           .endpointOverride(localStackUrl)
                            .build();
     }
 }
