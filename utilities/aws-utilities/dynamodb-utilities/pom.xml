@@ -28,7 +28,7 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>15.2.5-SNAPSHOT</version>
+        <version>15.2.5</version>
         <relativePath>../../../jar-development/pom.xml</relativePath>
     </parent>
 
@@ -45,7 +45,7 @@
         <dependency>
             <groupId>com.limemojito.oss.standards</groupId>
             <artifactId>json-utilities</artifactId>
-            <version>15.2.5-SNAPSHOT</version>
+            <version>15.2.5</version>
         </dependency>
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
