@@ -42,7 +42,7 @@
         <spring.boot.version>3.4.3</spring.boot.version>
         <aws-cdk-lib.version>2.174.0</aws-cdk-lib.version>
         <lombok.version>1.18.36</lombok.version>
-        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
     </properties>
 
     <modules>
