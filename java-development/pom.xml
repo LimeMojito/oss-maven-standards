@@ -265,6 +265,7 @@
                                 <version>${lombok.version}</version>
                             </annotationProcessorPath>
                         </annotationProcessorPaths>
+                        <parameters>true</parameters>
                     </configuration>
                 </plugin>
                 <plugin>
