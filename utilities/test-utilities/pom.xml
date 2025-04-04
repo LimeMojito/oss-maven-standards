@@ -115,6 +115,10 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>iam-policy-builder</artifactId>
+        </dependency>
 
 
         <!-- TEST DEPENDENCIES -->
