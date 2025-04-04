@@ -46,6 +46,7 @@ import java.util.Map;
  * <p>
  * To use the SnsSupport class, create an instance of it and pass the required dependencies to its constructor.
  * Then, you can use the various methods provided by the class to interact with the SNS service.
+ *  <p>This class can also operate on Actual AWS rather than just localstack.</p>
  */
 @Service
 public class SnsSupport {
@@ -121,9 +122,11 @@ public class SnsSupport {
      *
      * @param topicName The name of the topic to subscribe to.
      * @param queueName The name of the queue to subscribe.
+     * @return SubscriptionArn of the subscription.  Can be used to unsubscribe.
+     * @see #unsubscribe(String)
      */
-    public void subscribe(String topicName, String queueName) {
-        subscribe(topicName, queueName, false);
+    public String subscribe(String topicName, String queueName) {
+        return subscribe(topicName, queueName, false);
     }
 
     /**
@@ -136,15 +139,28 @@ public class SnsSupport {
      * @param queueName          The name of the queue to subscribe.
      * @param rawMessageDelivery Specifies whether the messages received by the subscribed queue should
      *                           be delivered as raw (unprocessed) messages.
+     * @return SubscriptionArn of the subscription.  Can be used to unsubscribe.
+     * @see #unsubscribe(String)
      */
-    public void subscribe(String topicName, String queueName, boolean rawMessageDelivery) {
+    public String subscribe(String topicName, String queueName, boolean rawMessageDelivery) {
         final String arn = create(topicName);
         sqs.create(queueName);
         final String queueArn = sqs.getQueueArn(queueName);
-        sns.subscribe(r -> r.topicArn(arn)
-                            .endpoint(queueArn)
-                            .protocol("sqs")
-                            .attributes(Map.of("RawMessageDelivery", Boolean.toString(rawMessageDelivery))));
+        sqs.setSubscribePolicy(queueName, arn);
+        return sns.subscribe(r -> r.topicArn(arn)
+                                   .endpoint(queueArn)
+                                   .protocol("sqs")
+                                   .attributes(Map.of("RawMessageDelivery", Boolean.toString(rawMessageDelivery))))
+                  .subscriptionArn();
+    }
+
+    /**
+     * Unsubscribes from a specified Amazon SNS subscription.
+     *
+     * @param subscriptionArn The ARN of the subscription to unsubscribe from.
+     */
+    public void unsubscribe(String subscriptionArn) {
+        sns.unsubscribe(r -> r.subscriptionArn(subscriptionArn));
     }
 
     /**
@@ -202,5 +218,28 @@ public class SnsSupport {
                 b.messageAttributes(attributes);
             }
         });
+    }
+
+    /**
+     * Checks if a topic with the given name exists in the list of topics.
+     *
+     * @param topicName the name of the topic to check for existence
+     * @return true if a topic with the given name exists, false otherwise
+     */
+    public boolean exists(String topicName) {
+        return sns.listTopics().topics().stream().anyMatch(t -> t.topicArn().endsWith(topicName));
+    }
+
+    /**
+     * Deletes an Amazon SNS topic identified by its name.   Associated subscriptions are also deleted.
+     *
+     * @param topicName the name of the topic to be deleted
+     */
+    public void destroy(String topicName) {
+        final String topicArn = getArn(topicName);
+        sns.listSubscriptionsByTopic(r -> r.topicArn(topicArn))
+           .subscriptions()
+           .forEach(s -> unsubscribe(s.subscriptionArn()));
+        sns.deleteTopic(r -> r.topicArn(topicArn));
     }
 }

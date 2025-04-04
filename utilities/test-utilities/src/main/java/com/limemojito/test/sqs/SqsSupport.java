@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.policybuilder.iam.IamPolicy;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.GetQueueAttributesResponse;
 import software.amazon.awssdk.services.sqs.model.Message;
@@ -39,6 +40,11 @@ import java.util.concurrent.TimeoutException;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
+import static software.amazon.awssdk.policybuilder.iam.IamConditionOperator.ARN_LIKE;
+import static software.amazon.awssdk.policybuilder.iam.IamEffect.ALLOW;
+import static software.amazon.awssdk.policybuilder.iam.IamPrincipalType.AWS;
+import static software.amazon.awssdk.policybuilder.iam.IamPrincipalType.SERVICE;
+import static software.amazon.awssdk.services.sqs.model.QueueAttributeName.POLICY;
 import static software.amazon.awssdk.services.sqs.model.QueueAttributeName.QUEUE_ARN;
 
 /**
@@ -53,6 +59,7 @@ import static software.amazon.awssdk.services.sqs.model.QueueAttributeName.QUEUE
  *     <li>Content-Type - Mime like attribute</li>
  *     <li>Content-Length - Mime like attribute</li>
  * </ul>
+ * <p>This class can also operate on Actual AWS rather than just localstack.</p>
  */
 @Service
 @RequiredArgsConstructor
@@ -77,6 +84,8 @@ public class SqsSupport {
     private final SqsClient sqs;
     private final SqsSender sqsSender;
     private final ObjectMapper objectMapper;
+    private final TypeReference<? extends Map<String, Object>> mapType = new TypeReference<>() {
+    };
 
     /**
      * Retrieves the approximate number of messages in a specified queue.
@@ -523,6 +532,51 @@ public class SqsSupport {
             receiveMessageResult = sqs.receiveMessage(r -> r.queueUrl(url));
         }
         log.info("Purged {} messages", count);
+    }
+
+    /**
+     * Deletes the specified SQS queue identified by its name.
+     *
+     * @param qName the name of the queue to be deleted
+     */
+    public void destroy(String qName) {
+        final String queueUrl = getQueueUrl(qName);
+        Map<String, String> redrivePolicy = sqs.getQueueAttributes(b -> b.queueUrl(queueUrl)
+                                                                         .attributeNamesWithStrings("RedrivePolicy"))
+                                               .attributesAsStrings();
+        if (!redrivePolicy.isEmpty()) {
+            final Map<String, Object> policy = toObject(redrivePolicy.get("RedrivePolicy"), mapType);
+            final String deadLetterQueueArn = (String) policy.get("deadLetterTargetArn");
+            final String deadLetterQueueName = deadLetterQueueArn.substring(deadLetterQueueArn.lastIndexOf(":") + 1);
+            log.info("Deleting dead letter queue {}", deadLetterQueueName);
+            sqs.deleteQueue(req -> req.queueUrl(getQueueUrl(deadLetterQueueName)));
+        }
+        log.info("Deleting  queue {}", qName);
+        sqs.deleteQueue(req -> req.queueUrl(queueUrl));
+    }
+
+    /**
+     * So these test classes can work within an AWS account, we set a Q policy to allow SNS to publish messages to the
+     * Q.
+     *
+     * @param queueName Queue to update policy for
+     * @param topicArn  Topic arn to update source for.
+     */
+    public void setSubscribePolicy(String queueName, String topicArn) {
+        String queueArn = getQueueArn(queueName);
+        IamPolicy allowSns = IamPolicy.builder()
+                                      .addStatement(b -> b.effect(ALLOW)
+                                                          .addPrincipal(SERVICE, "sns.amazonaws.com")
+                                                          .addAction("sqs:SendMessage")
+                                                          .addResource(queueArn)
+                                                          .addCondition(b1 -> b1
+                                                                  .operator(ARN_LIKE)
+                                                                  .key("aws:SourceArn").value(topicArn)))
+                                      .build();
+        String queueUrl = getQueueUrl(queueName);
+        final String policy = allowSns.toJson();
+        log.debug("Setting policy on queue {} to {}", queueName, policy);
+        sqs.setQueueAttributes(b -> b.queueUrl(queueUrl).attributes(Map.of(POLICY, policy)));
     }
 
     @SneakyThrows
