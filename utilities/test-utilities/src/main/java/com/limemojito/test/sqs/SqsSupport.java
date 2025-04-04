@@ -42,7 +42,6 @@ import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 import static software.amazon.awssdk.policybuilder.iam.IamConditionOperator.ARN_LIKE;
 import static software.amazon.awssdk.policybuilder.iam.IamEffect.ALLOW;
-import static software.amazon.awssdk.policybuilder.iam.IamPrincipalType.AWS;
 import static software.amazon.awssdk.policybuilder.iam.IamPrincipalType.SERVICE;
 import static software.amazon.awssdk.services.sqs.model.QueueAttributeName.POLICY;
 import static software.amazon.awssdk.services.sqs.model.QueueAttributeName.QUEUE_ARN;
