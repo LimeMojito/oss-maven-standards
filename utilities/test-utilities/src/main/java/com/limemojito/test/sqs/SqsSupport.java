@@ -188,10 +188,15 @@ public class SqsSupport {
      *
      * @param queueName the name of the queue to wait for a message
      * @return the message that was received from the queue
+     * @throws TimeoutException if no message is received within the wait time
      * @see #MEDIUM_POLL
      */
-    public Message waitForMessage(String queueName) {
-        return waitForMessages(queueName, MEDIUM_POLL).get(0);
+    public Message waitForMessage(String queueName) throws TimeoutException {
+        List<Message> messages = waitForMessages(queueName, MEDIUM_POLL);
+        if (messages.isEmpty()) {
+            throw new TimeoutException("No messages received from queue: " + queueName);
+        }
+        return messages.get(0);
     }
 
     /**
@@ -200,12 +205,17 @@ public class SqsSupport {
      * @param queueName       the name of the queue to wait for a message
      * @param waitTimeSeconds maximum seconds to wait.
      * @return the message that was received from the queue
+     * @throws TimeoutException if no message is received within the wait time
      * @see #SHORT_POLL
      * @see #MEDIUM_POLL
      * @see #MAX_POLL
      */
-    public Message waitForMessage(String queueName, int waitTimeSeconds) {
-        return waitForMessages(queueName, waitTimeSeconds).get(0);
+    public Message waitForMessage(String queueName, int waitTimeSeconds) throws TimeoutException {
+        List<Message> messages = waitForMessages(queueName, waitTimeSeconds);
+        if (messages.isEmpty()) {
+            throw new TimeoutException("No messages received from queue: " + queueName);
+        }
+        return messages.get(0);
     }
 
     /**
@@ -515,6 +525,7 @@ public class SqsSupport {
 
     /**
      * Purges all messages from the specified queue using individual deletes.
+     * Will stop after 1000 iterations to prevent infinite loops.
      *
      * @param queueName the name of the queue to purge
      */
@@ -522,15 +533,25 @@ public class SqsSupport {
         final String url = getQueueUrl(queueName);
         ReceiveMessageResponse receiveMessageResult = sqs.receiveMessage(r -> r.queueUrl(url));
         int count = 0;
-        while (!receiveMessageResult.messages().isEmpty()) {
+        int iterations = 0;
+        final int MAX_ITERATIONS = 1000;
+
+        while (!receiveMessageResult.messages().isEmpty() && iterations < MAX_ITERATIONS) {
             final List<Message> messages = receiveMessageResult.messages();
             for (Message message : messages) {
                 sqs.deleteMessage(r -> r.queueUrl(url).receiptHandle(message.receiptHandle()));
                 count++;
             }
             receiveMessageResult = sqs.receiveMessage(r -> r.queueUrl(url));
+            iterations++;
         }
-        log.info("Purged {} messages", count);
+
+        if (iterations >= MAX_ITERATIONS) {
+            log.warn("Reached maximum iterations ({}) while purging queue {}. Purged {} messages but there may be more.",
+                    MAX_ITERATIONS, queueName, count);
+        } else {
+            log.info("Purged {} messages", count);
+        }
     }
 
     /**
@@ -544,13 +565,20 @@ public class SqsSupport {
                                                                          .attributeNamesWithStrings("RedrivePolicy"))
                                                .attributesAsStrings();
         if (!redrivePolicy.isEmpty()) {
-            final Map<String, Object> policy = toObject(redrivePolicy.get("RedrivePolicy"), mapType);
-            final String deadLetterQueueArn = (String) policy.get("deadLetterTargetArn");
-            final String deadLetterQueueName = deadLetterQueueArn.substring(deadLetterQueueArn.lastIndexOf(":") + 1);
-            log.info("Deleting dead letter queue {}", deadLetterQueueName);
-            sqs.deleteQueue(req -> req.queueUrl(getQueueUrl(deadLetterQueueName)));
+            String redrivePolicyStr = redrivePolicy.get("RedrivePolicy");
+            if (redrivePolicyStr != null) {
+                final Map<String, Object> policy = toObject(redrivePolicyStr, mapType);
+                if (policy != null && policy.containsKey("deadLetterTargetArn")) {
+                    final String deadLetterQueueArn = (String) policy.get("deadLetterTargetArn");
+                    if (deadLetterQueueArn != null) {
+                        final String deadLetterQueueName = deadLetterQueueArn.substring(deadLetterQueueArn.lastIndexOf(":") + 1);
+                        log.info("Deleting dead letter queue {}", deadLetterQueueName);
+                        sqs.deleteQueue(req -> req.queueUrl(getQueueUrl(deadLetterQueueName)));
+                    }
+                }
+            }
         }
-        log.info("Deleting  queue {}", qName);
+        log.info("Deleting queue {}", qName);
         sqs.deleteQueue(req -> req.queueUrl(queueUrl));
     }
 
@@ -590,16 +618,33 @@ public class SqsSupport {
 
     @SuppressWarnings("rawtypes")
     private <T> T snsToObject(Map sns, TypeReference<T> type) {
-        return toObject(snsMessage(sns), type);
+        if (sns == null) {
+            throw new IllegalArgumentException("SNS message map cannot be null");
+        }
+        String message = snsMessage(sns);
+        if (message == null) {
+            throw new IllegalArgumentException("SNS message content is null or missing");
+        }
+        return toObject(message, type);
     }
 
     @SuppressWarnings("rawtypes")
     private <T> T snsToObject(Map sns, Class<T> clazz) {
-        return toObject(snsMessage(sns), clazz);
+        if (sns == null) {
+            throw new IllegalArgumentException("SNS message map cannot be null");
+        }
+        String message = snsMessage(sns);
+        if (message == null) {
+            throw new IllegalArgumentException("SNS message content is null or missing");
+        }
+        return toObject(message, clazz);
     }
 
     @SuppressWarnings("rawtypes")
     private static String snsMessage(Map sns) {
+        if (sns == null) {
+            return null;
+        }
         return (String) sns.get("Message");
     }
 }

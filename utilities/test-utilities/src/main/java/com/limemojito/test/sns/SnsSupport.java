@@ -200,19 +200,22 @@ public class SnsSupport {
             if (attributeValues != null) {
                 Map<String, MessageAttributeValue> attributes = new LinkedHashMap<>();
                 for (String key : attributeValues.keySet()) {
-                    String value = attributeValues.get(key).toString();
-                    attributes.put(key,
-                                   MessageAttributeValue.builder()
-                                                        .stringValue(value)
-                                                        .dataType("String")
-                                                        .build());
-                    if (HEADER_MESSAGE_DEDUPLICATION_ID.equals(key)) {
-                        b.messageDeduplicationId(value);
-                        attributes.remove(key);
-                    }
-                    if (HEADER_MESSAGE_GROUP_ID.equals(key)) {
-                        b.messageGroupId(value);
-                        attributes.remove(key);
+                    Object attributeValue = attributeValues.get(key);
+                    if (attributeValue != null) {
+                        String value = attributeValue.toString();
+                        attributes.put(key,
+                                       MessageAttributeValue.builder()
+                                                            .stringValue(value)
+                                                            .dataType("String")
+                                                            .build());
+                        if (HEADER_MESSAGE_DEDUPLICATION_ID.equals(key)) {
+                            b.messageDeduplicationId(value);
+                            attributes.remove(key);
+                        }
+                        if (HEADER_MESSAGE_GROUP_ID.equals(key)) {
+                            b.messageGroupId(value);
+                            attributes.remove(key);
+                        }
                     }
                 }
                 b.messageAttributes(attributes);

@@ -56,6 +56,7 @@ public class S3Support {
 
     /**
      * Wipes all objects from the specified bucket.
+     * Will stop after 1000 iterations to prevent infinite loops.
      *
      * @param bucketName the name of the bucket to be wiped
      */
@@ -65,6 +66,9 @@ public class S3Support {
         log.info("Wiping bucket {}", bucketName);
         ListObjectsResponse objectListing;
         int deleted = 0;
+        int iterations = 0;
+        final int MAX_ITERATIONS = 1000;
+
         do {
             objectListing = s3.listObjects(r -> r.bucket(bucketName));
             for (S3Object objectSummary : objectListing.contents()) {
@@ -72,8 +76,18 @@ public class S3Support {
                 deleted++;
             }
             log.debug("Deleted {} from {}", deleted, bucketName);
+            iterations++;
+
+            if (iterations >= MAX_ITERATIONS) {
+                log.warn("Reached maximum iterations ({}) while wiping bucket {}. Deleted {} objects but there may be more.",
+                        MAX_ITERATIONS, bucketName, deleted);
+                break;
+            }
         } while (objectListing.isTruncated());
-        log.info("Wipe of {} completed.  {} objects deleted.", bucketName, deleted);
+
+        if (iterations < MAX_ITERATIONS) {
+            log.info("Wipe of {} completed. {} objects deleted.", bucketName, deleted);
+        }
     }
 
     /**
@@ -109,11 +123,20 @@ public class S3Support {
      * @param uri         the URI where the data will be saved
      * @param contentType the content type of the data
      * @param data        the data to be saved
+     * @throws RuntimeException if an I/O error occurs
      */
-    @SneakyThrows
     public void putData(URI uri, String contentType, byte[] data) {
+        if (uri == null) {
+            throw new IllegalArgumentException("URI cannot be null");
+        }
+        if (data == null) {
+            throw new IllegalArgumentException("Data cannot be null");
+        }
+
         try (ByteArrayInputStream inputStream = new ByteArrayInputStream(data)) {
             putData(bucket(uri), key(uri), inputStream, data.length, contentType);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to put data to S3: " + e.getMessage(), e);
         }
     }
 
@@ -162,18 +185,26 @@ public class S3Support {
      * @param key                   the key (or path) under which the resource will be stored in the S3 bucket
      * @param classpathResourcePath the path of the classpath resource to upload
      * @param mimeType              the MIME type of the resource
+     * @throws RuntimeException if the resource cannot be loaded from the classpath or an I/O error occurs
      */
     public void putClasspathResourceAs(String bucketName, String key, String classpathResourcePath, String mimeType) {
+        byte[] dataBytes;
+
+        // First, load the resource and convert to byte array
         try (InputStream inputStream = getClass().getResourceAsStream(classpathResourcePath)) {
             if (inputStream == null) {
                 throw new IllegalArgumentException("Could not load " + classpathResourcePath + " from classpath");
             }
-            final byte[] dataBytes = IoUtils.toByteArray(inputStream);
-            try (ByteArrayInputStream byteData = new ByteArrayInputStream(dataBytes)) {
-                putData(bucketName, key, byteData, dataBytes.length, mimeType);
-            }
+            dataBytes = IoUtils.toByteArray(inputStream);
         } catch (IOException | NullPointerException e) {
-            throw new RuntimeException("Could not load " + classpathResourcePath + " from classpath");
+            throw new RuntimeException("Could not load " + classpathResourcePath + " from classpath", e);
+        }
+
+        // Then, create a new input stream from the byte array and upload
+        try (ByteArrayInputStream byteData = new ByteArrayInputStream(dataBytes)) {
+            putData(bucketName, key, byteData, dataBytes.length, mimeType);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload " + classpathResourcePath + " to S3", e);
         }
     }
 
@@ -231,42 +262,102 @@ public class S3Support {
      * @param bucket The name of the S3 bucket.
      * @param key    The key of the object in the S3 bucket.
      * @return The S3 URI in the format "s3://bucket/key".
+     * @throws IllegalArgumentException if bucket or key is null
      */
+    @SneakyThrows
     public URI toS3Uri(String bucket, String key) {
-        return URI.create("s3://%s/%s".formatted(bucket, key));
+        if (bucket == null) {
+            throw new IllegalArgumentException("Bucket name cannot be null");
+        }
+        if (key == null) {
+            throw new IllegalArgumentException("Key cannot be null");
+        }
+
+        // Encode the key to handle special characters, but preserve forward slashes
+        String encodedKey = key;
+        if (key.contains(" ") || key.contains("?") || key.contains("&") || key.contains("=")) {
+            encodedKey = java.net.URLEncoder.encode(key, "UTF-8")
+                .replace("%2F", "/")  // Preserve path separators
+                .replace("+", "%20"); // Replace + with %20 for spaces
+        }
+
+        return URI.create("s3://%s/%s".formatted(bucket, encodedKey));
     }
 
     /**
      * Creates a bucket with the given bucket name.  If the bucket already exists this method returns cleanly.
      *
      * @param uri s3 uri representing the bucket.
+     * @throws IllegalArgumentException if the URI is null or doesn't contain a bucket name
      */
     public void createBucket(URI uri) {
-        createBucket(s3.utilities()
-                       .parseUri(uri)
-                       .bucket()
-                       .orElseThrow());
+        if (uri == null) {
+            throw new IllegalArgumentException("S3 URI cannot be null");
+        }
+
+        String bucketName = s3.utilities()
+                             .parseUri(uri)
+                             .bucket()
+                             .orElseThrow(() -> new IllegalArgumentException("S3 URI does not contain a bucket name: " + uri));
+
+        createBucket(bucketName);
     }
 
     /**
      * Creates a bucket with the given bucket name.  If the bucket already exists this method returns cleanly.
      *
      * @param bucketName the name of the bucket to be created
+     * @throws IllegalArgumentException if the bucket name is null or empty
      */
     public void createBucket(String bucketName) {
+        if (bucketName == null || bucketName.isEmpty()) {
+            throw new IllegalArgumentException("Bucket name cannot be null or empty");
+        }
+
         try {
             s3.createBucket(r -> r.bucket(bucketName));
             log.info("Created bucket s3://{}", bucketName);
         } catch (BucketAlreadyOwnedByYouException e) {
             log.info("Bucket already created.");
+        } catch (Exception e) {
+            log.error("Failed to create bucket {}: {}", bucketName, e.getMessage());
+            throw e;
         }
     }
 
+    /**
+     * Extracts the key from an S3 URI.
+     *
+     * @param uri the S3 URI
+     * @return the key part of the URI
+     * @throws IllegalArgumentException if the URI is null or doesn't contain a key
+     */
     private String key(URI uri) {
-        return s3.utilities().parseUri(uri).key().orElseThrow();
+        if (uri == null) {
+            throw new IllegalArgumentException("S3 URI cannot be null");
+        }
+
+        return s3.utilities()
+                .parseUri(uri)
+                .key()
+                .orElseThrow(() -> new IllegalArgumentException("S3 URI does not contain a key: " + uri));
     }
 
+    /**
+     * Extracts the bucket name from an S3 URI.
+     *
+     * @param uri the S3 URI
+     * @return the bucket name part of the URI
+     * @throws IllegalArgumentException if the URI is null or doesn't contain a bucket name
+     */
     private String bucket(URI uri) {
-        return s3.utilities().parseUri(uri).bucket().orElseThrow();
+        if (uri == null) {
+            throw new IllegalArgumentException("S3 URI cannot be null");
+        }
+
+        return s3.utilities()
+                .parseUri(uri)
+                .bucket()
+                .orElseThrow(() -> new IllegalArgumentException("S3 URI does not contain a bucket name: " + uri));
     }
 }
