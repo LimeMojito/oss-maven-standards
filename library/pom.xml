@@ -54,7 +54,7 @@
                 <!-- Caffeine versus wiremock -->
                 <groupId>com.google.errorprone</groupId>
                 <artifactId>error_prone_annotations</artifactId>
-                <version>2.37.0</version>
+                <version>2.38.0</version>
             </dependency>
             <dependency>
                 <groupId>org.jetbrains</groupId>
@@ -122,7 +122,7 @@
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.18.0</version>
+                <version>2.19.0</version>
             </dependency>
             <dependency>
                 <groupId>commons-logging</groupId>
@@ -212,7 +212,7 @@
                 <!-- Guava secure -->
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava-bom</artifactId>
-                <version>33.4.7-jre</version>
+                <version>33.4.8-jre</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -243,7 +243,7 @@
                 <!-- AWS SDK V2-->
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>bom</artifactId>
-                <version>2.31.17</version>
+                <version>2.31.25</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
