@@ -67,7 +67,7 @@ public class S3Support {
         ListObjectsResponse objectListing;
         int deleted = 0;
         int iterations = 0;
-        final int MAX_ITERATIONS = 1000;
+        final int maxIterations = 1000;
 
         do {
             objectListing = s3.listObjects(r -> r.bucket(bucketName));
@@ -78,14 +78,14 @@ public class S3Support {
             log.debug("Deleted {} from {}", deleted, bucketName);
             iterations++;
 
-            if (iterations >= MAX_ITERATIONS) {
+            if (iterations >= maxIterations) {
                 log.warn("Reached maximum iterations ({}) while wiping bucket {}. Deleted {} objects but there may be more.",
-                        MAX_ITERATIONS, bucketName, deleted);
+                        maxIterations, bucketName, deleted);
                 break;
             }
         } while (objectListing.isTruncated());
 
-        if (iterations < MAX_ITERATIONS) {
+        if (iterations < maxIterations) {
             log.info("Wipe of {} completed. {} objects deleted.", bucketName, deleted);
         }
     }

@@ -61,7 +61,7 @@ public class SnsSupportIT {
     }
 
     @After
-    public void tearDown(){
+    public void tearDown() {
         snsSupport.unsubscribe(subArn);
         sqsSupport.destroy(qName);
         assertThat(sqsSupport.exists(qName)).isFalse();

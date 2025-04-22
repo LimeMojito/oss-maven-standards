@@ -104,8 +104,14 @@ public class PrometheusMetrics {
     }
 
     /**
-     * @param metricName Metric name to get
-     * @return null if metric not present.
+     * Retrieves a single metric by its name. If there is exactly one metric with the given name, it is returned.
+     * If no metrics are found with the provided name, null is returned. If multiple metrics are found, an
+     * IllegalStateException is thrown.
+     *
+     * @param metricName The name of the metric to retrieve.
+     * @return The metric with the specified name, or null if no metric is found. Throws IllegalStateException
+     *         if multiple metrics are found with the same name.
+     * @throws IllegalStateException If the metric name corresponds to multiple metrics.
      */
     public Metric getMetric(String metricName) {
         final List<Metric> metrics = getMetricsFor(metricName);
@@ -113,24 +119,34 @@ public class PrometheusMetrics {
             return null;
         }
         if (metrics.size() == 1) {
-            return metrics.get(0);
+            return metrics.getFirst();
         }
         throw new IllegalStateException(format("Metrics name %s has multiple metrics %s", metricName, metrics));
     }
 
     /**
-     * @param metricName Metric to locate
-     * @return VALUE_NOT_FOUND if the metric can not be found.
+     * Retrieves the value of a specific metric using its name.
+     * If the metric is found, its value is returned. If the metric does not exist,
+     * a default value representing "value not found" is returned.
+     *
+     * @param metricName The name of the metric whose value is to be retrieved.
+     * @return The value of the specified metric if found, or a default "value not found"
+     *         constant if the metric is missing.
+     * @throws IllegalStateException If multiple metrics with the specified name are found.
      */
     public BigDecimal getValue(String metricName) {
         return metricToValue(metricName, getMetric(metricName));
     }
 
     /**
-     * @param metricName  Metric name to get
-     * @param tagsToMatch Tag to match to find metric. All tags must be matched.
-     * @return The found metric or throws IllegalStateException.
-     * @throws IllegalStateException if the metric can not be found.
+     * Retrieves a metric by its name and a set of tags to match. The method searches for a metric
+     * with the specified name and ensures that all provided tags match. If such a metric is found,
+     * it is returned. If no matching metric is found, an IllegalStateException is thrown.
+     *
+     * @param metricName the name of the metric to locate
+     * @param tagsToMatch a map of tags to match; all tags must be matched for the metric to be returned
+     * @return the Metric object that matches the provided name and tags
+     * @throws IllegalStateException if no matching metric is found
      */
     public Metric getMetric(String metricName, Map<String, String> tagsToMatch) {
         final List<Metric> metrics = getMetricsFor(metricName);
@@ -148,9 +164,14 @@ public class PrometheusMetrics {
     }
 
     /**
-     * @param metricName  Metric to locate
-     * @param tagsToMatch Tag to match to find metric. All tags must be matched.
-     * @return VALUE_NOT_FOUND if the metric with matching tags can not be found.
+     * Retrieves the numerical value of a metric specified by its name and a map of tags to match.
+     * The metric is identified by its name, and only metrics with all the specified tags will be considered.
+     * If the metric is found, its value is returned. If no matching metric is found, a default
+     * value indicating "value not found" is returned.
+     *
+     * @param metricName the name of the metric whose value is to be retrieved
+     * @param tagsToMatch a map of tags that must match completely on the metric
+     * @return the numerical value of the matching metric if found; otherwise, a default "value not found" value
      */
     public BigDecimal getValue(String metricName, Map<String, String> tagsToMatch) {
         try {

@@ -188,15 +188,11 @@ public class SqsSupport {
      *
      * @param queueName the name of the queue to wait for a message
      * @return the message that was received from the queue
-     * @throws TimeoutException if no message is received within the wait time
      * @see #MEDIUM_POLL
      */
-    public Message waitForMessage(String queueName) throws TimeoutException {
+    public Message waitForMessage(String queueName) {
         List<Message> messages = waitForMessages(queueName, MEDIUM_POLL);
-        if (messages.isEmpty()) {
-            throw new TimeoutException("No messages received from queue: " + queueName);
-        }
-        return messages.get(0);
+        return messages.getFirst();
     }
 
     /**
@@ -205,17 +201,13 @@ public class SqsSupport {
      * @param queueName       the name of the queue to wait for a message
      * @param waitTimeSeconds maximum seconds to wait.
      * @return the message that was received from the queue
-     * @throws TimeoutException if no message is received within the wait time
      * @see #SHORT_POLL
      * @see #MEDIUM_POLL
      * @see #MAX_POLL
      */
-    public Message waitForMessage(String queueName, int waitTimeSeconds) throws TimeoutException {
+    public Message waitForMessage(String queueName, int waitTimeSeconds) {
         List<Message> messages = waitForMessages(queueName, waitTimeSeconds);
-        if (messages.isEmpty()) {
-            throw new TimeoutException("No messages received from queue: " + queueName);
-        }
-        return messages.get(0);
+        return messages.getFirst();
     }
 
     /**
@@ -223,7 +215,7 @@ public class SqsSupport {
      *
      * @param queueName       the name of the queue to wait for a message
      * @param waitTimeSeconds maximum seconds to wait.
-     * @return the list of message that was received from the queue (size not guaranteed as polling is async).
+     * @return the list of messages that was received from the queue (size not guaranteed as polling is async).
      * @see #SHORT_POLL
      * @see #MEDIUM_POLL
      * @see #MAX_POLL
@@ -534,9 +526,9 @@ public class SqsSupport {
         ReceiveMessageResponse receiveMessageResult = sqs.receiveMessage(r -> r.queueUrl(url));
         int count = 0;
         int iterations = 0;
-        final int MAX_ITERATIONS = 1000;
+        final int maxIterations = 1000;
 
-        while (!receiveMessageResult.messages().isEmpty() && iterations < MAX_ITERATIONS) {
+        while (!receiveMessageResult.messages().isEmpty() && iterations < maxIterations) {
             final List<Message> messages = receiveMessageResult.messages();
             for (Message message : messages) {
                 sqs.deleteMessage(r -> r.queueUrl(url).receiptHandle(message.receiptHandle()));
@@ -546,9 +538,9 @@ public class SqsSupport {
             iterations++;
         }
 
-        if (iterations >= MAX_ITERATIONS) {
+        if (iterations >= maxIterations) {
             log.warn("Reached maximum iterations ({}) while purging queue {}. Purged {} messages but there may be more.",
-                    MAX_ITERATIONS, queueName, count);
+                     maxIterations, queueName, count);
         } else {
             log.info("Purged {} messages", count);
         }
@@ -571,7 +563,8 @@ public class SqsSupport {
                 if (policy != null && policy.containsKey("deadLetterTargetArn")) {
                     final String deadLetterQueueArn = (String) policy.get("deadLetterTargetArn");
                     if (deadLetterQueueArn != null) {
-                        final String deadLetterQueueName = deadLetterQueueArn.substring(deadLetterQueueArn.lastIndexOf(":") + 1);
+                        final String deadLetterQueueName = deadLetterQueueArn.substring(deadLetterQueueArn.lastIndexOf(
+                                ":") + 1);
                         log.info("Deleting dead letter queue {}", deadLetterQueueName);
                         sqs.deleteQueue(req -> req.queueUrl(getQueueUrl(deadLetterQueueName)));
                     }
