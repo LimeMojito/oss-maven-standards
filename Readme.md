@@ -169,6 +169,7 @@ Using Ant to perform tasks without writing a maven plugin. If statements and sim
 * [Graal, native and why SnapStart](https://limemojito.com/native-java-aws-lambda-with-graal-vm/)
 * [SnapStart Advanced Optimisation](https://limemojito.com/optimising-aws-snapstart-and-spring-boot-java-lambdas/)
 * [SnapStart and SQL](https://limemojito.com/optimising-aws-snapstart-and-spring-boot-java-lambdas/)
+* [Keeping SnapStart images hot](https://limemojito.com/surprise-aws-snapstart-needs-a-new-image/)
        
 ## Enabling Docker for Unit Tests
 Modern lambda code and tight integrations with AWS lean to unit testing logic on top of DynamoDb. SQS. etc.   While Docker is enabled by default for Integration Tests (*IT) by default, you can enable it so that docker can be used as a resource in

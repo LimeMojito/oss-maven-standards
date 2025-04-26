@@ -24,13 +24,17 @@ import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.StackProps;
 import software.amazon.awscdk.aws_apigatewayv2_integrations.HttpLambdaIntegration;
 import software.amazon.awscdk.aws_apigatewayv2_integrations.HttpLambdaIntegrationProps;
-import software.amazon.awscdk.services.apigatewayv2.HttpMethod;
 import software.amazon.awscdk.services.apigatewayv2.*;
+import software.amazon.awscdk.services.apigatewayv2.HttpMethod;
+import software.amazon.awscdk.services.events.Rule;
+import software.amazon.awscdk.services.events.RuleProps;
+import software.amazon.awscdk.services.events.Schedule;
+import software.amazon.awscdk.services.events.targets.LambdaFunction;
 import software.amazon.awscdk.services.iam.IManagedPolicy;
 import software.amazon.awscdk.services.iam.Role;
 import software.amazon.awscdk.services.iam.ServicePrincipal;
-import software.amazon.awscdk.services.lambda.VersionProps;
 import software.amazon.awscdk.services.lambda.*;
+import software.amazon.awscdk.services.lambda.VersionProps;
 import software.amazon.awscdk.services.logs.RetentionDays;
 import software.constructs.Construct;
 
@@ -92,6 +96,16 @@ public final class JavaLambdaPocStack extends Stack {
                                                            .lambda(function)
                                                            .description("Snapstart Version")
                                                            .build());
+
+        // keep a SnapStart version hot (they expire if unused after 14 days)
+        final Rule hotnessRule = new Rule(this,
+                                          LAMBDA_FUNCTION_ID + "-snapstart-hot",
+                                          RuleProps.builder()
+                                                   .schedule(Schedule.rate(Duration.days(1)))
+                                                   .description("%s rule to keep the AWS SnapStart image hot".formatted(
+                                                           LAMBDA_FUNCTION_ID))
+                                                   .build());
+        hotnessRule.addTarget(new LambdaFunction(snapstartVersion));
 
         String apiId = LAMBDA_FUNCTION_ID + "-api";
         HttpApi api = new HttpApi(this, apiId, HttpApiProps.builder()
