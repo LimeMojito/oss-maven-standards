@@ -98,10 +98,12 @@ public final class JavaLambdaPocStack extends Stack {
                                                            .build());
 
         // keep a SnapStart version hot (they expire if unused after 14 days)
+        // https://aws.amazon.com/blogs/compute/reducing-java-cold-starts-on-aws-lambda-functions-with-snapstart
+        final int safeLongPeriod = 10;
         final Rule hotnessRule = new Rule(this,
                                           LAMBDA_FUNCTION_ID + "-snapstart-hot",
                                           RuleProps.builder()
-                                                   .schedule(Schedule.rate(Duration.days(1)))
+                                                   .schedule(Schedule.rate(Duration.days(safeLongPeriod)))
                                                    .description("%s rule to keep the AWS SnapStart image hot".formatted(
                                                            LAMBDA_FUNCTION_ID))
                                                    .build());
