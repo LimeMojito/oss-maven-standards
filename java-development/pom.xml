@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>oss-maven-standards</artifactId>
-        <version>15.2.8-SNAPSHOT</version>
+        <version>15.2.8</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -34,7 +34,7 @@
             <dependency>
                 <groupId>com.limemojito.oss.standards</groupId>
                 <artifactId>library</artifactId>
-                <version>15.2.8-SNAPSHOT</version>
+                <version>15.2.8</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
