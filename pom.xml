@@ -393,7 +393,8 @@
                             <autoPublish>true</autoPublish>
                             <centralBaseUrl>${central.base.url}</centralBaseUrl>
                             <publishingServerId>central</publishingServerId>
-                            <waitUntil>published</waitUntil>
+                            <!-- Publishing takes ten minutes, so release the gitlab worker on the validating ok. -->
+                            <waitUntil>validated</waitUntil>
                         </configuration>
                     </plugin>
                 </plugins>
