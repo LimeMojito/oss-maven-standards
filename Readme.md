@@ -69,6 +69,12 @@ Our Open Source Standards library supports the following module types (archetype
 * Version updates automatic and are configured to skip alpha, beta, rc and old date format versions.
 * maven-versions-plugin has backup poms disabled as VCS is here.
 
+## Set a new release version
+```shell
+mvn versions:set -DprocessAllModules -DgenerateBackupPoms=false -DnewVersion=XX-SNAPSHOT 
+```
+Do a replacement in this readme file so that examples are updated to the new version.
+
 ## Report on what plugin updates are available
 ```shell
    mvn versions:display-plugin-updates | more
@@ -119,7 +125,7 @@ This example will do all the below with only 6 lines of extra XML in your maven 
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>15.2.0</version>
+        <version>15.3.0</version>
         <relativePath/>
     </parent>
 </project>
@@ -142,7 +148,7 @@ they are managed by our modern Bill of Materials (BOM) style dependency setup.
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>15.2.0</version>
+        <version>15.3.0</version>
         <relativePath/>
     </parent>
     <dependencies>

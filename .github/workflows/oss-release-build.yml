@@ -32,9 +32,9 @@ jobs:
           echo '<settings>' >> $localSettings
           echo '<servers>' >> $localSettings
           echo '<server>' >> $localSettings
-          echo '<id>ossrh</id>' >> $localSettings
-          echo '<username>${{ secrets.LIME_OSSRH_ID }}</username>' >> $localSettings
-          echo '<password>${{ secrets.LIME_OSSRH_KEY }}</password>' >> $localSettings
+          echo '<id>central</id>' >> $localSettings
+          echo '<username>${{ secrets.LIME_CENTRAL_ID }}</username>' >> $localSettings
+          echo '<password>${{ secrets.LIME_CENTRAL_KEY }}</password>' >> $localSettings
           echo '</server>' >> $localSettings
           echo '</servers>' >> $localSettings
           echo '</settings>' >> $localSettings
