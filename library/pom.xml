@@ -97,7 +97,7 @@
                 <!-- caffeine versus wiremock -->
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
-                <version>3.49.2</version>
+                <version>3.49.3</version>
             </dependency>
             <dependency>
                 <groupId>org.wiremock</groupId>
@@ -180,7 +180,7 @@
             <dependency>
                 <groupId>software.amazon.jsii</groupId>
                 <artifactId>jsii-runtime</artifactId>
-                <version>1.111.0</version>
+                <version>1.112.0</version>
             </dependency>
             <!--End CDK -->
             <dependency>
@@ -191,7 +191,7 @@
             <dependency>
                 <groupId>net.javacrumbs.json-unit</groupId>
                 <artifactId>json-unit-assertj</artifactId>
-                <version>4.1.0</version>
+                <version>4.1.1</version>
             </dependency>
             <dependency>
                 <!-- SnapStart optimization -->
@@ -235,7 +235,7 @@
                 <!-- AWS SDK V1-->
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-java-sdk-bom</artifactId>
-                <version>1.12.782</version>
+                <version>1.12.783</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -243,7 +243,7 @@
                 <!-- AWS SDK V2-->
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>bom</artifactId>
-                <version>2.31.29</version>
+                <version>2.31.39</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
