@@ -186,7 +186,7 @@
             <dependency>
                 <groupId>org.xmlunit</groupId>
                 <artifactId>xmlunit-core</artifactId>
-                <version>2.10.0</version>
+                <version>2.10.2</version>
             </dependency>
             <dependency>
                 <groupId>net.javacrumbs.json-unit</groupId>
@@ -227,7 +227,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-bom</artifactId>
-                <version>5.17.0</version>
+                <version>5.18.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -243,7 +243,7 @@
                 <!-- AWS SDK V2-->
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>bom</artifactId>
-                <version>2.31.45</version>
+                <version>2.31.49</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -268,7 +268,7 @@
                 <!-- Spring Cloud AWS -->
                 <groupId>io.awspring.cloud</groupId>
                 <artifactId>spring-cloud-aws-dependencies</artifactId>
-                <version>3.3.0</version>
+                <version>3.3.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
