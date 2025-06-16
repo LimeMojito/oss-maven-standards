@@ -220,7 +220,7 @@
                 <!-- Jackson -->
                 <groupId>com.fasterxml.jackson</groupId>
                 <artifactId>jackson-bom</artifactId>
-                <version>2.19.0</version>
+                <version>2.19.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
