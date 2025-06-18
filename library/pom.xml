@@ -204,7 +204,7 @@
                 <!-- The great log4j2 zero day fix -->
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-bom</artifactId>
-                <version>2.24.3</version>
+                <version>2.25.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -243,7 +243,7 @@
                 <!-- AWS SDK V2-->
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>bom</artifactId>
-                <version>2.31.63</version>
+                <version>2.31.65</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
