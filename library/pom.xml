@@ -154,7 +154,7 @@
             <dependency>
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-lambda-java-events</artifactId>
-                <version>3.15.0</version>
+                <version>3.16.0</version>
             </dependency>
             <dependency>
                 <groupId>com.amazonaws</groupId>
@@ -186,7 +186,7 @@
             <dependency>
                 <groupId>org.xmlunit</groupId>
                 <artifactId>xmlunit-core</artifactId>
-                <version>2.10.2</version>
+                <version>2.10.3</version>
             </dependency>
             <dependency>
                 <groupId>net.javacrumbs.json-unit</groupId>
@@ -243,7 +243,7 @@
                 <!-- AWS SDK V2-->
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>bom</artifactId>
-                <version>2.31.65</version>
+                <version>2.31.67</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
