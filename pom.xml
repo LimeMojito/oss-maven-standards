@@ -39,7 +39,7 @@
         <checkstyle.version>10.21.0</checkstyle.version>
         <java.version>21</java.version>
         <!-- This has both library and build implications -->
-        <spring.boot.version>3.5.0</spring.boot.version>
+        <spring.boot.version>3.5.3</spring.boot.version>
         <aws-cdk-lib.version>2.174.0</aws-cdk-lib.version>
         <lombok.version>1.18.36</lombok.version>
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
