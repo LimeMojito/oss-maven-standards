@@ -71,7 +71,7 @@
                 <!-- Springdoc -> Spring Data conflict -->
                 <groupId>io.github.classgraph</groupId>
                 <artifactId>classgraph</artifactId>
-                <version>4.8.179</version>
+                <version>4.8.180</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
@@ -243,7 +243,7 @@
                 <!-- AWS SDK V2-->
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>bom</artifactId>
-                <version>2.31.68</version>
+                <version>2.31.69</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
