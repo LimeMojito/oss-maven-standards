@@ -97,7 +97,7 @@
                 <!-- caffeine versus wiremock -->
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
-                <version>3.49.4</version>
+                <version>3.49.5</version>
             </dependency>
             <dependency>
                 <groupId>org.wiremock</groupId>
