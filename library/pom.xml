@@ -71,7 +71,7 @@
                 <!-- Springdoc -> Spring Data conflict -->
                 <groupId>io.github.classgraph</groupId>
                 <artifactId>classgraph</artifactId>
-                <version>4.8.180</version>
+                <version>4.8.181</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
@@ -154,12 +154,12 @@
             <dependency>
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-lambda-java-events</artifactId>
-                <version>3.16.0</version>
+                <version>3.16.1</version>
             </dependency>
             <dependency>
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-lambda-java-serialization</artifactId>
-                <version>1.1.5</version>
+                <version>1.1.6</version>
             </dependency>
             <dependency>
                 <groupId>com.sun.jersey</groupId>
@@ -235,7 +235,7 @@
                 <!-- AWS SDK V1-->
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-java-sdk-bom</artifactId>
-                <version>1.12.787</version>
+                <version>1.12.788</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -243,7 +243,7 @@
                 <!-- AWS SDK V2-->
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>bom</artifactId>
-                <version>2.31.78</version>
+                <version>2.32.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
