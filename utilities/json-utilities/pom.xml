@@ -20,7 +20,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <name>${project.groupId}:${project.artifactId}</name>
+    <name>${project.artifactId}</name>
 
     <artifactId>json-utilities</artifactId>
     <packaging>jar</packaging>
@@ -49,6 +49,10 @@
             <!-- To access autoconfiguration setup -->
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-json</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.modulith</groupId>
+            <artifactId>spring-modulith-events-aws-sns</artifactId>
         </dependency>
     </dependencies>
 </project>
