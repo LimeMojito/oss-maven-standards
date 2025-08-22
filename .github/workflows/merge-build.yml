@@ -13,3 +13,7 @@ jobs:
   oss-maven-workflow:
     uses: ./.github/workflows/oss-java-build.yml
     secrets: inherit
+    permissions:
+      contents: read
+      packages: read
+      id-token: write

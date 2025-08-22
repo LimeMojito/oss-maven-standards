@@ -11,3 +11,7 @@ jobs:
   version-update:
     uses: ./.github/workflows/oss-maven-patch-version.yml
     secrets: inherit
+    permissions:
+      id-token: write
+      contents: write
+      pull-requests: write
