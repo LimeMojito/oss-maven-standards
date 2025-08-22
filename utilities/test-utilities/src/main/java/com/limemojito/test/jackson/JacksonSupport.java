@@ -88,7 +88,7 @@ public class JacksonSupport {
      *
      * @param json  json to parse
      * @param clazz Lambda Eventing class to pares.
-     * @param <T>  Typing for conversion
+     * @param <T>   Typing for conversion
      * @return instance of class.
      */
     public <T> T parseLambdaEvent(String json, Class<T> clazz) throws ConstraintViolationException {

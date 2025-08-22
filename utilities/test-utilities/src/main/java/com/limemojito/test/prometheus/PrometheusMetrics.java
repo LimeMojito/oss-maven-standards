@@ -110,7 +110,7 @@ public class PrometheusMetrics {
      *
      * @param metricName The name of the metric to retrieve.
      * @return The metric with the specified name, or null if no metric is found. Throws IllegalStateException
-     *         if multiple metrics are found with the same name.
+     * if multiple metrics are found with the same name.
      * @throws IllegalStateException If the metric name corresponds to multiple metrics.
      */
     public Metric getMetric(String metricName) {
@@ -131,7 +131,7 @@ public class PrometheusMetrics {
      *
      * @param metricName The name of the metric whose value is to be retrieved.
      * @return The value of the specified metric if found, or a default "value not found"
-     *         constant if the metric is missing.
+     * constant if the metric is missing.
      * @throws IllegalStateException If multiple metrics with the specified name are found.
      */
     public BigDecimal getValue(String metricName) {
@@ -143,7 +143,7 @@ public class PrometheusMetrics {
      * with the specified name and ensures that all provided tags match. If such a metric is found,
      * it is returned. If no matching metric is found, an IllegalStateException is thrown.
      *
-     * @param metricName the name of the metric to locate
+     * @param metricName  the name of the metric to locate
      * @param tagsToMatch a map of tags to match; all tags must be matched for the metric to be returned
      * @return the Metric object that matches the provided name and tags
      * @throws IllegalStateException if no matching metric is found
@@ -169,7 +169,7 @@ public class PrometheusMetrics {
      * If the metric is found, its value is returned. If no matching metric is found, a default
      * value indicating "value not found" is returned.
      *
-     * @param metricName the name of the metric whose value is to be retrieved
+     * @param metricName  the name of the metric whose value is to be retrieved
      * @param tagsToMatch a map of tags that must match completely on the metric
      * @return the numerical value of the matching metric if found; otherwise, a default "value not found" value
      */

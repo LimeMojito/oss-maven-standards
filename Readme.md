@@ -70,26 +70,34 @@ Our Open Source Standards library supports the following module types (archetype
 * maven-versions-plugin has backup poms disabled as VCS is here.
 
 ## Set a new release version
+
 ```shell
 mvn versions:set -DprocessAllModules -DgenerateBackupPoms=false -DnewVersion=XX-SNAPSHOT 
 ```
+
 Do a replacement in this readme file so that examples are updated to the new version.
 
 ## Report on what plugin updates are available
+
 ```shell
    mvn versions:display-plugin-updates | more
 
 ```
-                                              
+
 ## Update all library versions and parent dependencies
+
 ```shell
-mvn versions:update-parent
-mvn versions:update-properties
-mvn versions:use-latest-releases
+mvn versions:update-parent -U
+mvn versions:update-properties -U
+mvn versions:use-latest-releases -U
 ```
+
 ## Github Workflow
-For just running version updates on git using OSS lime mojito, there is a pre-canned workflow at .github/actions/oss-maven-patch-version.yml that updates and creates a PR.  Suggest configuring to run daily on a repository.
-                           
+
+For just running version updates on git using OSS lime mojito, there is a pre-canned workflow at
+.github/actions/oss-maven-patch-version.yml that updates and creates a PR. Suggest configuring to run daily on a
+repository.
+
 See Article: https://limemojito.com/version-dependency-updates-automated-in-maven/
 
 ---
@@ -176,12 +184,17 @@ Using Ant to perform tasks without writing a maven plugin. If statements and sim
 * [SnapStart Advanced Optimisation](https://limemojito.com/optimising-aws-snapstart-and-spring-boot-java-lambdas/)
 * [SnapStart and SQL](https://limemojito.com/optimising-aws-snapstart-and-spring-boot-java-lambdas/)
 * [Keeping SnapStart images hot](https://limemojito.com/surprise-aws-snapstart-needs-a-new-image/)
-       
-## Enabling Docker for Unit Tests
-Modern lambda code and tight integrations with AWS lean to unit testing logic on top of DynamoDb. SQS. etc.   While Docker is enabled by default for Integration Tests (*IT) by default, you can enable it so that docker can be used as a resource in
-Unit Tests.   Note that unit tests should still fulfill "class and 1st degree of resources" approach so that assertions are specific to the class under test.
 
-For existing test utilities, it is required to set the Spring Profile to "integration-test" so that localstack resources, etc, spin up as expected.
+## Enabling Docker for Unit Tests
+
+Modern lambda code and tight integrations with AWS lean to unit testing logic on top of DynamoDb. SQS. etc. While Docker
+is enabled by default for Integration Tests (*IT) by default, you can enable it so that docker can be used as a resource
+in
+Unit Tests. Note that unit tests should still fulfill "class and 1st degree of resources" approach so that assertions
+are specific to the class under test.
+
+For existing test utilities, it is required to set the Spring Profile to "integration-test" so that localstack
+resources, etc, spin up as expected.
 
 ```xml
 <properties>

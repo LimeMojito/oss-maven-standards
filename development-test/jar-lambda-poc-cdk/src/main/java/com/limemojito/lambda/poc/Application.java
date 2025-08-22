@@ -29,9 +29,9 @@ public final class Application {
         new JavaLambdaPocStack(app,
                                stackId,
                                StackProps.builder()
-                                           .stackName(stackId)
-                                           .description("Proof of a lambda deployment.")
-                                           .build());
+                                         .stackName(stackId)
+                                         .description("Proof of a lambda deployment.")
+                                         .build());
         app.synth();
     }
 }

@@ -79,8 +79,11 @@ public class S3Support {
             iterations++;
 
             if (iterations >= maxIterations) {
-                log.warn("Reached maximum iterations ({}) while wiping bucket {}. Deleted {} objects but there may be more.",
-                        maxIterations, bucketName, deleted);
+                log.warn(
+                        "Reached maximum iterations ({}) while wiping bucket {}. Deleted {} objects but there may be more.",
+                        maxIterations,
+                        bucketName,
+                        deleted);
                 break;
             }
         } while (objectListing.isTruncated());
@@ -277,8 +280,8 @@ public class S3Support {
         String encodedKey = key;
         if (key.contains(" ") || key.contains("?") || key.contains("&") || key.contains("=")) {
             encodedKey = java.net.URLEncoder.encode(key, "UTF-8")
-                .replace("%2F", "/")  // Preserve path separators
-                .replace("+", "%20"); // Replace + with %20 for spaces
+                                            .replace("%2F", "/")  // Preserve path separators
+                                            .replace("+", "%20"); // Replace + with %20 for spaces
         }
 
         return URI.create("s3://%s/%s".formatted(bucket, encodedKey));
@@ -296,9 +299,10 @@ public class S3Support {
         }
 
         String bucketName = s3.utilities()
-                             .parseUri(uri)
-                             .bucket()
-                             .orElseThrow(() -> new IllegalArgumentException("S3 URI does not contain a bucket name: " + uri));
+                              .parseUri(uri)
+                              .bucket()
+                              .orElseThrow(() -> new IllegalArgumentException("S3 URI does not contain a bucket name: "
+                                                                                      + uri));
 
         createBucket(bucketName);
     }
@@ -338,9 +342,9 @@ public class S3Support {
         }
 
         return s3.utilities()
-                .parseUri(uri)
-                .key()
-                .orElseThrow(() -> new IllegalArgumentException("S3 URI does not contain a key: " + uri));
+                 .parseUri(uri)
+                 .key()
+                 .orElseThrow(() -> new IllegalArgumentException("S3 URI does not contain a key: " + uri));
     }
 
     /**
@@ -356,8 +360,8 @@ public class S3Support {
         }
 
         return s3.utilities()
-                .parseUri(uri)
-                .bucket()
-                .orElseThrow(() -> new IllegalArgumentException("S3 URI does not contain a bucket name: " + uri));
+                 .parseUri(uri)
+                 .bucket()
+                 .orElseThrow(() -> new IllegalArgumentException("S3 URI does not contain a bucket name: " + uri));
     }
 }

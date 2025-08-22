@@ -36,6 +36,7 @@ public class DtoAsserter {
 
     /**
      * Assert that a Data Transfer Object can be serialized to and from json.
+     *
      * @param dto object to check.
      */
     public static void assertDto(Object dto) {
@@ -44,6 +45,7 @@ public class DtoAsserter {
 
     /**
      * Assert that a Data Transfer Object can be serialized to and from json.
+     *
      * @param dto object to check.
      */
     public void assertValid(Object dto) {

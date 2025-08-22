@@ -25,7 +25,7 @@
         </encoder>
     </appender>
 
-    <logger name="com.limemojito" level="debug" />
+    <logger name="com.limemojito" level="debug"/>
 
     <root level="warn">
         <appender-ref ref="CONSOLE"/>
