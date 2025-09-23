@@ -178,12 +178,13 @@ see [Article](https://limemojito.com/deploying-java-lambda-with-localstack/).
 Using Ant to perform tasks without writing a maven plugin. If statements and simple execs.
 [Article](https://limemojito.com/bending-maven-with-ant/)
 
-## AWS Lambdas and SnapStart
+## AWS Lambdas and Java
 
 * [Graal, native and why SnapStart](https://limemojito.com/native-java-aws-lambda-with-graal-vm/)
 * [SnapStart Advanced Optimisation](https://limemojito.com/optimising-aws-snapstart-and-spring-boot-java-lambdas/)
 * [SnapStart and SQL](https://limemojito.com/optimising-aws-snapstart-and-spring-boot-java-lambdas/)
 * [Keeping SnapStart images hot](https://limemojito.com/surprise-aws-snapstart-needs-a-new-image/)
+* [Using method level security with AWS Lambda](https://limemojito.com/using-aws-cognito-api-gateway-and-spring-cloud-function-lambda-for-security-authorisation/).
 
 ## Enabling Docker for Unit Tests
 
