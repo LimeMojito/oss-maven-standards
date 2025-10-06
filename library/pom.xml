@@ -98,7 +98,7 @@
                 <!-- caffeine versus wiremock -->
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
-                <version>3.51.0</version>
+                <version>3.51.1</version>
             </dependency>
             <dependency>
                 <groupId>org.wiremock</groupId>
@@ -108,7 +108,7 @@
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>9.8</version>
+                <version>9.9</version>
             </dependency>
             <dependency>
                 <groupId>org.springdoc</groupId>
@@ -236,7 +236,7 @@
                 <!-- AWS SDK V1-->
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-java-sdk-bom</artifactId>
-                <version>1.12.791</version>
+                <version>1.12.792</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -244,7 +244,7 @@
                 <!-- AWS SDK V2-->
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>bom</artifactId>
-                <version>2.34.5</version>
+                <version>2.35.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
