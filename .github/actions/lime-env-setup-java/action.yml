@@ -12,20 +12,14 @@ runs:
   using: composite
   steps:
     - name: Set up JDK
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         java-version: '21'
         distribution: 'corretto'
+        cache: 'maven'
 
     - name: Import GPG key
       uses: crazy-max/ghaction-import-gpg@v6
       with:
         gpg_private_key: ${{ inputs.code-signing-key }}
         passphrase: ${{ inputs.code-signing-passphrase }}
-
-    - name: Cache local Maven repository
-      uses: actions/cache@v4
-      with:
-        path: ~/.m2/repository
-        # limit caches to operating system and repository for maven.
-        key: "${{ runner.os }}-maven-${{ github.repository_id }}"
