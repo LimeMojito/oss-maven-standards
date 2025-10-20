@@ -31,8 +31,7 @@ runs:
 
     - uses: docker/setup-buildx-action@v3
 
-    # Disabled due to action not working with the cache layer anymore.
-    # - name: Cache Docker images.
-    #   uses: ScribeMD/docker-cache@0.5.0
-    #   with:
-    #     key: docker-LimeMojito-OSS
+    - name: Cache Docker images.
+      uses: AndreKurait/docker-cache@0.6.0
+      with:
+        key: docker-LimeMojito-OSS
