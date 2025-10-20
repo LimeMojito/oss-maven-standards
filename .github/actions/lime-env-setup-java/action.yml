@@ -27,4 +27,5 @@ runs:
       uses: actions/cache@v4
       with:
         path: ~/.m2/repository
-        key: "${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}"
+        # limit caches to operating system and repository for maven.
+        key: "${{ runner.os }}-maven-${{ github.repository_id }}"
