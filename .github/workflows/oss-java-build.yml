@@ -38,6 +38,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: docker-logs
-          path: |
-            target/docker-logs/
-            **/target/docker-logs
+          path: /**/target/docker-logs/*log
