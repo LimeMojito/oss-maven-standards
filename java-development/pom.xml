@@ -51,6 +51,7 @@
         <coverage.exclude.pattern.5/>
 
         <!-- docker test configuration defaults -->
+        <docker.build.log.dir>${project.build.directory}/docker-logs</docker.build.log.dir>
         <docker.unit.test>false</docker.unit.test>
         <docker.test.compose.dir>${project.basedir}/src/test/docker</docker.test.compose.dir>
         <docker.test.compose.file>${docker.test.compose.dir}/docker-compose.yml</docker.test.compose.file>
@@ -178,6 +179,40 @@
                                         <arg value="up"/>
                                         <arg value="--detach"/>
                                     </exec>
+                                </target>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>save-docker-logs</id>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <phase>post-integration-test</phase>
+                            <configuration>
+                                <target xmlns:ac="antlib:net.sf.antcontrib">
+                                    <echo message="Saving Docker logs for all running containers"/>
+                                    <exec executable="docker"
+                                          outputProperty="docker.container.list">
+                                        <arg value="ps"/>
+                                        <arg value="-aq"/>
+                                    </exec>
+                                    <ac:if>
+                                        <not>
+                                            <!--suppress UnresolvedMavenProperty -->
+                                            <equals arg1="" arg2="${docker.container.list}"/>
+                                        </not>
+                                        <then><!--suppress UnresolvedMavenProperty -->
+                                            <echo message="Docker container list: ${docker.container.list}"/>
+                                            <echo message="Output docker logs to ${docker.build.log.dir}"/>
+                                            <mkdir dir="${docker.build.log.dir}"/>
+                                            <exec executable="/bin/bash"
+                                                  dir="${docker.build.log.dir}">
+                                                <arg value="-c"/>
+                                                <!--suppress UnresolvedMavenProperty -->
+                                                <arg line='"for container in ${docker.container.list} ; do docker logs ${container} > ${container}.log ; done"'/>
+                                            </exec>
+                                        </then>
+                                    </ac:if>
                                 </target>
                             </configuration>
                         </execution>

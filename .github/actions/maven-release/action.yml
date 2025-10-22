@@ -70,6 +70,14 @@ runs:
         # deploy to OSSRH
         mvn -B ${{ inputs.extra-mvn-options }} -Dstyle.color=always -Prelease -Dbuild.number=${{github.run_number}} -Dgpg.keyname='${{inputs.code-signing-key-name}}' deploy
 
+    - name: Upload Docker logs
+      uses: actions/upload-artifact@v4
+      with:
+        name: docker-logs
+        path: |
+          target/docker-logs/
+          **/target/docker-logs
+
     - name: Push version and tag to repository
       shell: bash
       run: |

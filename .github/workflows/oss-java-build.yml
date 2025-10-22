@@ -24,7 +24,7 @@ jobs:
           code-signing-key: ${{ secrets.LIME_SIGNING_KEY }}
           code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ssh-key: "${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}"
 
@@ -33,3 +33,11 @@ jobs:
         run: |
           export MAVEN_GPG_PASSPHRASE="${{ secrets.LIME_SIGNING_PASSPHRASE }}"
           mvn -B -Dstyle.color=always --file pom.xml -Dbuild.number=${{github.run_number}} -Dgpg.keyname='Lime Mojito Pty Ltd' install
+
+      - name: Upload Docker logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-logs
+          path: |
+            target/docker-logs/
+            **/target/docker-logs

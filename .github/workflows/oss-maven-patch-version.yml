@@ -21,7 +21,7 @@ jobs:
           code-signing-key: ${{ secrets.LIME_SIGNING_KEY }}
           code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ssh-key: "${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}"
 
