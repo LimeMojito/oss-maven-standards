@@ -204,8 +204,9 @@
                                           failonerror="true"
                                           outputProperty="docker.container.list">
                                         <arg value="-c"/>
+                                        <!-- Quoting in XML entities so it gets passed through to the bash command line -->
                                         <!--suppress UnresolvedMavenProperty -->
-                                        <arg line='"echo ${docker.container.list.raw} | tr -d &apos;\n&apos;"'/>
+                                        <arg line='"echo &quot;${docker.container.list.raw}&quot; | tr -d &apos;\n&apos;"'/>
                                     </exec>
                                     <ac:if>
                                         <not>
