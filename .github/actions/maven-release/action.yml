@@ -71,6 +71,7 @@ runs:
         mvn -B ${{ inputs.extra-mvn-options }} -Dstyle.color=always -Prelease -Dbuild.number=${{github.run_number}} -Dgpg.keyname='${{inputs.code-signing-key-name}}' deploy
 
     - name: Upload Docker logs
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: docker-logs

@@ -35,6 +35,7 @@ jobs:
           mvn -B -Dstyle.color=always --file pom.xml -Dbuild.number=${{github.run_number}} -Dgpg.keyname='Lime Mojito Pty Ltd' install
 
       - name: Upload Docker logs
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: docker-logs
