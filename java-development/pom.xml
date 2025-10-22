@@ -192,11 +192,20 @@
                                 <!--suppress MavenModelInspection -->
                                 <skip>${docker.test.compose.skip}</skip>
                                 <target xmlns:ac="antlib:net.sf.antcontrib">
-                                    <echo message="Saving Docker logs for all running containers"/>
+                                    <echo level="info"
+                                          message="Saving Docker logs for all running containers"/>
                                     <exec executable="docker"
-                                          outputProperty="docker.container.list">
+                                          failonerror="true"
+                                          outputProperty="docker.container.list.raw">
                                         <arg value="ps"/>
                                         <arg value="-aq"/>
+                                    </exec>
+                                    <exec executable="/bin/bash"
+                                          failonerror="true"
+                                          outputProperty="docker.container.list">
+                                        <arg value="-c"/>
+                                        <!--suppress UnresolvedMavenProperty -->
+                                        <arg line='"echo ${docker.container.list.raw} | tr -d &apos;\n&apos;"'/>
                                     </exec>
                                     <ac:if>
                                         <not>
@@ -204,14 +213,17 @@
                                             <equals arg1="" arg2="${docker.container.list}"/>
                                         </not>
                                         <then><!--suppress UnresolvedMavenProperty -->
-                                            <echo message="Docker container list: ${docker.container.list}"/>
-                                            <echo message="Output docker logs to ${docker.build.log.dir}"/>
+                                            <echo level="info"
+                                                  message="Docker container list: ${docker.container.list}"/>
+                                            <echo level="info"
+                                                  message="Output docker logs to ${docker.build.log.dir}"/>
                                             <mkdir dir="${docker.build.log.dir}"/>
                                             <exec executable="/bin/bash"
-                                                  dir="${docker.build.log.dir}">
+                                                  dir="${docker.build.log.dir}"
+                                                  failonerror="true">
                                                 <arg value="-c"/>
                                                 <!--suppress UnresolvedMavenProperty -->
-                                                <arg line='"for container in ${docker.container.list} ; do docker logs ${container} > ${container}.log ; done"'/>
+                                                <arg line='"for container in ${docker.container.list}; do name=$(docker ps --format "{{.Names}}" --filter "id=e53148ed83e5"); docker logs ${container} > ${container}-$name.log; echo Wrote ${container}-$name.log; done"'/>
                                             </exec>
                                         </then>
                                     </ac:if>
