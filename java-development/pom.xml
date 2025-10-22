@@ -206,7 +206,7 @@
                                         <arg value="-c"/>
                                         <!-- Quoting in XML entities so it gets passed through to the bash command line -->
                                         <!--suppress UnresolvedMavenProperty -->
-                                        <arg line='"echo &quot;${docker.container.list.raw}&quot; | tr -d &apos;\n&apos;"'/>
+                                        <arg line='"echo &apos;${docker.container.list.raw}&apos; | tr &apos;\n&apos; &apos; &apos;"'/>
                                     </exec>
                                     <ac:if>
                                         <not>
@@ -224,7 +224,7 @@
                                                   failonerror="true">
                                                 <arg value="-c"/>
                                                 <!--suppress UnresolvedMavenProperty -->
-                                                <arg line='"for container in ${docker.container.list}; do name=$(docker ps --format "{{.Names}}" --filter "id=e53148ed83e5"); docker logs ${container} > ${container}-$name.log; echo Wrote ${container}-$name.log; done"'/>
+                                                <arg line='"for container in ${docker.container.list}; do name=$(docker ps --format &quot;{{.Names}}&quot; --filter &quot;id=$container&quot;); docker logs ${container} > ${container}-$name.log; echo Wrote ${container}-$name.log; done"'/>
                                             </exec>
                                         </then>
                                     </ac:if>
