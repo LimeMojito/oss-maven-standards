@@ -38,4 +38,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: docker-logs
-          path: /**/target/docker-logs/*log
+          path: ${{ github.workspace }}/**/target/docker-logs/*
+          retention-days: 1
+          compression-level: 9
