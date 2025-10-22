@@ -183,7 +183,7 @@
                             </configuration>
                         </execution>
                         <execution>
-                            <id>save-docker-logs</id>
+                            <id>docker-save-logs</id>
                             <goals>
                                 <goal>run</goal>
                             </goals>
