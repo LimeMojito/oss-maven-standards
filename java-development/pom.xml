@@ -189,6 +189,8 @@
                             </goals>
                             <phase>post-integration-test</phase>
                             <configuration>
+                                <!--suppress MavenModelInspection -->
+                                <skip>${docker.test.compose.skip}</skip>
                                 <target xmlns:ac="antlib:net.sf.antcontrib">
                                     <echo message="Saving Docker logs for all running containers"/>
                                     <exec executable="docker"
