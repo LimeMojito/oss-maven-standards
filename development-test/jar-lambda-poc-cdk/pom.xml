@@ -28,7 +28,7 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>java-cdk-development</artifactId>
-        <version>15.3.5-SNAPSHOT</version>
+        <version>15.3.5</version>
         <relativePath>../../java-cdk-development</relativePath>
     </parent>
 
@@ -40,7 +40,7 @@
         <dependency>
             <groupId>com.limemojito.oss.standards.development-test</groupId>
             <artifactId>jar-lambda-poc</artifactId>
-            <version>15.3.5-SNAPSHOT</version>
+            <version>15.3.5</version>
         </dependency>
     </dependencies>
 </project>
