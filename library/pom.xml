@@ -55,7 +55,7 @@
                 <!-- Caffeine versus wiremock -->
                 <groupId>com.google.errorprone</groupId>
                 <artifactId>error_prone_annotations</artifactId>
-                <version>2.43.0</version>
+                <version>2.44.0</version>
             </dependency>
             <dependency>
                 <groupId>org.jetbrains</groupId>
@@ -98,7 +98,7 @@
                 <!-- caffeine versus wiremock -->
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
-                <version>3.51.1</version>
+                <version>3.52.0</version>
             </dependency>
             <dependency>
                 <groupId>org.wiremock</groupId>
@@ -118,12 +118,12 @@
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
-                <version>1.19.0</version>
+                <version>1.20.0</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.20.0</version>
+                <version>2.21.0</version>
             </dependency>
             <dependency>
                 <groupId>commons-logging</groupId>
@@ -176,12 +176,12 @@
             <dependency>
                 <groupId>software.constructs</groupId>
                 <artifactId>constructs</artifactId>
-                <version>10.4.2</version>
+                <version>10.4.3</version>
             </dependency>
             <dependency>
                 <groupId>software.amazon.jsii</groupId>
                 <artifactId>jsii-runtime</artifactId>
-                <version>1.118.0</version>
+                <version>1.119.0</version>
             </dependency>
             <!--End CDK -->
             <dependency>
@@ -244,7 +244,7 @@
                 <!-- AWS SDK V2-->
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>bom</artifactId>
-                <version>2.37.3</version>
+                <version>2.38.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
