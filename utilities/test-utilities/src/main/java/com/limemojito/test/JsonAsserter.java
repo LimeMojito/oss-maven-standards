@@ -17,10 +17,10 @@
 
 package com.limemojito.test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.limemojito.json.ObjectMapperPrototype;
+import com.limemojito.json.JsonMapperPrototype;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import tools.jackson.databind.json.JsonMapper;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,16 +29,17 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Checks that an instance can be serialized and deserialized from JSON
  */
 @Slf4j
+@SuppressWarnings("ClassCanBeRecord")
 public class JsonAsserter {
-    private static final JsonAsserter INSTANCE = new JsonAsserter(ObjectMapperPrototype.buildBootLikeMapper());
-    private final ObjectMapper objectMapper;
+    private static final JsonAsserter INSTANCE = new JsonAsserter(JsonMapperPrototype.buildBootLikeMapper());
+    private final JsonMapper objectMapper;
 
     /**
      * Represents a class that checks whether an instance can be serialized and deserialized from JSON.
      *
      * @param objectMapper Jackson object mapper to use.
      */
-    public JsonAsserter(ObjectMapper objectMapper) {
+    public JsonAsserter(JsonMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 

@@ -19,11 +19,10 @@ package com.limemojito.aws.lambda;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.limemojito.aws.lambda.security.ApiGatewayAuthenticationMapper;
 import com.limemojito.aws.lambda.security.ApiGatewayPrincipal;
 import com.limemojito.json.JsonLoader;
-import com.limemojito.json.ObjectMapperPrototype;
+import com.limemojito.json.JsonMapperPrototype;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.Validation;
@@ -55,7 +54,7 @@ public class ApiGatewayResponseDecoratorTest {
 
     @SuppressWarnings("resource")
     public ApiGatewayResponseDecoratorTest() {
-        json = new JsonLoader(ObjectMapperPrototype.buildBootLikeMapper());
+        json = new JsonLoader(JsonMapperPrototype.buildBootLikeMapper());
         factory = new ApiGatewayResponseDecoratorFactory(json, new ApiGatewayExceptionMapper() {
         }, new ApiGatewayAuthenticationMapper("cognito:groups", "ANON", "anon", "PUBLIC"));
         validator = Validation.buildDefaultValidatorFactory().getValidator();
@@ -296,7 +295,7 @@ public class ApiGatewayResponseDecoratorTest {
         }
     }
 
-    @ResponseStatus(code = HttpStatus.I_AM_A_TEAPOT, reason = "custom reason")
+    @ResponseStatus(code = HttpStatus.ALREADY_REPORTED, reason = "custom reason")
     public static class TeapotException extends RuntimeException {
     }
 
@@ -306,8 +305,7 @@ public class ApiGatewayResponseDecoratorTest {
         return json.convertToMap(apiResponse);
     }
 
-    private void assertBodyJson(Map<String, Object> json, Map<String, String> expectedValues) throws
-                                                                                              JsonProcessingException {
+    private void assertBodyJson(Map<String, Object> json, Map<String, String> expectedValues) {
         Map<String, Object> values = this.json.convertToMap(json.get("body").toString());
         assertThat(values).containsAllEntriesOf(expectedValues);
     }

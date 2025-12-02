@@ -17,9 +17,8 @@
 
 package com.limemojito.aws.sqs.pump;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.limemojito.aws.sqs.SqsSender;
-import com.limemojito.json.ObjectMapperPrototype;
+import com.limemojito.json.JsonMapperPrototype;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +31,7 @@ import software.amazon.awssdk.services.sqs.model.MessageAttributeValue;
 import software.amazon.awssdk.services.sqs.model.SendMessageBatchRequest;
 import software.amazon.awssdk.services.sqs.model.SendMessageBatchRequestEntry;
 import software.amazon.awssdk.services.sqs.model.SendMessageBatchResponse;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 import java.util.Map;
@@ -46,7 +46,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class SqsPumpTest {
 
-    private final ObjectMapper objectMapper = ObjectMapperPrototype.buildBootLikeMapper();
+    private final JsonMapper objectMapper = JsonMapperPrototype.buildBootLikeMapper();
     private final int pumpMaxBatchSize = 10;
     private final String queueUrl = "sqs://queue/url";
     @Mock

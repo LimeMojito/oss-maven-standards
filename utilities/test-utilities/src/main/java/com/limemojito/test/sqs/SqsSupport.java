@@ -17,7 +17,7 @@
 
 package com.limemojito.test.sqs;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import tools.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.limemojito.aws.sqs.LocalstackSqsConfig;
 import com.limemojito.aws.sqs.SqsSender;

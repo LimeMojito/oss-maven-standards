@@ -17,8 +17,9 @@
 
 package com.limemojito.json;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
 import java.io.InputStream;
@@ -32,6 +33,8 @@ import java.util.Map;
  * Uses an instance of ObjectMapper to perform the deserialization.  Exceptions are converted to runtime
  * to assist with functional style programming.
  */
+@RequiredArgsConstructor
+@SuppressWarnings("ClassCanBeRecord")
 public class JsonLoader {
 
     /**
@@ -40,17 +43,7 @@ public class JsonLoader {
     public static final TypeReference<Map<String, Object>> MAP_TYPE = new TypeReference<>() {
     };
 
-    private final ObjectMapper objectMapper;
-
-    /**
-     * A utility class for loading JSON data from a resource using the Jackson library.
-     * Uses an instance of ObjectMapper to perform the deserialization.
-     *
-     * @param objectMapper Jackson Object mapper to delegate JSON operations to.
-     */
-    public JsonLoader(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
+    private final JsonMapper jsonMapper;
 
     /**
      * Parses the supplied string json to an object value.
@@ -62,7 +55,7 @@ public class JsonLoader {
      */
     @SneakyThrows
     public <T> T convert(String json, Class<T> clazz) {
-        return objectMapper.readValue(json, clazz);
+        return jsonMapper.readValue(json, clazz);
     }
 
     /**
@@ -75,7 +68,7 @@ public class JsonLoader {
      */
     @SneakyThrows
     public <T> T convert(byte[] json, Class<T> clazz) {
-        return objectMapper.readValue(json, clazz);
+        return jsonMapper.readValue(json, clazz);
     }
 
     /**
@@ -88,7 +81,7 @@ public class JsonLoader {
      */
     @SneakyThrows
     public <T> T convert(InputStream json, Class<T> clazz) {
-        return objectMapper.readValue(json, clazz);
+        return jsonMapper.readValue(json, clazz);
     }
 
     /**
@@ -101,7 +94,7 @@ public class JsonLoader {
      */
     @SneakyThrows
     public <T> T convert(String json, TypeReference<T> typeReference) {
-        return objectMapper.readValue(json, typeReference);
+        return jsonMapper.readValue(json, typeReference);
     }
 
     /**
@@ -114,7 +107,7 @@ public class JsonLoader {
      */
     @SneakyThrows
     public <T> T convert(InputStream json, TypeReference<T> typeReference) {
-        return objectMapper.readValue(json, typeReference);
+        return jsonMapper.readValue(json, typeReference);
     }
 
     /**
@@ -127,7 +120,7 @@ public class JsonLoader {
      */
     @SneakyThrows
     public <T> T convert(byte[] json, TypeReference<T> typeReference) {
-        return objectMapper.readValue(json, typeReference);
+        return jsonMapper.readValue(json, typeReference);
     }
 
     /**
@@ -145,7 +138,7 @@ public class JsonLoader {
      * @param instance Object instance to convert
      */
     public Map<String, Object> convertToMap(Object instance) {
-        return objectMapper.convertValue(instance, MAP_TYPE);
+        return jsonMapper.convertValue(instance, MAP_TYPE);
     }
 
     /**
@@ -156,7 +149,7 @@ public class JsonLoader {
      */
     @SneakyThrows
     public String toJson(Object instance) {
-        return objectMapper.writeValueAsString(instance);
+        return jsonMapper.writeValueAsString(instance);
     }
 
     /**
@@ -167,7 +160,7 @@ public class JsonLoader {
      */
     @SneakyThrows
     public void toJson(OutputStream output, Object instance) {
-        objectMapper.writeValue(output, instance);
+        jsonMapper.writeValue(output, instance);
     }
 
     /**
@@ -178,7 +171,7 @@ public class JsonLoader {
      */
     @SneakyThrows
     public void toJson(Writer outputWriter, Object instance) {
-        objectMapper.writeValue(outputWriter, instance);
+        jsonMapper.writeValue(outputWriter, instance);
     }
 
     /**
@@ -193,7 +186,7 @@ public class JsonLoader {
     public <T> T loadFrom(String resourcePath, Class<T> aClass) {
         try (InputStream resourceAsStream = getClass().getResourceAsStream(resourcePath)) {
             assertStreamFound(resourcePath, resourceAsStream);
-            return objectMapper.readValue(resourceAsStream, aClass);
+            return jsonMapper.readValue(resourceAsStream, aClass);
         }
     }
 
@@ -209,7 +202,7 @@ public class JsonLoader {
     public <T> T loadFrom(String resourcePath, TypeReference<T> typeReference) {
         try (InputStream resourceAsStream = getClass().getResourceAsStream(resourcePath)) {
             assertStreamFound(resourcePath, resourceAsStream);
-            return objectMapper.readValue(resourceAsStream, typeReference);
+            return jsonMapper.readValue(resourceAsStream, typeReference);
         }
     }
 

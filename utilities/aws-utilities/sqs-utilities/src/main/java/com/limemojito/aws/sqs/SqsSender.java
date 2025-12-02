@@ -18,12 +18,12 @@
 package com.limemojito.aws.sqs;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.*;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -103,7 +103,7 @@ public class SqsSender {
     private static final String JSON_CONTENT = "application/json";
 
     private final SqsClient sqs;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper objectMapper;
 
     /**
      * Sends a message to a specified queue URL.

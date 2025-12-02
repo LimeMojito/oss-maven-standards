@@ -17,7 +17,7 @@
 
 package com.limemojito.test.lambda;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import tools.jackson.core.type.TypeReference;
 import com.limemojito.test.jackson.JacksonSupport;
 import com.limemojito.test.s3.S3Support;
 import jakarta.annotation.PreDestroy;

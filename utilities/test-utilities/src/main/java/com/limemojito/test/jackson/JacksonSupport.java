@@ -19,7 +19,7 @@ package com.limemojito.test.jackson;
 
 import com.amazonaws.services.lambda.runtime.serialization.PojoSerializer;
 import com.amazonaws.services.lambda.runtime.serialization.events.LambdaEventSerializers;
-import com.fasterxml.jackson.core.type.TypeReference;
+import tools.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;

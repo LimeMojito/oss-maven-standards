@@ -17,14 +17,14 @@
 
 package com.limemojito.test;
 
-import com.limemojito.json.ObjectMapperPrototype;
+import com.limemojito.json.JsonMapperPrototype;
 
 /**
  * A utility class for asserting that a Data Transfer Object (DTO) can be serialized to and deserialized from JSON.
  */
 public class DtoAsserter {
 
-    private static final DtoAsserter INSTANCE = new DtoAsserter(new JsonAsserter(ObjectMapperPrototype.buildBootLikeMapper()));
+    private static final DtoAsserter INSTANCE = new DtoAsserter(new JsonAsserter(JsonMapperPrototype.buildBootLikeMapper()));
     private final JsonAsserter jsonAsserter;
 
     /**
