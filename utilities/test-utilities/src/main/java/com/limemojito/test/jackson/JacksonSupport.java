@@ -20,7 +20,6 @@ package com.limemojito.test.jackson;
 import com.amazonaws.services.lambda.runtime.serialization.PojoSerializer;
 import com.amazonaws.services.lambda.runtime.serialization.events.LambdaEventSerializers;
 import tools.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -29,6 +28,7 @@ import lombok.SneakyThrows;
 import net.javacrumbs.jsonunit.assertj.JsonAssertions;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -47,7 +47,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RequiredArgsConstructor
 public class JacksonSupport {
     private static final int ONE_KB = 1024;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper objectMapper;
     private final Validator validator;
     private final TypeReference<Map<String, Object>> rawMapType = new TypeReference<>() {
     };

@@ -17,14 +17,9 @@
 
 package com.limemojito.test;
 
-import org.hamcrest.core.Is;
-
 import java.util.regex.Pattern;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Assert equals, hashCode and toString.
@@ -40,21 +35,22 @@ public class CanonicalAsserter {
     public static void assertCanonical(Object instance, Object duplicate, Object other) {
         assertToString(instance);
 
-        assertThat(instance, not(Is.is(nullValue())));
-        assertThat(duplicate, not(Is.is(nullValue())));
-        assertThat(other, not(Is.is(nullValue())));
+        assertThat(instance).isNotNull();
+        assertThat(duplicate).isNotNull();
+        assertThat(other).isNotNull();
 
-        assertThat(instance, Is.is(instance));
-        assertThat(instance, Is.is(duplicate));
-        assertThat(instance.equals(other), Is.is(false));
-        assertThat(instance.equals("HF^$*&#2"), Is.is(false));
-        assertThat(instance.hashCode(), Is.is(duplicate.hashCode()));
+        //noinspection EqualsWithItself
+        assertThat(instance).isEqualTo(instance);
+        assertThat(instance).isEqualTo(duplicate);
+        assertThat(instance).isNotEqualTo(other);
+        assertThat(instance).isNotEqualTo("HF^$*&#2");
+        assertThat(instance.hashCode()).isEqualTo(duplicate.hashCode());
     }
 
     private static void assertToString(Object instance) {
         final String defaultToString = instance.getClass().getName() + "@[0-9a-fA-F]*";
         final String foundToString = instance.toString();
         final boolean matches = Pattern.matches(defaultToString, foundToString);
-        assertFalse(String.format("Default toString detected [%s]", foundToString), matches);
+        assertThat(matches).withFailMessage("Default toString detected [%s]", foundToString).isTrue();
     }
 }

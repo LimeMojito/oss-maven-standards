@@ -17,31 +17,25 @@
 
 package com.limemojito.test;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.NotSerializableException;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class SerializableAsserterTest {
 
     @Test
-    public void shouldSerializeOk() throws Exception {
+    public void shouldSerializeOk() {
         SerializableAsserter.assertSerializable("This is a simple string");
     }
 
-    @Test(expected = NotSerializableException.class)
-    public void shouldNotBeSerializable() throws Exception {
-        SerializableAsserter.assertSerializable(new Wombat("bang"));
+    @Test
+    public void shouldNotBeSerializable() {
+        assertThatThrownBy(() -> SerializableAsserter.assertSerializable(new Wombat("bang")))
+                .isInstanceOf(NotSerializableException.class);
     }
 
-    private static class Wombat {
-        private final String value;
-
-        public Wombat(String notDefaultConstructor) {
-            value = notDefaultConstructor;
-        }
-
-        public String getValue() {
-            return value;
-        }
+    private record Wombat(String value) {
     }
 }

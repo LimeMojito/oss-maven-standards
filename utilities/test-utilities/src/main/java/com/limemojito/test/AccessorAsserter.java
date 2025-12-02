@@ -28,8 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Asserts the accessors (Getters and Setters) of a class.
@@ -98,7 +97,7 @@ public final class AccessorAsserter {
             public void visitDescriptor(Object instance, PropertyDescriptor d) {
                 final Method readMethod = d.getReadMethod();
                 if (readMethod != null) {
-                    assertNotNull(readMethod.invoke(instance));
+                    assertThat(readMethod.invoke(instance)).isNotNull();
                 }
             }
         });
@@ -151,8 +150,10 @@ public final class AccessorAsserter {
             @SneakyThrows
             private void checkWriteValue(Object o, Method readMethod, Object wrote) {
                 final Object value = callGetter(o, readMethod);
-                assertNotNull("Read is null after write " + readMethod, value);
-                assertEquals("Read method failed on " + readMethod, wrote, value);
+                assertThat(value).withFailMessage("Read is null after write %s", readMethod)
+                                 .isNotNull();
+                assertThat(wrote).withFailMessage("Read method failed on %s", readMethod)
+                                 .isEqualTo(value);
             }
         });
     }

@@ -19,7 +19,7 @@ package com.limemojito.test;
 
 import com.limemojito.json.JsonMapperPrototype;
 import lombok.Data;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DtoAsserterTest {
 

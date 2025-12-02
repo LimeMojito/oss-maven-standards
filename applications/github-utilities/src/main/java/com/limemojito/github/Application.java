@@ -18,8 +18,8 @@
 package com.limemojito.github;
 
 import com.jcabi.github.FromProperties;
-import com.jcabi.github.Github;
-import com.jcabi.github.RtGithub;
+import com.jcabi.github.GitHub;
+import com.jcabi.github.RtGitHub;
 import com.jcabi.http.Request;
 import com.jcabi.http.request.ApacheRequest;
 import com.jcabi.http.wire.AutoRedirectingWire;
@@ -41,7 +41,7 @@ public class Application {
     }
 
     @Bean
-    public Github gitHub(@Value("${github.token}") String token) {
+    public GitHub gitHub(@Value("${github.token}") String token) {
         final Request request = new ApacheRequest("https://api.github.com")
                 .header(
                         USER_AGENT,
@@ -52,6 +52,6 @@ public class Application {
                 .header(AUTHORIZATION, String.format("token %s", token))
                 .through(AutoRedirectingWire.class);
 //                .through(VerboseWire.class);
-        return new RtGithub(request);
+        return new RtGitHub(request);
     }
 }

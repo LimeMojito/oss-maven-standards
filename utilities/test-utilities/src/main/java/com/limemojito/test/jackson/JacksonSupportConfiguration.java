@@ -17,18 +17,14 @@
 
 package com.limemojito.test.jackson;
 
-import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
-import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 /**
  * Include the spring boot object mappers as other ones are poor choices as not configurable
  * load validation support.
  */
 @Configuration
-@Import({JacksonAutoConfiguration.class, ValidationAutoConfiguration.class})
 @ComponentScan(basePackageClasses = JacksonSupport.class)
 public class JacksonSupportConfiguration {
 }

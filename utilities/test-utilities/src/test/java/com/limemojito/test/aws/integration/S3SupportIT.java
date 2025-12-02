@@ -19,15 +19,15 @@ package com.limemojito.test.aws.integration;
 
 import com.limemojito.test.s3.S3Support;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -36,7 +36,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("integration-test")
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = ITConfig.class, initializers = ConfigDataApplicationContextInitializer.class)
 public class S3SupportIT {
 
@@ -46,7 +46,7 @@ public class S3SupportIT {
     @Autowired
     private S3Support s3Support;
 
-    @Before
+    @BeforeEach
     public void cleanBucket() {
         s3Support.wipeBucket(bucketName);
     }
