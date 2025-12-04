@@ -15,22 +15,5 @@
  *
  */
 
-package com.limemojito.test;
-
-import com.limemojito.json.JsonMapperPrototype;
-import lombok.Data;
-import org.junit.jupiter.api.Test;
-
-public class DtoAsserterTest {
-
-    @Test
-    public void shouldPassAssertOk() {
-        new DtoAsserter(new JsonAsserter(JsonMapperPrototype.buildBootLikeMapper()));
-        DtoAsserter.assertDto(new Dto("world"));
-    }
-
-    @Data
-    public static class Dto {
-        private final String hello;
-    }
+public record TestRecord(String string, int number) {
 }

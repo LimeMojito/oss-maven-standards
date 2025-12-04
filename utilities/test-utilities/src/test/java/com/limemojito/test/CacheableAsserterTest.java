@@ -17,20 +17,24 @@
 
 package com.limemojito.test;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import java.io.NotSerializableException;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class CacheableAsserterTest {
 
     @Test
-    public void shouldSerializeOk() throws Exception {
+    public void shouldSerializeOk() {
         CacheableAsserter.assertCacheable("This is a simple string");
     }
 
-    @Test(expected = NotSerializableException.class)
-    public void shouldNotBeSerializable() throws Exception {
-        CacheableAsserter.assertCacheable(new Wombat("bang"));
+    @Test
+    public void shouldNotBeSerializable() {
+        assertThatThrownBy(() -> CacheableAsserter.assertCacheable(new Wombat("bang"))).isInstanceOf(
+                NotSerializableException.class);
     }
 
     @SuppressWarnings("InstantiationOfUtilityClass")
@@ -39,15 +43,6 @@ public class CacheableAsserterTest {
         new CacheableAsserter();
     }
 
-    private static class Wombat {
-        private final String value;
-
-        public Wombat(String notDefaultConstructor) {
-            value = notDefaultConstructor;
-        }
-
-        public String getValue() {
-            return value;
-        }
+    private record Wombat(String value) {
     }
 }

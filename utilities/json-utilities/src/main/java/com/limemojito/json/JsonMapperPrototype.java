@@ -17,17 +17,16 @@
 
 package com.limemojito.json;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import tools.jackson.databind.json.JsonMapper;
 
 /**
- * The ObjectMapperPrototype class provides a utility method for building a customized object mapper.
+ * The JsonMapperPrototype class provides a utility method for building a customized object mapper.
  * The object mapper is configured to be similar to the global Spring Boot setup.
  */
-public class ObjectMapperPrototype {
+public class JsonMapperPrototype {
 
-    private static ObjectMapper instance;
+    private static JsonMapper instance;
 
     /**
      * Configures a test object mapper similar to the global spring boot setup.
@@ -35,11 +34,11 @@ public class ObjectMapperPrototype {
      *
      * @return A useful object mapper.
      */
-    public static ObjectMapper buildBootLikeMapper() {
+    public static JsonMapper buildBootLikeMapper() {
         if (instance == null) {
-            instance = new ObjectMapper().findAndRegisterModules()
-                                         .registerModule(new JavaTimeModule())
-                                         .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            instance = JsonMapper.builder()
+                                 .findAndAddModules()
+                                 .build();
         }
         return instance;
     }

@@ -18,18 +18,18 @@
 package com.limemojito.github;
 
 import com.jcabi.github.Coordinates;
-import com.jcabi.github.Github;
+import com.jcabi.github.GitHub;
 import com.jcabi.github.Repos;
 import com.jcabi.http.Request;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonStructure;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonStructure;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 @Slf4j
 public class CommandLineParser implements CommandLineRunner {
 
-    private final Github gitHub;
+    private final GitHub gitHub;
     private final String organization;
     private final String repository;
     private final String ownerTeam;
@@ -51,10 +51,9 @@ public class CommandLineParser implements CommandLineRunner {
     private final int ownerTeamId;
     private final boolean isPublic;
     private final String description;
-    private final int workflowRepositoryId;
 
     @SuppressWarnings("ParameterNumber")
-    public CommandLineParser(Github gitHub,
+    public CommandLineParser(GitHub gitHub,
                              @Value("${github.org}") String organization,
                              @Value("${github.workflow.repository.id}") int workflowRepositoryId,
                              @Value("${github.owner.team}") String ownerTeam,
@@ -69,12 +68,12 @@ public class CommandLineParser implements CommandLineRunner {
         this.ownerTeam = ownerTeam;
         this.developTeam = developTeam;
         this.ownerTeamId = ownerTeamId;
-        this.workflowRepositoryId = workflowRepositoryId;
         this.isPublic = isPublic;
         this.description = description;
     }
 
     @Override
+    @SuppressWarnings("NullableProblems")
     public void run(String... args) throws Exception {
         final Coordinates.Simple repo = new Coordinates.Simple(organization, this.repository);
         create(repo);
@@ -215,7 +214,7 @@ public class CommandLineParser implements CommandLineRunner {
         gitHub.repos().get(coords).patch(json);
     }
 
-    private static JsonObject securitySetup() {
+    private static JsonStructure securitySetup() {
         final Map<String, Object> map = Map.of(
                 "secret_scanning", Map.of("status", "enabled"),
                 "secret_scanning_push_protection", Map.of("status", "enabled")
@@ -223,7 +222,7 @@ public class CommandLineParser implements CommandLineRunner {
         return json(map);
     }
 
-    private static JsonObject json(Map<String, Object> map) {
+    private static JsonStructure json(Map<String, Object> map) {
         return Json.createObjectBuilder(map).build();
     }
 

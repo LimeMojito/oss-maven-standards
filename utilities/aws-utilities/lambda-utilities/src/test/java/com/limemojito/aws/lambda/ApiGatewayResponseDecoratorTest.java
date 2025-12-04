@@ -19,11 +19,10 @@ package com.limemojito.aws.lambda;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.limemojito.aws.lambda.security.ApiGatewayAuthenticationMapper;
 import com.limemojito.aws.lambda.security.ApiGatewayPrincipal;
 import com.limemojito.json.JsonLoader;
-import com.limemojito.json.ObjectMapperPrototype;
+import com.limemojito.json.JsonMapperPrototype;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.Validation;
@@ -44,6 +43,7 @@ import java.util.function.Function;
 
 import static com.limemojito.aws.lambda.ApiGatewayResponseDecorator.writeDataAsBytes;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.ALREADY_REPORTED;
 
 @Slf4j
 public class ApiGatewayResponseDecoratorTest {
@@ -55,7 +55,7 @@ public class ApiGatewayResponseDecoratorTest {
 
     @SuppressWarnings("resource")
     public ApiGatewayResponseDecoratorTest() {
-        json = new JsonLoader(ObjectMapperPrototype.buildBootLikeMapper());
+        json = new JsonLoader(JsonMapperPrototype.buildBootLikeMapper());
         factory = new ApiGatewayResponseDecoratorFactory(json, new ApiGatewayExceptionMapper() {
         }, new ApiGatewayAuthenticationMapper("cognito:groups", "ANON", "anon", "PUBLIC"));
         validator = Validation.buildDefaultValidatorFactory().getValidator();
@@ -226,10 +226,10 @@ public class ApiGatewayResponseDecoratorTest {
     @Test
     public void shouldReturnGatewayErrorJsonResponseForCodeException() throws Exception {
         Map<String, Object> json = performFunction(input -> {
-            throw new TeapotException();
+            throw new AlreadyReportedException();
         });
         assertThat(json).containsAllEntriesOf(Map.of("statusCode",
-                                                     418,
+                                                     ALREADY_REPORTED.value(),
                                                      "headers",
                                                      Map.of("content-type", "application/json"),
                                                      "isBase64Encoded",
@@ -238,7 +238,7 @@ public class ApiGatewayResponseDecoratorTest {
                        Map.of("errorMessage",
                               "custom reason",
                               "errorType",
-                              "com.limemojito.aws.lambda.ApiGatewayResponseDecoratorTest$TeapotException"));
+                              "com.limemojito.aws.lambda.ApiGatewayResponseDecoratorTest$AlreadyReportedException"));
     }
 
     @Test
@@ -296,8 +296,8 @@ public class ApiGatewayResponseDecoratorTest {
         }
     }
 
-    @ResponseStatus(code = HttpStatus.I_AM_A_TEAPOT, reason = "custom reason")
-    public static class TeapotException extends RuntimeException {
+    @ResponseStatus(code = ALREADY_REPORTED, reason = "custom reason")
+    public static class AlreadyReportedException extends RuntimeException {
     }
 
     private Map<String, Object> performFunction(Function<String, ?> function) {
@@ -306,8 +306,7 @@ public class ApiGatewayResponseDecoratorTest {
         return json.convertToMap(apiResponse);
     }
 
-    private void assertBodyJson(Map<String, Object> json, Map<String, String> expectedValues) throws
-                                                                                              JsonProcessingException {
+    private void assertBodyJson(Map<String, Object> json, Map<String, String> expectedValues) {
         Map<String, Object> values = this.json.convertToMap(json.get("body").toString());
         assertThat(values).containsAllEntriesOf(expectedValues);
     }

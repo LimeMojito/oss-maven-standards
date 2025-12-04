@@ -17,30 +17,43 @@
 
 package com.limemojito.json.spring;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.limemojito.json.JsonLoader;
-import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
+import com.limemojito.json.JsonMapperPrototype;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
- * Directly all the JacksonAutoConfiguration to solve issues in Intellij with bean detection.
- *
- * @see JacksonAutoConfiguration
+ * Configures the Lime JasonLoader using Jackson in Spring Boot.
  */
 @Configuration
-@Import(JacksonAutoConfiguration.class)
+@Slf4j
 public class LimeJacksonJsonConfiguration {
 
+
     /**
-     * Creates a new json loader delegating to the supplied object mapper.
+     * If there is no JsonMapper defined, we create a default one using JsonMapperPrototype#buildBootLikeMapper().
      *
-     * @param objectMapper Jackson objet mapper to delegate JSON parsing to.
+     * @return a valid JsonMapper.
+     * @see JsonMapperPrototype#buildBootLikeMapper()
+     */
+    @ConditionalOnMissingBean(JsonMapper.class)
+    @Bean
+    public JsonMapper limeJsonMapper() {
+        log.warn("No Jackson JsonMapper found, creating a default one using JsonMapperPrototype#buildBootLikeMapper().");
+        return JsonMapperPrototype.buildBootLikeMapper();
+    }
+
+    /**
+     * Creates a new Lime JSON loader delegating to the supplied object mapper.
+     *
+     * @param objectMapper Jackson object mapper to delegate JSON parsing to.
      * @return a json loader bean.
      */
     @Bean
-    public JsonLoader jsonLoader(ObjectMapper objectMapper) {
+    public JsonLoader jsonLoader(JsonMapper objectMapper) {
         return new JsonLoader(objectMapper);
     }
 }

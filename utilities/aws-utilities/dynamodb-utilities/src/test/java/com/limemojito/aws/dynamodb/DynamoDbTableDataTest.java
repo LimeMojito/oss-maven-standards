@@ -17,21 +17,21 @@
 
 package com.limemojito.aws.dynamodb;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.limemojito.json.JsonLoader;
-import com.limemojito.json.ObjectMapperPrototype;
+import com.limemojito.json.JsonMapperPrototype;
 import org.junit.jupiter.api.Test;
 import software.amazon.awssdk.services.dynamodb.model.AttributeDefinition;
 import software.amazon.awssdk.services.dynamodb.model.CreateTableRequest;
 import software.amazon.awssdk.services.dynamodb.model.GlobalSecondaryIndex;
 import software.amazon.awssdk.services.dynamodb.model.KeySchemaElement;
+import tools.jackson.databind.json.JsonMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static software.amazon.awssdk.services.dynamodb.model.BillingMode.PAY_PER_REQUEST;
 
 public class DynamoDbTableDataTest {
 
-    private final ObjectMapper objectMapper = ObjectMapperPrototype.buildBootLikeMapper();
+    private final JsonMapper objectMapper = JsonMapperPrototype.buildBootLikeMapper();
     private final JsonLoader loader = new JsonLoader(objectMapper);
     private final LocalstackDynamodbTableCreator creator = new LocalstackDynamodbTableCreator(null, loader);
 

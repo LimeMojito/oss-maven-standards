@@ -19,22 +19,22 @@ package com.limemojito.test.aws.integration;
 
 import com.limemojito.test.sns.SnsSupport;
 import com.limemojito.test.sqs.SqsSupport;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import software.amazon.awssdk.services.sqs.model.Message;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("integration-test")
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = ITConfig.class, initializers = ConfigDataApplicationContextInitializer.class)
 public class SnsSupportIT {
     @Value("${aws.test.sns.topic}")
@@ -49,7 +49,7 @@ public class SnsSupportIT {
     private String subArn;
 
 
-    @Before
+    @BeforeEach
     public void setup() {
         snsSupport.create(topicName);
         assertThat(snsSupport.exists(topicName)).isTrue();
@@ -60,7 +60,7 @@ public class SnsSupportIT {
         subArn = snsSupport.subscribe(topicName, qName, true);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         snsSupport.unsubscribe(subArn);
         sqsSupport.destroy(qName);

@@ -17,11 +17,12 @@
 
 package com.limemojito.test.http;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
-import org.springframework.http.codec.json.Jackson2JsonEncoder;
+import com.limemojito.json.JsonMapperPrototype;
+import org.springframework.http.codec.json.JacksonJsonDecoder;
+import org.springframework.http.codec.json.JacksonJsonEncoder;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
+import tools.jackson.databind.json.JsonMapper;
 
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -32,7 +33,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  * This builder can be used to build a WebClient with a specified base URL and object mapper and is useful outside a
  * spring boot container for testing.
  *
- * @see com.limemojito.json.ObjectMapperPrototype
+ * @see JsonMapperPrototype
  */
 public class WebClientPrototype {
 
@@ -42,17 +43,17 @@ public class WebClientPrototype {
      * @param baseUrl      the base URL for the WebClient
      * @param objectMapper the object mapper to be used for serialization and deserialization
      * @return a WebClient.Builder object configured with the specified base URL and object mapper
-     * @see com.limemojito.json.ObjectMapperPrototype
+     * @see JsonMapperPrototype
      */
-    public static WebClient.Builder builder(String baseUrl, ObjectMapper objectMapper) {
-        final Jackson2JsonEncoder encoder = new Jackson2JsonEncoder(objectMapper, APPLICATION_JSON);
-        final Jackson2JsonDecoder decoder = new Jackson2JsonDecoder(objectMapper, APPLICATION_JSON);
+    public static WebClient.Builder builder(String baseUrl, JsonMapper objectMapper) {
+        final JacksonJsonEncoder encoder = new JacksonJsonEncoder(objectMapper, APPLICATION_JSON);
+        final JacksonJsonDecoder decoder = new JacksonJsonDecoder(objectMapper, APPLICATION_JSON);
         final ExchangeStrategies strategies = ExchangeStrategies.builder()
                                                                 .codecs(configurer -> {
                                                                     configurer.defaultCodecs()
-                                                                              .jackson2JsonEncoder(encoder);
+                                                                              .jacksonJsonEncoder(encoder);
                                                                     configurer.defaultCodecs()
-                                                                              .jackson2JsonDecoder(decoder);
+                                                                              .jacksonJsonDecoder(decoder);
                                                                 }).build();
         return WebClient.builder()
                         .baseUrl(baseUrl)

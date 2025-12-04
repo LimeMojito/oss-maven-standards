@@ -17,22 +17,17 @@
 
 package com.limemojito.test.aws.integration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.limemojito.json.ObjectMapperPrototype;
 import com.limemojito.test.s3.S3SupportConfig;
 import com.limemojito.test.sns.SnsSupportConfig;
 import com.limemojito.test.sqs.SqsSupportConfig;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 
 @PropertySource("classpath:/test.properties")
-@TestConfiguration
+@Configuration
 @Import({S3SupportConfig.class, SnsSupportConfig.class, SqsSupportConfig.class})
 class ITConfig {
-    @Bean
-    public ObjectMapper objectMapper() {
-        return ObjectMapperPrototype.buildBootLikeMapper();
-    }
+
 }

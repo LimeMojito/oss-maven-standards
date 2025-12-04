@@ -99,7 +99,7 @@ public class TestFunction {
         }
     }
 
-    @ResponseStatus(code = HttpStatus.I_AM_A_TEAPOT, reason = "custom reason")
+    @ResponseStatus(code = HttpStatus.ALREADY_REPORTED, reason = "custom reason")
     public static class TeapotException extends RuntimeException {
     }
 }

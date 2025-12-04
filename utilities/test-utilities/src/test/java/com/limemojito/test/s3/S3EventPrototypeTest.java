@@ -20,7 +20,9 @@ package com.limemojito.test.s3;
 import com.amazonaws.services.lambda.runtime.events.models.s3.S3EventNotification;
 import freemarker.template.TemplateNotFoundException;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class S3EventPrototypeTest {
 
@@ -46,15 +48,16 @@ public class S3EventPrototypeTest {
         assertSingleEventNotification(this.bucket, this.key, this.event, s3EventNotification);
     }
 
-    @Test(expected = TemplateNotFoundException.class)
+    @Test
     public void shouldFailLoad() {
-        new S3EventPrototype("missingTemplate");
+        assertThatThrownBy(() -> new S3EventPrototype("missingTemplate"))
+                .isInstanceOf(TemplateNotFoundException.class);
     }
 
     private void assertSingleEventNotification(String bucket, String key, String event, S3EventNotification s3Event) {
         Assertions.assertThat(s3Event.getRecords()).hasSize(1);
 
-        final S3EventNotification.S3EventNotificationRecord record = s3Event.getRecords().get(0);
+        final S3EventNotification.S3EventNotificationRecord record = s3Event.getRecords().getFirst();
         final S3EventNotification.S3Entity s3Entity = record.getS3();
         final S3EventNotification.S3BucketEntity bucketEntity = s3Entity.getBucket();
         final S3EventNotification.S3ObjectEntity objectEntity = s3Entity.getObject();

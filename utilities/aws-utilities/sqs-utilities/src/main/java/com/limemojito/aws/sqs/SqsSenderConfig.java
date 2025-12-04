@@ -17,12 +17,12 @@
 
 package com.limemojito.aws.sqs;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.limemojito.json.spring.LimeJacksonJsonConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import software.amazon.awssdk.services.sqs.SqsClient;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Configuration to create a SQS sender that uses all the standard attributes.
@@ -33,15 +33,15 @@ import software.amazon.awssdk.services.sqs.SqsClient;
 public class SqsSenderConfig {
 
     /**
-     * Creates a new instance of {@link SqsSender} using the provided {@link SqsClient} and {@link ObjectMapper}.
+     * Creates a new instance of {@link SqsSender} using the provided {@link SqsClient} and {@link JsonMapper}.
      * This method is used to configure a SQS sender that uses all the standard attributes.
      *
      * @param sqs          the {@link SqsClient} used to interact with Amazon Simple Queue Service (SQS)
-     * @param objectMapper the {@link ObjectMapper} used to convert objects to JSON
-     * @return a new instance of {@link SqsSender} configured with the provided {@link SqsClient} and {@link ObjectMapper}
+     * @param objectMapper the {@link JsonMapper} used to convert objects to JSON
+     * @return a new instance of {@link SqsSender} configured with the provided {@link SqsClient} and {@link JsonMapper}
      */
     @Bean
-    public SqsSender sqsSender(SqsClient sqs, ObjectMapper objectMapper) {
+    public SqsSender sqsSender(SqsClient sqs, JsonMapper objectMapper) {
         return new SqsSender(sqs, objectMapper);
     }
 }

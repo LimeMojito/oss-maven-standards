@@ -17,8 +17,10 @@
 
 package com.limemojito.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
@@ -26,32 +28,41 @@ import java.math.BigInteger;
 import java.nio.file.AccessMode;
 import java.util.*;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Fail.fail;
+
 public class AccessorAsserterTest {
 
     @Test
-    public void beanGettersOk() throws Exception {
+    public void beanGettersOk() {
         AccessorAsserter.assertGetters(createPopulatedBean());
     }
 
     @Test
-    public void beanGetSetOnPopulatedOk() throws Exception {
+    public void beanGetSetOnPopulatedOk() {
         AccessorAsserter.assertGettersAndSetters(createPopulatedBean());
     }
 
-    @Test(expected = InvocationTargetException.class)
-    public void badGetterStopsAssert() throws Exception {
-        class SomeBean {
-            public String getBang() {
-                throw new RuntimeException("bang");
-            }
-        }
-        AccessorAsserter.assertGetters(new SomeBean());
+    @Test
+    public void badGetterStopsAssert() {
+        assertThatThrownBy(() ->
+                           {
+                               class SomeBean {
+                                   @SuppressWarnings("unused")
+                                   public String getBang() {
+                                       throw new RuntimeException("bang");
+                                   }
+                               }
+                               AccessorAsserter.assertGetters(new SomeBean());
+                           }).isInstanceOf(InvocationTargetException.class);
     }
 
     @Test
-    public void brokenWriteMethodDetected() throws Exception {
+    public void brokenWriteMethodDetected() {
+        @SuppressWarnings({"LombokSetterMayBeUsed", "unused"})
         class BrokenWriteBehaviour {
-            @SuppressWarnings({"UnusedDeclaration"})
+            @SuppressWarnings({"UnusedDeclaration", "FieldCanBeLocal"})
             private boolean write;
 
             public boolean isWrite() {
@@ -64,25 +75,28 @@ public class AccessorAsserterTest {
         }
         try {
             AccessorAsserter.assertGettersAndSetters(new BrokenWriteBehaviour());
-            Assert.fail("Should throw exception");
+            //noinspection ResultOfMethodCallIgnored
+            fail("Should throw exception");
         } catch (AssertionError e) {
             final String message = e.getMessage();
-            Assert.assertTrue("Message " + message + " not expected", message.contains("Read method failed"));
+            assertThat(message).contains("Read method failed");
         }
 
     }
 
     @Test
-    public void shouldShowNoNullProperties() throws Exception {
+    public void shouldShowNoNullProperties() {
         SimpleModel one = new SimpleModel("key");
         one.setAttribute(33);
         AccessorAsserter.assertNotNullMembers(one);
     }
 
-    @Test(expected = AssertionError.class)
-    public void shouldFailOnNull() throws Exception {
-        SimpleModel one = new SimpleModel("key");
-        AccessorAsserter.assertNotNullMembers(one);
+    @Test
+    public void shouldFailOnNull() {
+        assertThatThrownBy(() -> {
+            SimpleModel one = new SimpleModel("key");
+            AccessorAsserter.assertNotNullMembers(one);
+        }).isInstanceOf(AssertionError.class);
     }
 
     private TestBean createPopulatedBean() {
@@ -103,11 +117,13 @@ public class AccessorAsserterTest {
                             (float) 1.0,
                             1.0,
                             true,
-                            new TreeSet<Integer>(),
-                            new LinkedList<Integer>(),
-                            new HashMap<Integer, Integer>());
+                            new TreeSet<>(),
+                            new LinkedList<>(),
+                            new HashMap<>());
     }
 
+    @Setter
+    @Getter
     static class TestBean {
         private String a;
         private byte c;
@@ -117,7 +133,7 @@ public class AccessorAsserterTest {
         private double f;
         private Object g;
         private Integer boxed;
-        @SuppressWarnings({"UnusedDeclaration"})
+        @SuppressWarnings({"UnusedDeclaration", "FieldCanBeLocal"})
         private boolean writeOnly;
         private List<String> collection;
         private Map<Integer, Integer> aHashMap;
@@ -176,190 +192,6 @@ public class AccessorAsserterTest {
             this.aHashMap = aHashMap;
             this.collection = new LinkedList<>();
             this.accessMode = AccessMode.EXECUTE;
-        }
-
-        public List<String> getCollection() {
-            return collection;
-        }
-
-        public void setCollection(List<String> collection) {
-            this.collection = new ArrayList<String>(collection);
-        }
-
-        public void setWriteOnly(boolean writeOnly) {
-            this.writeOnly = writeOnly;
-        }
-
-        public AccessMode getAccessMode() {
-            return accessMode;
-        }
-
-        public void setAccessMode(AccessMode accessMode) {
-            this.accessMode = accessMode;
-        }
-
-        public Integer getBoxed() {
-            return boxed;
-        }
-
-        public void setBoxed(Integer boxed) {
-            this.boxed = boxed;
-        }
-
-        public String getA() {
-            return a;
-        }
-
-        public void setA(String a) {
-            this.a = a;
-        }
-
-        public byte getC() {
-            return c;
-        }
-
-        public void setC(byte c) {
-            this.c = c;
-        }
-
-        public int getB() {
-            return b;
-        }
-
-        public void setB(int b) {
-            this.b = b;
-        }
-
-        public long getD() {
-            return d;
-        }
-
-        public void setD(long d) {
-            this.d = d;
-        }
-
-        public float getE() {
-            return e;
-        }
-
-        public void setE(float e) {
-            this.e = e;
-        }
-
-        public double getF() {
-            return f;
-        }
-
-        public void setF(double f) {
-            this.f = f;
-        }
-
-        public Object getG() {
-            return g;
-        }
-
-        public void setG(Object g) {
-            this.g = g;
-        }
-
-        public short getS() {
-            return s;
-        }
-
-        public void setS(short s) {
-            this.s = s;
-        }
-
-        public BigDecimal getBigDecimal() {
-            return bigDecimal;
-        }
-
-        public BigInteger getBigInteger() {
-            return bigInteger;
-        }
-
-        public void setBigDecimal(BigDecimal bigDecimal) {
-            this.bigDecimal = bigDecimal;
-        }
-
-        public void setBigInteger(BigInteger bigInteger) {
-            this.bigInteger = bigInteger;
-        }
-
-        public Map<Integer, Integer> getaHashMap() {
-            return aHashMap;
-        }
-
-        public Byte getaByte() {
-            return aByte;
-        }
-
-        public void setaByte(Byte aByte) {
-            this.aByte = aByte;
-        }
-
-        public Short getaShort() {
-            return aShort;
-        }
-
-        public void setaShort(Short aShort) {
-            this.aShort = aShort;
-        }
-
-        public Long getaLong() {
-            return aLong;
-        }
-
-        public void setaLong(Long aLong) {
-            this.aLong = aLong;
-        }
-
-        public Integer getaInteger() {
-            return aInteger;
-        }
-
-        public void setaInteger(Integer aInteger) {
-            this.aInteger = aInteger;
-        }
-
-        public Float getaFloat() {
-            return aFloat;
-        }
-
-        public void setaFloat(Float aFloat) {
-            this.aFloat = aFloat;
-        }
-
-        public Double getaDouble() {
-            return aDouble;
-        }
-
-        public void setaDouble(Double aDouble) {
-            this.aDouble = aDouble;
-        }
-
-        public Boolean getaBoolean() {
-            return aBoolean;
-        }
-
-        public void setaBoolean(Boolean aBoolean) {
-            this.aBoolean = aBoolean;
-        }
-
-        public Set<Integer> getaTreeSet() {
-            return aTreeSet;
-        }
-
-        public void setaTreeSet(TreeSet<Integer> aTreeSet) {
-            this.aTreeSet = aTreeSet;
-        }
-
-        public void setaHashMap(Map<Integer, Integer> aHashMap) {
-            this.aHashMap = aHashMap;
-        }
-
-        public void setaTreeSet(Set<Integer> aTreeSet) {
-            this.aTreeSet = aTreeSet;
         }
     }
 }

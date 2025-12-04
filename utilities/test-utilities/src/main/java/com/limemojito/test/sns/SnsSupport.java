@@ -17,13 +17,14 @@
 
 package com.limemojito.test.sns;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.limemojito.aws.sns.LocalstackSnsConfig;
 import com.limemojito.test.sqs.SqsSupport;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sns.SnsClient;
 import software.amazon.awssdk.services.sns.model.MessageAttributeValue;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -49,6 +50,7 @@ import java.util.Map;
  *  <p>This class can also operate on Actual AWS rather than just localstack.</p>
  */
 @Service
+@RequiredArgsConstructor
 public class SnsSupport {
     /**
      * Represents the header key for the deduplication ID in a message sent to the Amazon Simple Notification Service (SNS).
@@ -64,23 +66,7 @@ public class SnsSupport {
 
     private final SqsSupport sqs;
     private final SnsClient sns;
-    private final ObjectMapper mapper;
-
-    /**
-     * Represents support for interacting with the Amazon Simple Notification Service (SNS).
-     * This class provides methods for creating topics, retrieving ARNs, subscribing queues to topics, and sending messages to topics.
-     *
-     * @param sqs    The SqsSupport object used for interacting with the Amazon Simple Queue Service (SQS).
-     * @param sns    The SnsClient object used for interacting with the Amazon Simple Notification Service (SNS).
-     * @param mapper The ObjectMapper object used for converting messages to JSON format.
-     */
-    public SnsSupport(SqsSupport sqs,
-                      SnsClient sns,
-                      ObjectMapper mapper) {
-        this.sqs = sqs;
-        this.sns = sns;
-        this.mapper = mapper;
-    }
+    private final JsonMapper mapper;
 
     /**
      * Creates a topic in the Amazon Simple Notification Service (SNS) based on the given topic name.

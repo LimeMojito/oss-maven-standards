@@ -19,22 +19,20 @@ package com.limemojito.test.jackson;
 
 import com.amazonaws.services.lambda.runtime.serialization.PojoSerializer;
 import com.amazonaws.services.lambda.runtime.serialization.events.LambdaEventSerializers;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.validation.ConstraintViolation;
+import com.limemojito.test.validator.ValidationSupport;
 import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import net.javacrumbs.jsonunit.assertj.JsonAssertions;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
@@ -47,10 +45,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RequiredArgsConstructor
 public class JacksonSupport {
     private static final int ONE_KB = 1024;
-    private final ObjectMapper objectMapper;
-    private final Validator validator;
+    private final JsonMapper objectMapper;
     private final TypeReference<Map<String, Object>> rawMapType = new TypeReference<>() {
     };
+    private final ValidationSupport validator;
+
 
     /**
      * Parses and validates JSON String.
@@ -64,7 +63,7 @@ public class JacksonSupport {
     @SneakyThrows
     public <T> T parse(String json, Class<T> clazz) throws ConstraintViolationException {
         T value = objectMapper.readValue(json, clazz);
-        return hardValidate(value);
+        return validator.hardValidate(value);
     }
 
     /**
@@ -79,7 +78,7 @@ public class JacksonSupport {
     @SneakyThrows
     public <T> T parse(String json, TypeReference<T> type) throws ConstraintViolationException {
         T value = objectMapper.readValue(json, type);
-        return hardValidate(value);
+        return validator.hardValidate(value);
     }
 
     /**
@@ -109,7 +108,7 @@ public class JacksonSupport {
     public <T> T load(String pathResource, Class<T> clazz) throws ConstraintViolationException {
         try (InputStream inputStream = loadStream(pathResource)) {
             T value = objectMapper.readValue(inputStream, clazz);
-            return hardValidate(value);
+            return validator.hardValidate(value);
         }
     }
 
@@ -126,7 +125,7 @@ public class JacksonSupport {
     public <T> T load(String pathResource, TypeReference<T> type) throws ConstraintViolationException {
         try (InputStream inputStream = loadStream(pathResource)) {
             T value = objectMapper.readValue(inputStream, type);
-            return hardValidate(value);
+            return validator.hardValidate(value);
         }
     }
 
@@ -226,14 +225,6 @@ public class JacksonSupport {
      */
     public void assertJson(Object found, Object expected) {
         assertThatJson(found).isEqualTo(expected);
-    }
-
-    private <T> T hardValidate(T value) {
-        Set<ConstraintViolation<T>> violations = validator.validate(value);
-        if (!violations.isEmpty()) {
-            throw new ConstraintViolationException(violations);
-        }
-        return value;
     }
 
     private InputStream loadStream(String pathResource) {

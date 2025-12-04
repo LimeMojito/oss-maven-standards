@@ -23,7 +23,7 @@ import java.util.function.Function;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Note the source event jsons have been "reduced" to key attributes.
+ * Note the source event json files have been "reduced" to key attributes.
  */
 @ActiveProfiles("integration-test")
 @SpringBootTest(classes = {SecureTestConfiguration.class})

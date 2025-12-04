@@ -17,8 +17,9 @@
 
 package com.limemojito.test.jackson;
 
-import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
-import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
+import com.limemojito.json.spring.LimeJacksonJsonConfiguration;
+import com.limemojito.test.validator.ValidationSupportConfiguration;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -28,7 +29,8 @@ import org.springframework.context.annotation.Import;
  * load validation support.
  */
 @Configuration
-@Import({JacksonAutoConfiguration.class, ValidationAutoConfiguration.class})
+@Import({LimeJacksonJsonConfiguration.class, ValidationSupportConfiguration.class})
 @ComponentScan(basePackageClasses = JacksonSupport.class)
+@Slf4j
 public class JacksonSupportConfiguration {
 }

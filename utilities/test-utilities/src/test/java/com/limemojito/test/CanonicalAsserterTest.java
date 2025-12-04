@@ -17,9 +17,11 @@
 
 package com.limemojito.test;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import static com.limemojito.test.CanonicalAsserter.assertCanonical;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class CanonicalAsserterTest {
 
@@ -32,9 +34,12 @@ public class CanonicalAsserterTest {
         assertCanonical(instance, duplicate, other);
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void shouldAssertFailOnEqualOther() {
-        assertCanonical("Instance", "Instance", "Instance");
+        assertThatThrownBy(() -> assertCanonical("Instance",
+                                                 "Instance",
+                                                 "Instance"))
+                .isInstanceOf(AssertionError.class);
     }
 
 
@@ -44,9 +49,10 @@ public class CanonicalAsserterTest {
     }
 
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void shouldHaveDefaultToStringFailure() {
-        assertCanonical(new Object(), new Object(), "SecureTestConfiguration");
+        assertThatThrownBy(() -> assertCanonical(new Object(), new Object(), "SecureTestConfiguration"))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("not to match pattern");
     }
-
 }

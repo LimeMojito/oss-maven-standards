@@ -17,8 +17,7 @@
 
 package com.limemojito.test.sqs;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.type.TypeReference;
 import com.limemojito.aws.sqs.LocalstackSqsConfig;
 import com.limemojito.aws.sqs.SqsSender;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +30,7 @@ import software.amazon.awssdk.services.sqs.model.GetQueueAttributesResponse;
 import software.amazon.awssdk.services.sqs.model.Message;
 import software.amazon.awssdk.services.sqs.model.QueueDoesNotExistException;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageResponse;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -82,7 +82,7 @@ public class SqsSupport {
 
     private final SqsClient sqs;
     private final SqsSender sqsSender;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper objectMapper;
     private final TypeReference<? extends Map<String, Object>> mapType = new TypeReference<>() {
     };
 

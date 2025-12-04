@@ -22,7 +22,7 @@ import com.limemojito.aws.lambda.security.ApiGatewayAuthentication;
 import com.limemojito.aws.lambda.security.ApiGatewayAuthenticationMapper;
 import com.limemojito.aws.lambda.security.ApiGatewayPrincipal;
 import com.limemojito.json.JsonLoader;
-import com.limemojito.json.ObjectMapperPrototype;
+import com.limemojito.json.JsonMapperPrototype;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ApiGatewayAuthenticationMapperTest {
 
-    private final JsonLoader json = new JsonLoader(ObjectMapperPrototype.buildBootLikeMapper());
+    private final JsonLoader json = new JsonLoader(JsonMapperPrototype.buildBootLikeMapper());
     private final ApiGatewayAuthenticationMapper mapper = new ApiGatewayAuthenticationMapper("cognito:groups",
                                                                                              "ANON",
                                                                                              "AnonymousUser",
