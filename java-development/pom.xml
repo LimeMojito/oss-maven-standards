@@ -55,6 +55,7 @@
         <docker.unit.test>false</docker.unit.test>
         <docker.test.compose.dir>${project.basedir}/src/test/docker</docker.test.compose.dir>
         <docker.test.compose.file>${docker.test.compose.dir}/docker-compose.yml</docker.test.compose.file>
+        <docker.test.properties>${project.basedir}/target/docker.properties</docker.test.properties>
 
         <!-- Compiler configuration assuming JDK 11 or higher -->
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -106,18 +107,38 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>properties-maven-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>import-test-docker-properties</id>
+                            <!-- This import occurs AFTER identify-docker-compose, so that we know the docker state -->
+                            <phase>initialize</phase>
+                            <goals>
+                                <goal>read-project-properties</goal>
+                            </goals>
+                            <configuration>
+                                <files>
+                                    <file>${docker.test.properties}</file>
+                                </files>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
                     <executions>
                         <execution>
                             <id>identify-docker-compose</id>
-                            <phase>process-resources</phase>
+                            <phase>validate</phase>
                             <goals>
                                 <goal>run</goal>
                             </goals>
                             <configuration>
-                                <exportAntProperties>true</exportAntProperties>
                                 <target>
+                                    <!-- writes to a property file to avoid warnings from ant export properties
+                                         configuration -->
                                     <condition property="docker.test.compose.skip" else="false">
                                         <or>
                                             <equals arg1="${lime.fast-build}" arg2="true"/>
@@ -129,6 +150,9 @@
                                     <!--suppress UnresolvedMavenProperty -->
                                     <echo level="info"
                                           message="docker.test.compose.skip is ${docker.test.compose.skip}"/>
+                                    <!--suppress UnresolvedMavenProperty -->
+                                    <echo file="${docker.test.properties}"
+                                          message="docker.test.compose.skip=${docker.test.compose.skip}"/>
                                 </target>
                             </configuration>
                         </execution>
@@ -334,9 +358,8 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <configuration>
-                        <!--suppress UnresolvedMavenProperty -->
-                        <!-- Setup for mockito as per https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3 -->
-                        <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
+                        <!-- Setup for mockito as per https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html -->
+                        <argLine>-XX:+EnableDynamicAgentLoading</argLine>
                         <!-- as Lombok generated classes are NOT seen by boot -->
                         <classesDirectory>${project.build.outputDirectory}</classesDirectory>
                     </configuration>
@@ -422,7 +445,7 @@
                         <!-- Include set argLine such as jacoco.-->
                         <!--suppress UnresolvedMavenProperty -->
                         <!-- Setup for mockito as per https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3 -->
-                        <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
+                        <argLine>@{argLine} -XX:+EnableDynamicAgentLoading</argLine>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -526,6 +549,10 @@
 
         <!-- We define common PROCESS here.  The CONFIGURATIONS are in the plugin management section -->
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
