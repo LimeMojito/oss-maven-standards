@@ -32,6 +32,10 @@
         <relativePath>../../jar-development/pom.xml</relativePath>
     </parent>
 
+    <properties>
+        <coverage.line.ratio>0.31</coverage.line.ratio>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
