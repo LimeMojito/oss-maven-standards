@@ -18,6 +18,9 @@
 package com.limemojito.json.spring;
 
 import com.limemojito.json.JsonLoader;
+import com.limemojito.json.JsonMapperPrototype;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import tools.jackson.databind.json.JsonMapper;
@@ -26,10 +29,25 @@ import tools.jackson.databind.json.JsonMapper;
  * Configures the Lime JasonLoader using Jackson in Spring Boot.
  */
 @Configuration
+@Slf4j
 public class LimeJacksonJsonConfiguration {
 
+
     /**
-     * Creates a new json loader delegating to the supplied object mapper.
+     * If there is no JsonMapper defined, we create a default one using JsonMapperPrototype#buildBootLikeMapper().
+     *
+     * @return a valid JsonMapper.
+     * @see JsonMapperPrototype#buildBootLikeMapper()
+     */
+    @ConditionalOnMissingBean(JsonMapper.class)
+    @Bean
+    public JsonMapper limeJsonMapper() {
+        log.warn("No Jackson JsonMapper found, creating a default one using JsonMapperPrototype#buildBootLikeMapper().");
+        return JsonMapperPrototype.buildBootLikeMapper();
+    }
+
+    /**
+     * Creates a new Lime JSON loader delegating to the supplied object mapper.
      *
      * @param objectMapper Jackson object mapper to delegate JSON parsing to.
      * @return a json loader bean.

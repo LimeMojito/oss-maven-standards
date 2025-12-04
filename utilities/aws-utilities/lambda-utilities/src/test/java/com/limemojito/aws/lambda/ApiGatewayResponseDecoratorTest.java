@@ -43,6 +43,7 @@ import java.util.function.Function;
 
 import static com.limemojito.aws.lambda.ApiGatewayResponseDecorator.writeDataAsBytes;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.ALREADY_REPORTED;
 
 @Slf4j
 public class ApiGatewayResponseDecoratorTest {
@@ -225,10 +226,10 @@ public class ApiGatewayResponseDecoratorTest {
     @Test
     public void shouldReturnGatewayErrorJsonResponseForCodeException() throws Exception {
         Map<String, Object> json = performFunction(input -> {
-            throw new TeapotException();
+            throw new AlreadyReportedException();
         });
         assertThat(json).containsAllEntriesOf(Map.of("statusCode",
-                                                     418,
+                                                     ALREADY_REPORTED.value(),
                                                      "headers",
                                                      Map.of("content-type", "application/json"),
                                                      "isBase64Encoded",
@@ -237,7 +238,7 @@ public class ApiGatewayResponseDecoratorTest {
                        Map.of("errorMessage",
                               "custom reason",
                               "errorType",
-                              "com.limemojito.aws.lambda.ApiGatewayResponseDecoratorTest$TeapotException"));
+                              "com.limemojito.aws.lambda.ApiGatewayResponseDecoratorTest$AlreadyReportedException"));
     }
 
     @Test
@@ -295,8 +296,8 @@ public class ApiGatewayResponseDecoratorTest {
         }
     }
 
-    @ResponseStatus(code = HttpStatus.ALREADY_REPORTED, reason = "custom reason")
-    public static class TeapotException extends RuntimeException {
+    @ResponseStatus(code = ALREADY_REPORTED, reason = "custom reason")
+    public static class AlreadyReportedException extends RuntimeException {
     }
 
     private Map<String, Object> performFunction(Function<String, ?> function) {
