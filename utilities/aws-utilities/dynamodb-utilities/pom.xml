@@ -41,7 +41,7 @@
         <dependency>
             <!-- for object mapper setup -->
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-json</artifactId>
+            <artifactId>spring-boot-starter-jackson</artifactId>
         </dependency>
         <dependency>
             <groupId>com.limemojito.oss.standards</groupId>
