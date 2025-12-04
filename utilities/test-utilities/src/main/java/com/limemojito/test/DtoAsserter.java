@@ -18,21 +18,17 @@
 package com.limemojito.test;
 
 import com.limemojito.json.JsonMapperPrototype;
+import lombok.RequiredArgsConstructor;
 
 /**
  * A utility class for asserting that a Data Transfer Object (DTO) can be serialized to and deserialized from JSON.
  */
+@RequiredArgsConstructor
+@SuppressWarnings("ClassCanBeRecord")
 public class DtoAsserter {
 
     private static final DtoAsserter INSTANCE = new DtoAsserter(new JsonAsserter(JsonMapperPrototype.buildBootLikeMapper()));
     private final JsonAsserter jsonAsserter;
-
-    /**
-     * @param jsonAsserter Json Asserter to use.
-     */
-    public DtoAsserter(JsonAsserter jsonAsserter) {
-        this.jsonAsserter = jsonAsserter;
-    }
 
     /**
      * Assert that a Data Transfer Object can be serialized to and from json.

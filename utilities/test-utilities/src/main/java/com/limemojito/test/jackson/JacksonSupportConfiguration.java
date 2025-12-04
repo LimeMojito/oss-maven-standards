@@ -17,14 +17,20 @@
 
 package com.limemojito.test.jackson;
 
+import com.limemojito.json.spring.LimeJacksonJsonConfiguration;
+import com.limemojito.test.validator.ValidationSupportConfiguration;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 /**
  * Include the spring boot object mappers as other ones are poor choices as not configurable
  * load validation support.
  */
 @Configuration
+@Import({LimeJacksonJsonConfiguration.class, ValidationSupportConfiguration.class})
 @ComponentScan(basePackageClasses = JacksonSupport.class)
+@Slf4j
 public class JacksonSupportConfiguration {
 }

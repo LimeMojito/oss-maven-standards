@@ -139,6 +139,8 @@ public class LambdaSupport {
     /**
      * The Lambda function is identified by its name and Amazon Resource Name (ARN).
      * This class serves as a convenient way to handle and manipulate Lambda function details.
+     * @param name the name of the Lambda function
+     * @param arn  the Amazon Resource Name (ARN) of the Lambda function
      */
     public record Lambda(String name, String arn) {
     }

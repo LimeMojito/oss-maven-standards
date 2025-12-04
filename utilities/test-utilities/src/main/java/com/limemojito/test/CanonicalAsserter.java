@@ -17,8 +17,6 @@
 
 package com.limemojito.test;
 
-import java.util.regex.Pattern;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -48,9 +46,7 @@ public class CanonicalAsserter {
     }
 
     private static void assertToString(Object instance) {
-        final String defaultToString = instance.getClass().getName() + "@[0-9a-fA-F]*";
         final String foundToString = instance.toString();
-        final boolean matches = Pattern.matches(defaultToString, foundToString);
-        assertThat(matches).withFailMessage("Default toString detected [%s]", foundToString).isTrue();
+        assertThat(foundToString).doesNotMatch(instance.getClass().getName() + "@[0-9a-fA-F]+");
     }
 }

@@ -52,6 +52,7 @@ public class CanonicalAsserterTest {
     @Test
     public void shouldHaveDefaultToStringFailure() {
         assertThatThrownBy(() -> assertCanonical(new Object(), new Object(), "SecureTestConfiguration"))
-                .isInstanceOf(AssertionError.class);
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("not to match pattern");
     }
 }

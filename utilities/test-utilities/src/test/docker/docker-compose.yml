@@ -3,17 +3,19 @@ services:
     image: localstack/localstack:stable
     ports:
       - "4566:4566"
+      - "4510-4559:4510-4559"
     environment:
       - DEBUG=1
-      #      - LAMBDA_DOCKER_FLAGS=-p 127.0.0.1:5050:5050 -e LS_LOG=debug
-      - LAMBDA_DOCKER_FLAGS=-e LS_LOG=debug
+      - LAMBDA_DOCKER_FLAGS=-p 127.0.0.1:5050:5050 -e LS_LOG=debug
       - LAMBDA_RUNTIME_ENVIRONMENT_TIMEOUT=300
+      # For debugging purposes, uncomment this line.  However, the docker lambda containers will leak disk space.
+      # - LAMBDA_REMOVE_CONTAINERS=0
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    restart: unless-stopped
     healthcheck:
-      test: "bash -c 'AWS_ACCESS_KEY_ID=fake AWS_SECRET_ACCESS_KEY=fake aws --endpoint-url=http://localhost:4566 s3 ls'"
+      # add a health check for each service you want to use as they are started lazily
+      test: "awslocal sqs list-queues && awslocal s3 ls && awslocal sns list-topics"
       interval: 60s
+      timeout: 10s
       retries: 5
       start_period: 1s
-      timeout: 1s

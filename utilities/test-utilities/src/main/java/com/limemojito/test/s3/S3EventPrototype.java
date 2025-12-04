@@ -95,6 +95,8 @@ public class S3EventPrototype {
     }
 
     /**
+     * Creates a new S3EventPrototype object using the specified notification template.
+     *
      * @param notificationTemplate template to use for generating events.
      */
     @SneakyThrows
