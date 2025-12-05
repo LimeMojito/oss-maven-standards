@@ -20,9 +20,13 @@ package com.limemojito.json;
 
 import tools.jackson.databind.json.JsonMapper;
 
+import static tools.jackson.databind.DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES;
+
 /**
  * The JsonMapperPrototype class provides a utility method for building a customized object mapper.
  * The object mapper is configured to be similar to the global Spring Boot setup.
+ * <p>
+ * Note that FAIL_ON_NULL_FOR_PRIMITIVES is disabled.
  */
 public class JsonMapperPrototype {
 
@@ -38,6 +42,7 @@ public class JsonMapperPrototype {
         if (instance == null) {
             instance = JsonMapper.builder()
                                  .findAndAddModules()
+                                 .disable(FAIL_ON_NULL_FOR_PRIMITIVES)
                                  .build();
         }
         return instance;
