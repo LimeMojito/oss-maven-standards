@@ -23,7 +23,7 @@
     <name>${project.artifactId}</name>
 
     <artifactId>java-cdk-development</artifactId>
-    <version>16.0.1-SNAPSHOT</version>
+    <version>13.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>
         * A basic setup for cdk development using a simple automated deployment to the "current" account as setup in
@@ -40,12 +40,13 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>16.0.1-SNAPSHOT</version>
+        <version>13.0.2-SNAPSHOT</version>
         <relativePath>../jar-development</relativePath>
     </parent>
 
     <properties>
         <cdk.main.class>SET THIS FOR CDK DEPLOYMENTS</cdk.main.class>
+        <cdk.build.properties>${project.build.directory}/cdk.properties</cdk.build.properties>
     </properties>
 
     <dependencies>
@@ -58,6 +59,25 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>import-cdk-properties</id>
+                        <!-- This import occurs AFTER check-for-cdk-skip, so that we know the cdk build state -->
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <file>${cdk.build.properties}</file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
@@ -66,9 +86,8 @@
                         <goals>
                             <goal>run</goal>
                         </goals>
-                        <phase>compile</phase>
+                        <phase>validate</phase>
                         <configuration>
-                            <exportAntProperties>true</exportAntProperties>
                             <target>
                                 <condition property="cdk.skip" else="false">
                                     <or>
@@ -82,6 +101,9 @@
                                 <!--suppress UnresolvedMavenProperty -->
                                 <echo level="info"
                                       message="cdk.skip is ${cdk.skip}"/>
+                                <!--suppress MavenModelInspection -->
+                                <echo file="${cdk.build.properties}"
+                                      message="cdk.skip=${cdk.skip}"/>
                             </target>
                         </configuration>
                     </execution>
@@ -108,6 +130,7 @@
                             </environmentVariables>
                             <executable>cdk</executable>
                             <commandlineArgs>--ci true bootstrap</commandlineArgs>
+                            <!--suppress MavenModelInspection -->
                             <skip>${cdk.skip}</skip>
                         </configuration>
                     </execution>
@@ -118,6 +141,7 @@
                         </goals>
                         <phase>post-integration-test</phase>
                         <configuration>
+                            <!--suppress MavenModelInspection -->
                             <skip>${cdk.skip}</skip>
                             <environmentVariables>
                                 <JSII_SILENCE_WARNING_UNTESTED_NODE_VERSION>true
@@ -142,6 +166,7 @@
                         <configuration>
                             <stripVersion>true</stripVersion>
                             <excludeTransitive>true</excludeTransitive>
+                            <!--suppress MavenModelInspection -->
                             <skip>${cdk.skip}</skip>
                         </configuration>
                     </execution>

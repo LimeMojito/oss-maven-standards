@@ -34,7 +34,7 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>16.0.1-SNAPSHOT</version>
+        <version>13.0.2-SNAPSHOT</version>
         <relativePath>../jar-development</relativePath>
     </parent>
 
@@ -43,6 +43,7 @@
 
         <!-- We have the shaded jar separate from the standard jar creation -->
         <build.shaded.jar.name>${project.artifactId}-${project.version}-aws.jar</build.shaded.jar.name>
+        <shade.properties>${project.build.directory}/shade.properties</shade.properties>
     </properties>
 
     <!-- include with all builds -->
@@ -62,14 +63,14 @@
         <dependency>
             <groupId>com.limemojito.oss.standards.aws</groupId>
             <artifactId>lambda-utilities</artifactId>
-            <version>16.0.1-SNAPSHOT</version>
+            <version>13.0.2-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <!-- Access primarily for LambdaSupport -->
             <groupId>com.limemojito.oss.test</groupId>
             <artifactId>test-utilities</artifactId>
-            <version>16.0.1-SNAPSHOT</version>
+            <version>13.0.2-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -89,6 +90,25 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>import-shade-properties</id>
+                        <!-- This import occurs AFTER check-shade-file, so that we know the shade state -->
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <file>${shade.properties}</file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
@@ -97,13 +117,17 @@
                         <goals>
                             <goal>run</goal>
                         </goals>
-                        <phase>initialize</phase>
+                        <phase>validate</phase>
                         <configuration>
-                            <exportAntProperties>true</exportAntProperties>
                             <target>
                                 <!-- Handle the strange bug where shade places a file on classes for empty project -->
-                                <available property="shade.file.present" file="${project.basedir}/target/classes"
-                                           type="file"/>
+                                <condition property="shade.file.present" else="false">
+                                    <available file="${project.basedir}/target/classes"
+                                               type="file"/>
+                                </condition>
+                                <!--suppress MavenModelInspection -->
+                                <echo file="${shade.properties}"
+                                      message="shade.file.present=${shade.file.present}"/>
                             </target>
                         </configuration>
                     </execution>
@@ -112,7 +136,7 @@
                         <goals>
                             <goal>run</goal>
                         </goals>
-                        <phase>initialize</phase>
+                        <phase>process-sources</phase>
                         <configuration>
                             <target if="shade.file.present">
                                 <!-- Handle the strange bug where shade places a file on classes for empty project -->
