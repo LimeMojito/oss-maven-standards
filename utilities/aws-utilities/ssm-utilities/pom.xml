@@ -24,13 +24,13 @@
 
     <groupId>com.limemojito.oss.standards.aws</groupId>
     <artifactId>ssm-utilities</artifactId>
-    <version>13.0.2-SNAPSHOT</version>
+    <version>13.0.2</version>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>13.0.2-SNAPSHOT</version>
+        <version>13.0.2</version>
         <relativePath>../../../jar-development/pom.xml</relativePath>
     </parent>
 

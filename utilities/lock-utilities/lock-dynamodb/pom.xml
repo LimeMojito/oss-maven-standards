@@ -28,7 +28,7 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>13.0.2-SNAPSHOT</version>
+        <version>13.0.2</version>
         <relativePath>../../../jar-development/pom.xml</relativePath>
     </parent>
 
@@ -40,12 +40,12 @@
         <dependency>
             <groupId>com.limemojito.oss.standards.lock</groupId>
             <artifactId>lock-api</artifactId>
-            <version>13.0.2-SNAPSHOT</version>
+            <version>13.0.2</version>
         </dependency>
         <dependency>
             <groupId>com.limemojito.oss.standards.aws</groupId>
             <artifactId>dynamodb-utilities</artifactId>
-            <version>13.0.2-SNAPSHOT</version>
+            <version>13.0.2</version>
         </dependency>
         <dependency>
             <groupId>com.amazonaws</groupId>
