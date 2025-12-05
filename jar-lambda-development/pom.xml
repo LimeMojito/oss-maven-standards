@@ -46,7 +46,6 @@
         <shade.properties>${project.build.directory}/shade.properties</shade.properties>
     </properties>
 
-    <!-- include with all builds -->
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
