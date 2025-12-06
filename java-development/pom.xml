@@ -401,6 +401,7 @@
                             <phase>prepare-package</phase>
                             <configuration>
                                 <sourcepath>${lombok.outputDirectory}:${project.build.sourceDirectory}</sourcepath>
+                                <doclint>-missing</doclint>
                             </configuration>
                         </execution>
                     </executions>

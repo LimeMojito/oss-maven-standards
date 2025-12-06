@@ -127,6 +127,7 @@ public class JsonLoader {
      * Converts the supplied JSON to a map
      *
      * @param json json to convert
+     * @return JSON as map object.
      */
     public Map<String, Object> convertToMap(String json) {
         return convert(json, MAP_TYPE);
@@ -136,6 +137,7 @@ public class JsonLoader {
      * Converts the supplied JSON to a map
      *
      * @param instance Object instance to convert
+     * @return JSON as map object.
      */
     public Map<String, Object> convertToMap(Object instance) {
         return jsonMapper.convertValue(instance, MAP_TYPE);

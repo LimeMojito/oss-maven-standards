@@ -32,7 +32,6 @@ import tools.jackson.databind.json.JsonMapper;
 @Slf4j
 public class LimeJacksonJsonConfiguration {
 
-
     /**
      * If there is no JsonMapper defined, we create a default one using JsonMapperPrototype#buildBootLikeMapper().
      *
