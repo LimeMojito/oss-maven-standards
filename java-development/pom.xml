@@ -23,7 +23,7 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>oss-maven-standards</artifactId>
-        <version>16.0.4-SNAPSHOT</version>
+        <version>17.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -35,7 +35,7 @@
             <dependency>
                 <groupId>com.limemojito.oss.standards</groupId>
                 <artifactId>library</artifactId>
-                <version>16.0.4-SNAPSHOT</version>
+                <version>17.0.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -176,6 +176,7 @@
                                           failonerror="true">
                                         <arg value="compose"/>
                                         <arg value="up"/>
+                                        <arg value="--wait"/>
                                         <arg value="--detach"/>
                                     </exec>
                                 </target>
@@ -201,6 +202,7 @@
                                           failonerror="true">
                                         <arg value="compose"/>
                                         <arg value="up"/>
+                                        <arg value="--wait"/>
                                         <arg value="--detach"/>
                                     </exec>
                                 </target>

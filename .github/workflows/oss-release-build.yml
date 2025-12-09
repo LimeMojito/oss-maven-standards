@@ -43,7 +43,7 @@ jobs:
           echo '</servers>' >> $localSettings
           echo '</settings>' >> $localSettings
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           ssh-key: "${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}"
 
