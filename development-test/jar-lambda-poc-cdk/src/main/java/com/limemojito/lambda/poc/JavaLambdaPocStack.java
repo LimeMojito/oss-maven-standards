@@ -35,7 +35,9 @@ import software.amazon.awscdk.services.iam.Role;
 import software.amazon.awscdk.services.iam.ServicePrincipal;
 import software.amazon.awscdk.services.lambda.*;
 import software.amazon.awscdk.services.lambda.VersionProps;
-import software.amazon.awscdk.services.logs.RetentionDays;
+import software.amazon.awscdk.services.logs.ILogGroup;
+import software.amazon.awscdk.services.logs.LogGroup;
+import software.amazon.awscdk.services.logs.LogGroupProps;
 import software.constructs.Construct;
 
 import java.util.List;
@@ -46,7 +48,9 @@ import static software.amazon.awscdk.services.apigatewayv2.PayloadFormatVersion.
 import static software.amazon.awscdk.services.iam.ManagedPolicy.fromAwsManagedPolicyName;
 import static software.amazon.awscdk.services.lambda.Architecture.X86_64;
 import static software.amazon.awscdk.services.lambda.Code.fromAsset;
-import static software.amazon.awscdk.services.lambda.Runtime.JAVA_21;
+import static software.amazon.awscdk.services.lambda.Runtime.JAVA_25;
+import static software.amazon.awscdk.services.logs.LogGroupClass.STANDARD;
+import static software.amazon.awscdk.services.logs.RetentionDays.ONE_DAY;
 
 @Slf4j
 public final class JavaLambdaPocStack extends Stack {
@@ -71,19 +75,26 @@ public final class JavaLambdaPocStack extends Stack {
 
         final int memorySize = 1024;
         final int timeoutSeconds = 30;
+        final ILogGroup logGroup = new LogGroup(this,
+                                                LAMBDA_FUNCTION_ID + "-log-group",
+                                                LogGroupProps.builder()
+                                                             .logGroupClass(STANDARD)
+                                                             .logGroupName("/aws/lambda/" + LAMBDA_FUNCTION_ID + "/logs")
+                                                             .retention(ONE_DAY)
+                                                             .build());
         final Function function = new Function(this,
                                                LAMBDA_FUNCTION_ID,
                                                FunctionProps.builder()
                                                             .functionName(LAMBDA_FUNCTION_ID)
-                                                            .description("Lambda example with Java 21")
+                                                            .description("Lambda example with %s".formatted(JAVA_25))
                                                             .role(role)
                                                             .timeout(Duration.seconds(timeoutSeconds))
                                                             .memorySize(memorySize)
                                                             .environment(Map.of())
                                                             .code(assetCode)
-                                                            .runtime(JAVA_21)
+                                                            .runtime(JAVA_25)
                                                             .handler(LAMBDA_HANDLER)
-                                                            .logRetention(RetentionDays.ONE_DAY)
+                                                            .logGroup(logGroup)
                                                             .architecture(X86_64)
                                                             .build());
         CfnFunction cfnFunction = (CfnFunction) function.getNode().getDefaultChild();

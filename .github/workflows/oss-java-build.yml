@@ -24,7 +24,7 @@ jobs:
           code-signing-key: ${{ secrets.LIME_SIGNING_KEY }}
           code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           ssh-key: "${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}"
 
@@ -36,7 +36,7 @@ jobs:
 
       - name: Upload Docker logs
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: docker-logs
           path: ${{ github.workspace }}/**/target/docker-logs/*

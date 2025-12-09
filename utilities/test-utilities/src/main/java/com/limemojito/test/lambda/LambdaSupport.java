@@ -51,8 +51,8 @@ import java.util.zip.ZipOutputStream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.awaitility.Durations.FIVE_HUNDRED_MILLISECONDS;
-import static software.amazon.awssdk.services.lambda.model.Runtime.JAVA21;
-import static software.amazon.awssdk.services.lambda.model.Runtime.NODEJS20_X;
+import static software.amazon.awssdk.services.lambda.model.Runtime.JAVA25;
+import static software.amazon.awssdk.services.lambda.model.Runtime.NODEJS24_X;
 
 /**
  * <p>Be aware that creating lambdas on localstack uses containers on the underlying docker infrastructure.
@@ -560,7 +560,7 @@ public class LambdaSupport {
                                   .description(desc)
                                   .memorySize(memoryMegabytes * MB)
                                   .handler(handler)
-                                  .runtime(JAVA21)
+                                  .runtime(JAVA25)
                                   .environment(e -> e.variables(spyEnvironment(environment,
                                                                                debugPort,
                                                                                memoryMegabytes)))
@@ -735,7 +735,7 @@ public class LambdaSupport {
     private Consumer<CreateFunctionRequest.Builder> stubConfiguration(String name, String response, boolean failure) {
         return r -> r.functionName(name)
                      .description("Stub for %s".formatted(name))
-                     .runtime(NODEJS20_X)
+                     .runtime(NODEJS24_X)
                      .handler("index.handler")
                      .memorySize(STUB_MEMORY)
                      .code(c -> dynamicStubCode(c, response, failure))
