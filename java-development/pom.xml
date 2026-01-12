@@ -320,7 +320,6 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${maven-compiler-plugin.version}</version>
                     <configuration>
                         <!-- note using release option on JDK 9+ -->
                         <release>${java.version}</release>
