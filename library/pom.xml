@@ -49,7 +49,7 @@
                 <!-- Vulnerability Fix-->
                 <groupId>com.jayway.jsonpath</groupId>
                 <artifactId>json-path</artifactId>
-                <version>2.10.0</version>
+                <version>3.0.0</version>
             </dependency>
             <dependency>
                 <!-- Caffeine versus wiremock -->
@@ -60,7 +60,7 @@
             <dependency>
                 <groupId>org.jetbrains</groupId>
                 <artifactId>annotations</artifactId>
-                <version>26.0.2-1</version>
+                <version>26.1.0</version>
             </dependency>
             <dependency>
                 <!-- Required for AWS eventing -->
@@ -171,7 +171,7 @@
             <dependency>
                 <groupId>software.constructs</groupId>
                 <artifactId>constructs</artifactId>
-                <version>10.4.5</version>
+                <version>10.5.1</version>
             </dependency>
             <dependency>
                 <groupId>software.amazon.jsii</groupId>
@@ -223,7 +223,7 @@
                 <!-- AWS SDK V2-->
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>bom</artifactId>
-                <version>2.41.29</version>
+                <version>2.41.34</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
