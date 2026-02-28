@@ -1,0 +1,37 @@
+name: "Maven Version Update"
+description: |
+  Checks for version updates (see oss-maven-standards/pom.xml) and updates if required.
+  Expects maven setup and checkout to have occured, and project to be standard.
+
+runs:
+  using: composite
+  steps:
+    - name: Update Maven Versions
+      # See https://limemojito.com/version-dependency-updates-automated-in-maven/
+      # Plugins are an interactive report:  mvn versions:display-plugin-updates | more
+      # generateBackupPoms is disabled in the configuration of the maven-versions-plugin.
+      shell: bash
+      run: |
+        mvn versions:update-parent  
+        mvn versions:update-properties 
+        mvn versions:use-latest-releases
+
+    - name: Check of changes
+      id: check-changes
+      shell: bash
+      run: |
+        if [[ -n "$(git status --porcelain)" ]]; then
+          echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          echo "Version updates detected"
+        else
+          echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          echo "No version updates detected"
+        fi
+
+    - name: Commit Version Changes if any
+      if: steps.check-changes.outputs.has_changes == 'true'
+      shell: bash
+      run: |
+        git add .
+        git commit -S -m "Updated library versions in pom.xml"
+        

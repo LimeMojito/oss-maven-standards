@@ -1,5 +1,7 @@
 name: Lime OSS Update Maven Versions
 
+#TODO:LO deprecated 2026-02-28
+
 on:
   workflow_call:
 

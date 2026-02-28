@@ -2,16 +2,16 @@ name: OSS Maven Standards Merge Build
 
 on:
   push:
-    branches: [ "master" ]
+    branches-ignore:
+      - main
+      - master
   pull_request:
     branches: [ "master" ]
-    types:
-      - ready_for_review
-      - assigned
+    types: [opened, reopened, ready_for_review, synchronize]
 
 jobs:
   oss-maven-workflow:
-    uses: ./.github/workflows/oss-java-build.yml
+    uses: ./.github/workflows/oss-feature-build.yml
     secrets: inherit
     permissions:
       contents: read
