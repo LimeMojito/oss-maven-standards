@@ -45,8 +45,8 @@
         <java.version>25</java.version>
         <!-- This has both library and build implications -->
         <spring.boot.version>4.0.0</spring.boot.version>
-        <aws-cdk-lib.version>2.231.1</aws-cdk-lib.version>
-        <lombok.version>1.18.41</lombok.version>
+        <aws-cdk-lib.version>2.232.1</aws-cdk-lib.version>
+        <lombok.version>1.18.40</lombok.version>
     </properties>
 
     <modules>
