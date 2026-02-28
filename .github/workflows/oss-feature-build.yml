@@ -24,10 +24,6 @@ jobs:
           code-signing-key: ${{ secrets.LIME_SIGNING_KEY }}
           code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
 
-      - uses: actions/checkout@v6
-        with:
-          ssh-key: "${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}"
-
       - name: Update Versions
         uses: LimeMojito/oss-maven-standards/.github/actions/maven-version-update@master
 
