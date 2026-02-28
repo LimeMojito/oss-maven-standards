@@ -14,11 +14,15 @@ permissions:
 
 jobs:
   build:
+    if: github.actor != 'Lime-Build-Agent'
+
     runs-on: ubuntu-latest
+
     permissions:
       contents: write
       packages: write
       id-token: write
+
     steps:
       - name: Environment Setup
         uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup@master
