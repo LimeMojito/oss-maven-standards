@@ -11,11 +11,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Lime Setup Git
+      - name: Lime Setup Git (Code Agent)
         uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-git@master
         with:
-          git-access-key: ${{ secrets.LIME_BUILD_AGENT_GIT_KEY  }}
-          git-signing-key: ${{ secrets.LIME_BUILD_AGENT_GIT_SIGNING_KEY }}
+          git-access-key: ${{ secrets.LIME_CODE_AGENT_GIT_KEY  }}
+          git-signing-key: ${{ secrets.LIME_CODE_AGENT_GIT_SIGNING_KEY }}
+          git-id-name: "Lime Code Agent"
+          git-id-email: "developers@limemojito.com"
 
       - name: Environment Setup
         uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-java@master

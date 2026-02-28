@@ -8,6 +8,14 @@ inputs:
   git-signing-key:
     description: 'Git commit signing key'
     required: true
+  git-id-name:
+    description: Name of the entity performing commits
+    required: false
+    default: "Lime Build Agent"
+  git-id-email:
+    description: Email address of the entity performing commits
+    required: false
+    default: "build@limemojito.com"
 
 runs:
   using: composite
@@ -16,14 +24,14 @@ runs:
       with:
         ssh-key: "${{ inputs.git-access-key }}"
 
-    - name: Import GPG key for Build Commits
+    - name: "Import GPG key for Build Commits as ${{ inputs.git-id-name }}"
       uses: crazy-max/ghaction-import-gpg@v6
       with:
         gpg_private_key: ${{ inputs.git-signing-key }}
-        git_committer_email: "build@limemojito.com"
-        git_committer_name: "Lime Build Agent"
+        git_committer_email: "${{ inputs.git-id-email }}"
+        git_committer_name: "${{ inputs.git-id-name }}"
         git_user_signingkey: true
-        git_push_gpgsign: false
+        git_push_gpgsign: true
         git_tag_gpgsign: true
         git_commit_gpgsign: true
         git_config_global: true
