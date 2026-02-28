@@ -31,7 +31,8 @@ runs:
         git_committer_email: "${{ inputs.git-id-email }}"
         git_committer_name: "${{ inputs.git-id-name }}"
         git_user_signingkey: true
-        git_push_gpgsign: true
         git_tag_gpgsign: true
         git_commit_gpgsign: true
         git_config_global: true
+        # not supported as at 2026-03-01
+        git_push_gpgsign: false
