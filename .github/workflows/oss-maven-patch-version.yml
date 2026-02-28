@@ -17,7 +17,7 @@ jobs:
           git-access-key: ${{ secrets.LIME_CODE_AGENT_GIT_KEY  }}
           git-signing-key: ${{ secrets.LIME_CODE_AGENT_GIT_SIGNING_KEY }}
           git-id-name: "Lime Code Agent"
-          git-id-email: "264699827+Lime-Code-Agent@users.noreply.github.com"
+          git-id-email: "developers@limemojito.com"
 
       - name: Environment Setup
         uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-java@master
