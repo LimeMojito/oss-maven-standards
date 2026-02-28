@@ -15,7 +15,7 @@ inputs:
   git-id-email:
     description: Email address of the entity performing commits
     required: false
-    default: "build@limemojito.com"
+    default: "162236497+Lime-Build-Agent@users.noreply.github.com"
 
 runs:
   using: composite
