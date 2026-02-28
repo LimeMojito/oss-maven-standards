@@ -1,5 +1,7 @@
 name: "Lime Environment Setup (Java)"
-description: "Configures the build environment to work with Lime resources (Java, Maven)."
+description: |
+  Checks out the codebase.
+  Configures the build environment to work with Lime resources (Java, Maven).
 inputs:
   code-signing-key:
     description: 'Code signing GPG key data'
