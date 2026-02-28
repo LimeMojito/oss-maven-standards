@@ -2,6 +2,10 @@ name: "Maven Version Update"
 description: |
   Checks for version updates (see oss-maven-standards/pom.xml) and updates if required.
   Expects maven setup and checkout to have occured, and project to be standard.
+outputs:
+  has_changes:
+    description: "Whether the action produced git changes"
+    value: ${{ steps.check-changes.outputs.has_changes }}
 
 runs:
   using: composite
@@ -12,6 +16,7 @@ runs:
       # generateBackupPoms is disabled in the configuration of the maven-versions-plugin.
       shell: bash
       run: |
+        echo "Updating Maven library versions"
         mvn versions:update-parent  
         mvn versions:update-properties 
         mvn versions:use-latest-releases
@@ -32,6 +37,7 @@ runs:
       if: steps.check-changes.outputs.has_changes == 'true'
       shell: bash
       run: |
+        echo "Committing version changes to the workspace."
         git add .
         git commit -S -m "Updated library versions in pom.xml"
         
