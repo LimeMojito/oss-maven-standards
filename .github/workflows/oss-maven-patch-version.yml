@@ -26,3 +26,10 @@ jobs:
       - name: Update Versions
         id: update_versions
         uses: LimeMojito/oss-maven-standards/.github/actions/maven-version-update@master
+
+      - name: Push any changes
+        if: steps.update_versions.outputs.has_changes == 'true'
+        shell: bash
+        run: |
+          echo "Pushing changes to calling branch."
+          git push
