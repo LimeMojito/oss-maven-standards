@@ -26,6 +26,12 @@ jobs:
           role-to-assume: ${{ secrets.LIME_AWS_ROLE_ARN }}
           code-signing-key: ${{ secrets.LIME_SIGNING_KEY }}
           code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
+          git-access-key: ${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}
+          git-signing-key: ${{ secrets.LIME_BUILD_AGENT_GIT_SIGNING_KEY }}
+
+      - name: Update Versions
+        id: update_versions
+        uses: LimeMojito/oss-maven-standards/.github/actions/maven-version-update@master
 
       - name: Configure OSSRH Credentials
         id: maven_setup
@@ -43,17 +49,8 @@ jobs:
           echo '</servers>' >> $localSettings
           echo '</settings>' >> $localSettings
 
-      - uses: actions/checkout@v6
-        with:
-          ssh-key: "${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}"
-
       - name: Maven Release Build
         uses: LimeMojito/oss-maven-standards/.github/actions/maven-release@master
         with:
-          aws-region: ${{ secrets.LIME_AWS_REGION }}
-          role-to-assume: ${{ secrets.LIME_AWS_ROLE_ARN }}
-          code-signing-key: ${{ secrets.LIME_SIGNING_KEY }}
           code-signing-key-name: Lime Mojito Pty Ltd
           code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
-          git-access-key: ${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}
-          git-signing-key: ${{ secrets.LIME_BUILD_AGENT_GIT_SIGNING_KEY }}

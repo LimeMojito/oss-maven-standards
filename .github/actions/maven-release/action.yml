@@ -1,25 +1,11 @@
 name: "Lime Maven Release"
 description: "Performs a build and maven deployment similar to a maven release with commits pushed at the end."
 inputs:
-  aws-region:
-    description: 'AWS Region name'
-    required: true
-  role-to-assume:
-    description: 'AWS Role ARN to run with'
-    required: true
-  code-signing-key:
-    description: 'Code signing GPG key data'
-    required: true
   code-signing-key-name:
     description: 'Code signing GPG key name'
+    required: true
   code-signing-passphrase:
     description: 'Code signing GPG passphrase'
-    required: true
-  git-access-key:
-    description: 'Github access key (SSH)'
-    required: true
-  git-signing-key:
-    description: 'Github Commit signing GPG key data'
     required: true
   extra-mvn-options:
     description: 'Extra maven command line options'
@@ -28,18 +14,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Import GPG key for Version Update
-      uses: crazy-max/ghaction-import-gpg@v6
-      with:
-        gpg_private_key: ${{ inputs.git-signing-key }}
-        git_committer_email: "build@limemojito.com"
-        git_committer_name: "Lime Build Agent"
-        git_user_signingkey: true
-        git_push_gpgsign: false
-        git_tag_gpgsign: true
-        git_commit_gpgsign: true
-        git_config_global: true
-
     - id: git_release_version
       name: Increment Release Version
       shell: bash
