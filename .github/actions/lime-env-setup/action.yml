@@ -13,25 +13,33 @@ inputs:
   code-signing-passphrase:
     description: 'Code signing GPG passphrase'
     required: true
+  git-access-key:
+    description: 'Git access key'
+    required: true
+  git-signing-key:
+    description: 'Git commit signing key'
+    required: true
 
 runs:
   using: composite
   steps:
+    - name: Lime Setup Git
+      uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-git@master
+      with:
+        git-access-key: ${{ inputs.git-access-key }}
+        git-signing-key: ${{ inputs.git-signing-key }}
+
+    - name: Lime Setup Java
+      uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-java@master
+      with:
+        code-signing-key: ${{ inputs.code-signing-key }}
+        code-signing-passphrase: ${{ inputs.code-signing-passphrase }}
+
     - name: Lime Setup AWS
       uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-aws@master
       with:
         aws-region: ${{ inputs.aws-region }}
         role-to-assume: ${{ inputs.role-to-assume }}
-        code-signing-key: ${{ inputs.code-signing-key }}
-        code-signing-passphrase: ${{ inputs.code-signing-passphrase }}
 
-    - uses: docker/setup-qemu-action@v3
-      with:
-        platforms: 'arm64'
-
-    - uses: docker/setup-buildx-action@v3
-
-    - name: Cache Docker images.
-      uses: AndreKurait/docker-cache@0.6.0
-      with:
-        key: docker-LimeMojito-OSS
+    - name: Lime Setup Docker
+      uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-docker@master

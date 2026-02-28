@@ -1,0 +1,29 @@
+name: "Lime Environment Setup (Git)"
+description: |
+  Configures the build environment to work with Git for read and build write actions.
+inputs:
+  git-access-key:
+    description: 'Git access key'
+    required: true
+  git-signing-key:
+    description: 'Git commit signing key'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v6
+      with:
+        ssh-key: "${{ inputs.git-access-key }}"
+
+    - name: Import GPG key for Build Commits
+      uses: crazy-max/ghaction-import-gpg@v6
+      with:
+        gpg_private_key: ${{ inputs.git-signing-key }}
+        git_committer_email: "build@limemojito.com"
+        git_committer_name: "Lime Build Agent"
+        git_user_signingkey: true
+        git_push_gpgsign: false
+        git_tag_gpgsign: true
+        git_commit_gpgsign: true
+        git_config_global: true
