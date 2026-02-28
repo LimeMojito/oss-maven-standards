@@ -9,14 +9,9 @@ inputs:
   code-signing-passphrase:
     description: 'Code signing GPG passphrase'
     required: true
-
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v6
-      with:
-        ssh-key: "${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}"
-
     - name: Set up JDK
       uses: actions/setup-java@v5
       with:
@@ -29,15 +24,3 @@ runs:
       with:
         gpg_private_key: ${{ inputs.code-signing-key }}
         passphrase: ${{ inputs.code-signing-passphrase }}
-
-    - name: Import GPG key for Build Commits
-      uses: crazy-max/ghaction-import-gpg@v6
-      with:
-        gpg_private_key: ${{ secrets.LIME_BUILD_AGENT_GIT_SIGNING_KEY }}
-        git_committer_email: "build@limemojito.com"
-        git_committer_name: "Lime Build Agent"
-        git_user_signingkey: true
-        git_push_gpgsign: false
-        git_tag_gpgsign: true
-        git_commit_gpgsign: true
-        git_config_global: true

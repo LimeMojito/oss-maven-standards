@@ -1,5 +1,6 @@
-name: "Lime Environment Setup (no Docker)"
-description: "Configures the build environment to work with Lime resources (Java, Maven, AWS)."
+name: "Lime Environment Setup (AWS)"
+description: |
+  Configures the build environment to work with Lime AWS resources.
 inputs:
   aws-region:
     description: 'AWS Region name'
@@ -7,22 +8,10 @@ inputs:
   role-to-assume:
     description: 'AWS Role ARN to run with'
     required: true
-  code-signing-key:
-    description: 'Code signing GPG key data'
-    required: true
-  code-signing-passphrase:
-    description: 'Code signing GPG passphrase'
-    required: true
 
 runs:
   using: composite
   steps:
-    - name: Lime Setup Java
-      uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-java@master
-      with:
-        code-signing-key: ${{ inputs.code-signing-key }}
-        code-signing-passphrase: ${{ inputs.code-signing-passphrase }}
-
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v5
       with:
