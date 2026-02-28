@@ -4,7 +4,7 @@ on:
   workflow_call:
 
 concurrency:
-  # this should stop release and java build running on the same repo as we have one AWS account involved.
+  # this stops release and java build running on the same repo as we have one AWS account involved.
   group: ${{ github.repository }}
 
 permissions:

@@ -4,7 +4,7 @@ on:
   workflow_call:
 
 concurrency:
-  # this should stop release and java build running on the same repo as we have one AWS account involved.
+  # this stops release and java build running on the same repo as we have one AWS account involved.
   group: ${{ github.repository }}
 
 permissions:
@@ -13,6 +13,8 @@ permissions:
 
 jobs:
   build:
+    if: github.actor != 'Lime-Build-Agent'
+
     runs-on: ubuntu-latest
 
     steps:
@@ -27,10 +29,11 @@ jobs:
           git-signing-key: ${{ secrets.LIME_BUILD_AGENT_GIT_SIGNING_KEY }}
 
       - name: Update Versions
+        id: update_versions
         uses: LimeMojito/oss-maven-standards/.github/actions/maven-version-update@master
 
       - name: Build with Maven
-        # install is required for framework as CDK is trying to load current library in another process.
+        # install is required for the framework as CDK is trying to load the current library in another process.
         run: |
           export MAVEN_GPG_PASSPHRASE="${{ secrets.LIME_SIGNING_PASSPHRASE }}"
           mvn -B -Dstyle.color=always --file pom.xml -Dbuild.number=${{github.run_number}} -Dgpg.keyname='Lime Mojito Pty Ltd' install
@@ -45,6 +48,8 @@ jobs:
           compression-level: 9
 
       - name: Push any changes
+        if: steps.update_versions.outputs.has_changes == 'true'
         shell: bash
         run: |
+          echo "Pushing changes to calling branch."
           git push
