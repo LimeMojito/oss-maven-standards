@@ -9,7 +9,7 @@ on:
 
 jobs:
   oss-release-workflow:
-    uses: ./.github/workflows/oss-release-build.yml
+    uses: LimeMojito/oss-maven-standards/.github/workflows/oss-release-build.yml@master
     secrets: inherit
     permissions:
       id-token: write

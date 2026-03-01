@@ -12,7 +12,7 @@ on:
 
 jobs:
   oss-maven-workflow:
-    uses: ./.github/workflows/oss-feature-build.yml
+    uses: LimeMojito/oss-maven-standards/.github/workflows/oss-feature-build.yml@master
     secrets: inherit
     permissions:
       contents: read
