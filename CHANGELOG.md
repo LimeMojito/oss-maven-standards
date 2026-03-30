@@ -33,7 +33,6 @@
 - ec8f796 - Deploy at end appears to fail during release cycle (not called).
 
 ### 2.7.4
-- fe0235a - Merge remote-tracking branch 'origin/master'
 - 39ed9dd - A better configuration to copy on release.
 
 ### 2.7.3
@@ -43,7 +42,6 @@
 - a03700b - Deploy at end of build.
 
 ### 2.7.1
-- 534d255 - Merge remote-tracking branch 'origin/master'
 - b320f22 - Enabled failsafe by default in appropriate phase.
 
 ### 2.7.0
@@ -81,7 +79,6 @@
 - 784a106 - GW-4: Doesn't release without push enabled.
 - 4db8b5d - GW-4: Updated project informaiton
 - 3cc734d - GW-4: Playing with release plugin
-- 09f9001 - Merge branch 'master' of bitbucket.org:limemojito/oss-maven-standards
 - 4d67891 - GW-4: Perform a release
 - cf4964e - GW-5: Deploy to OSSRH using maven.
 
