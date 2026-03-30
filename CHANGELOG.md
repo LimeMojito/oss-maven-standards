@@ -1,44 +1,37 @@
 ### 2.7.2
-- dfb2881 - Add CHANGELOG for 2.7.2
 - 41b7563 - [maven-release-plugin] prepare release oss-maven-standards-2.7.2
 - a03700b - Deploy at end of build.
 - 8e28cc8 - [maven-release-plugin] prepare for next development iteration
 
 ### 2.7.1
-- f20ba84 - Add CHANGELOG for 2.7.1
 - 8239ac6 - [maven-release-plugin] prepare release oss-maven-standards-2.7.1
 - 534d255 - Merge remote-tracking branch 'origin/master'
 - b320f22 - Enabled failsafe by default in appropriate phase.
 - cc3d80e - [maven-release-plugin] prepare for next development iteration
 
 ### 2.7.0
-- ae8a95c - Add CHANGELOG for 2.7.0
 - a636ee4 - [maven-release-plugin] prepare release oss-maven-standards-2.7.0
 - 50a7f97 - Updated compiler to use release over source and target.
 - 5b13e29 - Rearrange plugin management so that plugins are fetched even when release profile is off.  Refactor libraries to match closed source.
 - 2eb11e3 - [maven-release-plugin] prepare for next development iteration
 
 ### 2.6.1
-- 9b00550 - Add CHANGELOG for 2.6.1
 - 72eef12 - [maven-release-plugin] prepare release oss-maven-standards-2.6.1
 - 35016fe - Cleanup release profile.
 - 4a720bc - [maven-release-plugin] prepare for next development iteration
 
 ### 2.6.0
-- 40c2d35 - Add CHANGELOG for 2.6.0
 - 9123e71 - [maven-release-plugin] prepare release oss-maven-standards-2.6.0
 - 8aa7751 - Updated to support boot applications being open sourced.  Library updates for security vulnerabilities.  Changed release to enable the release profile - moved source and doc gen into the release profile.
 - 948eec1 - [maven-release-plugin] prepare for next development iteration
 
 ### 2.5.1
-- dd3631d - Add CHANGELOG for 2.5.1
 - 4826944 - [maven-release-plugin] prepare release oss-maven-standards-2.5.1
 - c7b571d - Lombok delombok to fire just before javadoc to avoid Intellij issues.  Confirmed javadoc jar generation.
 - fe4b317 - Fallback to source directory if lombok not set.
 - 33be931 - [maven-release-plugin] prepare for next development iteration
 
 ### 2.5.0
-- a4e11ed - Add CHANGELOG for 2.5.0
 - c329a96 - [maven-release-plugin] prepare release oss-maven-standards-2.5.0
 - e09818c - Lombok to annotation processor, default dependencies.  Use spring starter logging as logging dance setup.
 - e688143 - Added delombok so the javadoc plugin stops complaining.
@@ -47,7 +40,6 @@
 - d146bcb - [maven-release-plugin] prepare for next development iteration
 
 ### 2.0.0
-- eb1e713 - Add CHANGELOG for 2.0.0
 - 04ce724 - [maven-release-plugin] prepare release oss-maven-standards-2.0.0
 - 7a54741 - Remove no fork.
 - 5d9b8ca - Relax processig for lombok.
@@ -55,14 +47,12 @@
 - e914256 - [maven-release-plugin] prepare for next development iteration
 
 ### 1.0.1
-- 57d2d22 - Add CHANGELOG for 1.0.1
 - 7725e04 - [maven-release-plugin] prepare release oss-maven-standards-1.0.1
 - ee75653 - GW-5: Remove use of scm.url as its a maven property.
 - 86bac19 - GW-5: Realized javadoc is not executing.  Update plugin definition and versions for javadoc and source.
 - 4000f6b - [maven-release-plugin] prepare for next development iteration
 
 ### 1.0.0
-- 8e41114 - Add CHANGELOG for 1.0.0
 - 7c7e3fe - [maven-release-plugin] prepare release oss-maven-standards-1.0.0
 - ef23152 - GW-4: Made checkstyle a property
 - 5a7aade - GW-4: Cleaned up the DRY with more properties.
