@@ -38,8 +38,8 @@ runs:
             <servers>
              <server>
                <id>central</id>
-               <username>![CDATA[${{ inputs.central-id }}]]</username>
-               <password>![CDATA[${{ inputs.central-key }}]]</password>
+               <username>${{ inputs.central-id }}</username>
+               <password>${{ inputs.central-key }}</password>
              </server>
             </servers>
             <activeProfiles>
@@ -49,16 +49,12 @@ runs:
              <profile>
                <id>localstack</id>
                <properties>
-                 <localstack.token>![CDATA[${{ inputs.localstack-token }}]]</localstack.token>
+                 <localstack.token>${{ inputs.localstack-token }}</localstack.token>
                </properties>
              </profile>
             </profiles>
           </settings>
         EOF
-        # remove this
-        echo "START"
-        cat "$localSettings"
-        echo "END"
 
     - name: Import GPG key for Jar signing
       uses: crazy-max/ghaction-import-gpg@v6
