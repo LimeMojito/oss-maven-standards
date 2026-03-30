@@ -1,10 +1,11 @@
 services:
   localstack:
-    image: localstack/localstack:4.11.1
+    image: localstack/localstack:stable
     ports:
       - "4566:4566"
       - "4510-4559:4510-4559"
     environment:
+      - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN}  # needs to be set in environment, is supplied by mvn settings.xml
       - DEBUG=1
       - LAMBDA_DOCKER_FLAGS=-p 127.0.0.1:5050:5050 -e LS_LOG=debug
       - LAMBDA_RUNTIME_ENVIRONMENT_TIMEOUT=300
