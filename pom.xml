@@ -41,6 +41,9 @@
         <lime.website.url>https://limemojito.com</lime.website.url>
         <central.base.url>https://central.sonatype.com</central.base.url>
 
+        <!-- This can be overridden in setttings.xml for a developer, or command line for CI -->
+        <localstack.token>SET IN SETTINGS.XML</localstack.token>
+
         <checkstyle.version>12.2.0</checkstyle.version>
         <java.version>25</java.version>
         <!-- This has both library and build implications -->
@@ -268,12 +271,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.4.0</version>
+                    <version>3.5.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-shade-plugin</artifactId>
-                    <version>3.6.1</version>
+                    <version>3.6.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

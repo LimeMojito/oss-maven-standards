@@ -42,17 +42,30 @@ jobs:
         id: maven_setup
         shell: bash
         run: |
-          localSettings=~/.m2/settings.xml 
-          echo '<?xml version="1.0" encoding="UTF-8"?>' > $localSettings
-          echo '<settings>' >> $localSettings
-          echo '<servers>' >> $localSettings
-          echo '<server>' >> $localSettings
-          echo '<id>central</id>' >> $localSettings
-          echo '<username>${{ secrets.LIME_CENTRAL_ID }}</username>' >> $localSettings
-          echo '<password>${{ secrets.LIME_CENTRAL_KEY }}</password>' >> $localSettings
-          echo '</server>' >> $localSettings
-          echo '</servers>' >> $localSettings
-          echo '</settings>' >> $localSettings
+          localSettings=~/.m2/settings.xml
+          cat > "$localSettings" <<'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <settings>
+            <servers>
+              <server>
+                <id>central</id>
+                <username>${{ secrets.LIME_CENTRAL_ID }}</username>
+                <password>${{ secrets.LIME_CENTRAL_KEY }}</password>
+              </server>
+            </servers>
+            <activeProfiles>
+              <activeProfile>localstack</activeProfile>
+            </activeProfiles>
+            <profiles>
+              <profile>
+                <id>localstack</id>
+                <properties>
+                  <localstack.token>${{ secrets.LIME_LOCALSTACK_TOKEN }}</localstack.token>
+                </properties>
+              </profile>
+            </profiles>
+          </settings>
+          EOF
 
       - name: Maven Release Build
         uses: LimeMojito/oss-maven-standards/.github/actions/maven-release@master
