@@ -57,7 +57,7 @@ runs:
         EOF
 
     - name: Import GPG key for Jar signing
-      uses: crazy-max/ghaction-import-gpg@v6
+      uses: crazy-max/ghaction-import-gpg@v7
       with:
         gpg_private_key: ${{ inputs.code-signing-key }}
         passphrase: ${{ inputs.code-signing-passphrase }}

@@ -20,12 +20,12 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         ssh-key: "${{ inputs.git-access-key }}"
 
     - name: "Import GPG key for Build Commits as ${{ inputs.git-id-name }}"
-      uses: crazy-max/ghaction-import-gpg@v6
+      uses: crazy-max/ghaction-import-gpg@v7
       with:
         gpg_private_key: ${{ inputs.git-signing-key }}
         git_committer_email: "${{ inputs.git-id-email }}"
