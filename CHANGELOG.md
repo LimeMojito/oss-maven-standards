@@ -1,5 +1,4 @@
 ### 1.0.0
-- 8e41114 - Add CHANGELOG for 1.0.0
 - 7c7e3fe - [maven-release-plugin] prepare release oss-maven-standards-1.0.0
 - ef23152 - GW-4: Made checkstyle a property
 - 5a7aade - GW-4: Cleaned up the DRY with more properties.
