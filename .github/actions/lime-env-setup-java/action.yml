@@ -9,6 +9,15 @@ inputs:
   code-signing-passphrase:
     description: 'Code signing GPG passphrase'
     required: true
+  central-id:
+    description: 'Central repository username'
+    required: true
+  central-key:
+    description: 'Central repository password'
+    required: true
+  localstack-token:
+    description: 'LocalStack access token'
+    required: true
 runs:
   using: composite
   steps:
@@ -25,27 +34,27 @@ runs:
       run: |
         localSettings=~/.m2/settings.xml
         cat > "$localSettings" <<'EOF'
-        <?xml version="1.0" encoding="UTF-8"?>
-        <settings>
-        <servers>
-         <server>
-           <id>central</id>
-           <username>${{ secrets.LIME_CENTRAL_ID }}</username>
-           <password>${{ secrets.LIME_CENTRAL_KEY }}</password>
-         </server>
-        </servers>
-        <activeProfiles>
-         <activeProfile>localstack</activeProfile>
-        </activeProfiles>
-        <profiles>
-         <profile>
-           <id>localstack</id>
-           <properties>
-             <localstack.token>${{ secrets.LIME_LOCALSTACK_TOKEN }}</localstack.token>
-           </properties>
-         </profile>
-        </profiles>
-        </settings>
+          <?xml version="1.0" encoding="UTF-8"?>
+          <settings>
+            <servers>
+             <server>
+               <id>central</id>
+               <username>${{ secrets.LIME_CENTRAL_ID }}</username>
+               <password>${{ secrets.LIME_CENTRAL_KEY }}</password>
+             </server>
+            </servers>
+            <activeProfiles>
+             <activeProfile>localstack</activeProfile>
+            </activeProfiles>
+            <profiles>
+             <profile>
+               <id>localstack</id>
+               <properties>
+                 <localstack.token>${{ secrets.LIME_LOCALSTACK_TOKEN }}</localstack.token>
+               </properties>
+             </profile>
+            </profiles>
+          </settings>
         EOF
 
     - name: Import GPG key for Jar signing

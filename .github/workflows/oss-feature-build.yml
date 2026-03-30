@@ -27,6 +27,9 @@ jobs:
           code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
           git-access-key: ${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}
           git-signing-key: ${{ secrets.LIME_BUILD_AGENT_GIT_SIGNING_KEY }}
+          central-id: ${{ secrets.LIME_CENTRAL_ID}}
+          central-key: ${{ secrets.LIME_CENTRAL_KEY }}
+          localstack-token: ${{ secrets.LIME_LOCALSTACK_TOKEN }}
 
       - name: Update Versions
         id: update_versions

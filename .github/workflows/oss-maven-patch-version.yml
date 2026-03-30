@@ -24,6 +24,9 @@ jobs:
         with:
           code-signing-key: ${{ secrets.LIME_SIGNING_KEY }}
           code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
+          central-id: ${{ secrets.LIME_CENTRAL_ID}}
+          central-key: ${{ secrets.LIME_CENTRAL_KEY }}
+          localstack-token: ${{ secrets.LIME_LOCALSTACK_TOKEN }}
 
       - name: Update Versions
         id: update_versions
