@@ -39,8 +39,8 @@ runs:
             <servers>
              <server>
                <id>central</id>
-               <username>${{ secrets.LIME_CENTRAL_ID }}</username>
-               <password>${{ secrets.LIME_CENTRAL_KEY }}</password>
+               <username>${{ inputs.central-id }}</username>
+               <password>${{ inputs.central-key }}</password>
              </server>
             </servers>
             <activeProfiles>
@@ -50,7 +50,7 @@ runs:
              <profile>
                <id>localstack</id>
                <properties>
-                 <localstack.token>${{ secrets.LIME_LOCALSTACK_TOKEN }}</localstack.token>
+                 <localstack.token>${{ inputs.localstack-token }}</localstack.token>
                </properties>
              </profile>
             </profiles>
