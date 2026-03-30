@@ -12,12 +12,9 @@
 - 75f894e - Better pass through of central ids and localstack key.
 - 7cbe73c - Separate out maven setup into the java setup action.
 - 4414b24 - Update to the latest versions and support new auth token for free localstack usage.
-- 7bc042e - Updated library versions in pom.xml
-- d0738d3 - Updated library versions in pom.xml
-- c435a44 - Updated library versions in pom.xml
+- Updated library versions in pom.xml
 
 ### 17.0.8
-- 492aa88 - Updated library versions in pom.xml
 - 3e2876a - #104 Add the other default branch option.
 - a30e2df - #104 Link to master versions.
 - 5ee821f - #104 Public emails.
@@ -25,9 +22,8 @@
 - bcc58c6 - #104 Live with public emails as the keys, etc are also bound.
 - 2c0bc5e - #104 Update email addresses to private versions.
 - bf54ba6 - #104 Sign push not supported.
-- e60838a - #104 Version update as a new user to not interfere with build commit suppression.
 - 527d442 - #104 Stop continuous triggers.
-- ffe4d46 - #104 Version update on a cron basis.
+- Updated library versions in pom.xml
 
 ### 17.0.7
 - No significant changes.
@@ -45,39 +41,27 @@
 - No significant changes.
 
 ### 17.0.2
-- 93c71d7 - #104 Version update on a cron basis.
 - 4bf2668 - #104 Release always on main or master push.
-- 207f6b3 - #104 Remove git setup and checkout for release build as already in environment.  Add version update to release steps.  Reduce inputs in action call.
-- db53023 - Updated library versions in pom.xml
 - ea4af9e - #104 Added explicit dependency management for lombok.  Corrected to real versions.
 - 4c3b66b - #104 Force a library update to test skipping Lime-Build-Agent commits.
 - 9e77064 - #104 Echo some feedback in actions.  Do not trigger feature build if Lime-Build-Agent has triggered it (via a commit for example).
-- 345bcf7 - Updated library versions in pom.xml
-- 6fa1576 - #104 Test version update requiring commit.
 - 6677731 - #104 Factor out individual setup actions for docker and git.  Setup keys for git commits.  Remove old build action.
 - 183d5a1 - #104 Update description of environment setup java.
 - 348d9db - #104 Push checkout to front of build.
 - 4b6722b - #104 Adjust build name.
 - df6e616 - #104 Add a version updating action for feature builds.  All feature branches will now build on push, and update maven library versions.
+- Updated library versions in pom.xml
 
 ### 17.0.1
 - 76ccb0d - Latest version and plugin updates.
-- 285afd2 - Lime Versions: Update.
-- 303a780 - Lime Versions: Update.
-- 1f5caee - Lime Versions: Update.
-- d9c5b71 - Lime Versions: Update.
-- 601422d - Lime Versions: Update.
-- 90d08f1 - Lime Versions: Update.
 - ee30dd0 - GW-684: Copyright Update.
 - 9af30e4 - GW-681: Version and plugin updates.
-- 3b1a024 - Lime Versions: Update.
-- ca45780 - Lime Versions: Update.
-- 8130f1d - Lime Versions: Update.
+- Updated library versions in pom.xml
 
 ### 17.0.0
 - 903a1fa - GW-681: Update to Java 25, update runtimes for Lambda, update docker compose to wait for healthy.  Update to latest github actions.
-- fad736f - Lime Versions: Update.
 - 8bcd983 - GW-678: Updated docker start period.
+- Updated library versions in pom.xml
 
 ### 16.0.3
 - b05c01d - GW-678: Suppress javadoc missing warnings.  Update json loader to use Jackson 3 defaults including breaking null primitive checks.  Add a customizer api if we want to adjust this.  Gives explicit enabling or disabling required in boot setups.
@@ -101,14 +85,11 @@
 - 96d9ac7 - GW-678: remove Junit 4 and upgrade github API changes.  Clean compile.
 - ef088eb - GW-678: Update JsonLoader to Jackson 3
 - 1368a08 - GW-678: Update major version as part of spring boot 4 major upgrade.
-- 32154f3 - Lime Versions: Update.
-- d3b16ad - Lime Versions: Update.
-- a3db224 - Lime Versions: Update.
-- 021cc6d - Lime Versions: Update.
+- Updated library versions in pom.xml
 
 ### 15.3.5
-- b7842e5 - Lime Versions: Update.
 - 5392358 - FX2-551: Always run docker upload
+- Updated library versions in pom.xml
 
 ### 15.3.4
 - bd98761 - FX2-551: Rename execution for save logs.
@@ -120,19 +101,15 @@
 - 3b8a961 - FX2-551: Skip if docker compose skip is happening.
 - bb024c4 - FX2-551: Update to the latest plugins and library versions.
 - ea4c2de - FX2-551: Dump docker logs for test output to target dir.  Update checkout version action.  Update github builds so that docker logs are kept as an artifact.
-- ffc0014 - Lime Versions: Update.
 - d1292dc - Enable new docker cache.
 - b174095 - Re-enable separate cache as otherwise we need to checkout code.
 - c3e68cb - Use the maven cache in setup-java.  Update version of setup java.
 - 79b43e1 - Maven cache to use repository id rather than always being remade on a pom.xml change.
-- 19742a0 - Lime Versions: Update.
+- Updated library versions in pom.xml
 
 ### 15.3.3
-- e2983a0 - Lime Versions: Update.
-- 0417131 - Lime Versions: Update.
 - 0ea2b27 - Updated for new blog article
-- 5d061d1 - Lime Versions: Update.
-- 22864e0 - Lime Versions: Update.
+- Updated library versions in pom.xml
 
 ### 15.3.2
 - 4e51773 - Fix for SQS modulith events
@@ -143,84 +120,33 @@
 - 4661957 - Switch default name to artifactId.  Add explicit dependency for spring-modulith-events-aws-sns as its currently a SNAPSHOT in the BOM.
 - 1ae4f5c - Import modulith in attempt to remove SNAPSHOT complaint on publish.
 - 6eae695 - After central release failure, reformat all after adding name to all poms.  Updated versions to latest.  Updated plugins to latest.
-- da28e77 - Version update once a week
-- 62744fd - Lime Versions: Update.
-- c5afd36 - Lime Versions: Update.
-- 88f6c1b - Lime Versions: Update.
-- 47d36a3 - Lime Versions: Update.
-- fc3c339 - Lime Versions: Update.
-- 4879c61 - Lime Versions: Update.
-- 437cbef - Lime Versions: Update.
-- 9159124 - Lime Versions: Update.
-- 84eda56 - Lime Versions: Update.
-- 09e4ba2 - Lime Versions: Update.
-- 2c1e28a - Lime Versions: Update.
-- 9524fcd - Lime Versions: Update.
-- 0bc17dd - Lime Versions: Update.
-- 44cc0f4 - Lime Versions: Update.
-- 684e7b5 - Lime Versions: Update.
-- ceba5df - Lime Versions: Update.
-- fe2ea49 - Lime Versions: Update.
-- 67b98be - Lime Versions: Update.
-- 9b7595e - Lime Versions: Update.
-- 43b0d6b - Lime Versions: Update.
-- 752e670 - Lime Versions: Update.
-- 672ea75 - Lime Versions: Update.
-- 374a189 - Lime Versions: Update.
-- 1db4531 - Lime Versions: Update.
-- 0e4b78a - Lime Versions: Update.
-- 08d5aa4 - Lime Versions: Update.
-- 5178168 - Lime Versions: Update.
-- 68e092b - Lime Versions: Update.
-- 98ef44c - Lime Versions: Update.
-- 75a0168 - Lime Versions: Update.
-- e73b20b - Lime Versions: Update.
-- 24c16aa - Lime Versions: Update.
-- 1062dc9 - Lime Versions: Update.
-- 5aa61ea - Lime Versions: Update.
-- 4beee22 - Lime Versions: Update.
-- 5c3c22a - Lime Versions: Update.
-- bb54d43 - Lime Versions: Update.
-- 2084dfe - Lime Versions: Update.
-- 31623f9 - Lime Versions: Update.
-- 17d63fc - Lime Versions: Update.
-- 77ae2ff - Lime Versions: Update.
-- 7f5e2d9 - Lime Versions: Update.
 - d8b2aac - Cleanup documentation
 - 09e0d14 - Disabled docker cache as not working with cache layer anymore (unmaintained).
-- 04d0d7a - Lime Versions: Update.
+- Updated library versions in pom.xml
 
 ### 15.3.1
-- 5c3ad8b - Lime Versions: Update.
-- 5d8b695 - Lime Versions: Update.
 - b7475e5 - GW-640: Disable wait until published as the wait is over ten minutes!
+- Updated library versions in pom.xml
 
 ### 15.3.0
 - cecf140 - GW-640: Update deployment to the central repository rather than the OSSRH.  Update minor version, update plugins.  Update readme for versions set instructions.
-- 897b3f2 - Lime Versions: Update.
+- Updated library versions in pom.xml
 
 ### 15.2.8
 - 52fc94b - Reduce invocations to once every 10 days.
 - 0ce7e9e - Add an example for keeping a SnapStart version hot.
-- e99a675 - Lime Versions: Update.
 - 5ca57cf - Fixes from build
-- 254c254 - Lime Versions: Update.
 - 9e03c06 - Experiment with Juli to "Find and fix coding errors in codebase."  Some null argument handling, etc.
-- 417366f - Lime Versions: Update.
-- 88cbdf5 - Lime Versions: Update.
+- Updated library versions in pom.xml
 
 ### 15.2.7
 - c5bd46b - FX2-531: Clean build.
 - 646c785 - FX2-531: SQS and SNS support to have exists, unsubscribe, destroy methods and compatibility with REAL AWS (IAM roles for subscriptions) so we can use them in system tests.  SQS destroy also cleans up DLQ as required.  SNS destroy unsubscribes any subscriptions remaining.
-- 6fe1696 - Lime Versions: Update.
+- Updated library versions in pom.xml
 
 ### 15.2.6
 - a0d2cbc - FX2-531: Enable method parameters on compile.
-- f66b3ae - Lime Versions: Update.
-- c7d8920 - Lime Versions: Update.
-- eb31458 - Lime Versions: Update.
-- eba9364 - Lime Versions: Update.
-- 0b1b228 - Lime Versions: Update.
+- Updated library versions in pom.xml
 
 ### 15.2.5
 - cbf066a - FX2-525: switch from draft or assigned for review.
@@ -228,35 +154,28 @@
 - 6fd0ef4 - FX2-525: BUild on open pull request.
 - e219367 - FX2-525: Remove json-utilities from explicit  test classpath
 - f49da04 - FX2-525: Api Gateway Context to wrap event and authentication information into an object that can be added to a function decoration.  Added ApiGatewayPrincipal to represent the base data from cognito (JWT IDP).  Added access to raw JWT, claims from the http event and the event so we don't need to parse the JWT ourselves unless truly necessary.  Updated tests. Json helper method to convert to map.
-- 8ed4399 - Lime Versions: Update.
 - 3103ca2 - FX2-525: Authentication mapping from API Gateway data.  Added tests for various API gateway events.  Enabled coverage testing.
 - 66c190d - FX2-525:  Rework exception handler to be pluggable and support spring security exception mapping to a 403.  Switch to JsonLoader for json manipulation.  Allow override of exception mapper if another bean is present.  Add unit test with docker.  Refactor configuration to a configuration class for decorator factory.  Draft authentication manager pre claims check.
-- 9d39341 - Lime Versions: Update.
-- c0f268f - Lime Versions: Update.
 - d74b9f0 - Remove faulty restore key
+- Updated library versions in pom.xml
 
 ### 15.2.4
-- 0cb3dc9 - Lime Versions: Update.
-- a1e066e - Lime Versions: Update.
 - d460fb6 - Filter PRs on ready to review.
-- 765c19f - Lime Versions: Update.
 - 2f22e54 - Add support to create topic from ARN and return topic name.
+- Updated library versions in pom.xml
 
 ### 15.2.3
 - 1d137bd - Add support for docker in unit tests, with the caveat that for spring testing "integration-test" profile would be required for localstack, etc.
-- 494d669 - Lime Versions: Update.
+- Updated library versions in pom.xml
 
 ### 15.2.2
-- 1c41acb - Lime Versions: Update.
 - a7ee6af - Update versions to include parent versions.  Stop backup poms being generated by default.
-- 0bbbcdc - Lime Versions: Update.
-- 6d5d1a0 - Lime Versions: Update.
 - ed5d3d9 - Further split to skip AWS for version check.
 - 8413d92 - Separate out env setup so docker can be skipped for version checks.
+- Updated library versions in pom.xml
 
 ### 15.2.1
 - 38f76b9 - Draft so that workflow merge build triggering is easy from portal.
-- eff8637 - Lime Versions: Update.
 - dcede48 - Adjust GITHUB token to allow write for PR.
 - 8c09ed7 - Adjust GITHUB token to allow write for PR.
 - a3c7137 - Adjust triggers
@@ -269,6 +188,7 @@
 - c30356c - Adjust version rules to skip common "bad" versions.
 - e388d9d - Added property update for versions.
 - a49a62b - Update cache GitHub actions to be "less pinned" to version.
+- Updated library versions in pom.xml
 
 ### 15.2.0
 - 6070509 - CDK now angry if the main class is missing.  Update cdk task to skip of no source code.
@@ -296,9 +216,9 @@
 - 27d7e2a - FX2-445: Correct release snafu.
 - d0970af - FX2-445:Updated Readme.md
 - 0234924 - FX2-445: Reduce minimum maven version.
-- a6301c9 - FX2-445: docker cache version update.
 - 19e3271 - FX2-445: Java 21 Support on actions
 - bf54203 - FX2-445: Java 21 Support.
+- Updated library versions in pom.xml
 
 ### 14.3.1
 - 4e5b453 - FX2-450: Fix release build so we sign poms as well.
@@ -401,7 +321,6 @@
 - 9e6b7d5 - Update Readme.md
 
 ### 14.0.18
-- e462407 - GW-498: Manual version update.
 - cb83794 - GW-498: Checkout master before pushing as previous state was detached.  Release builds are always on master.
 - ae83606 - GW-498: Perform versions updates and commit before release build.  Release build from tag.  Push after build.
 - d13a6d9 - GW-498: Do not cancel in progress.
@@ -410,6 +329,7 @@
 - 1c7d0ff - GW-498: handle concurrent development update during long build.
 - 31a70d6 - GW-498: Update development version.
 - 6e1cd2d - GW-498: Don't increment a patch twice.
+- Updated library versions in pom.xml
 
 ### 14.0.15
 - dcbf68e - GW-498: Disable the deploy plugin in release builds.  Align development version with current release.  Update readme.
@@ -456,7 +376,7 @@
 - 1ce274f - GW-498: Use import action.
 - 71beb1b - GW-498: Set git commit key by env variable.
 - 43a3012 - GW-498: Set git commit key.
-- d9ebe53 - GW-498: Switched to in process as docker in docker won't work with build.  Version update using build helper, commit, then release:perform.
+- Updated library versions in pom.xml
 
 ### 14.0.1
 - 5b6ca2e - GW-498: Use an action for release build.
@@ -524,11 +444,6 @@
 - 96d9ac7 - GW-678: remove Junit 4 and upgrade github API changes.  Clean compile.
 - ef088eb - GW-678: Update JsonLoader to Jackson 3
 - 1368a08 - GW-678: Update major version as part of spring boot 4 major upgrade.
-- 32154f3 - Lime Versions: Update.
-- d3b16ad - Lime Versions: Update.
-- a3db224 - Lime Versions: Update.
-- 021cc6d - Lime Versions: Update.
-- b7842e5 - Lime Versions: Update.
 - 5392358 - FX2-551: Always run docker upload
 - bd98761 - FX2-551: Rename execution for save logs.
 - 04d00a3 - FX2-551: Update log write and tested with multiple containers.  Quoting strategies for the win.  Update docker-compose health checks to be more modern.
@@ -539,17 +454,11 @@
 - 3b8a961 - FX2-551: Skip if docker compose skip is happening.
 - bb024c4 - FX2-551: Update to the latest plugins and library versions.
 - ea4c2de - FX2-551: Dump docker logs for test output to target dir.  Update checkout version action.  Update github builds so that docker logs are kept as an artifact.
-- ffc0014 - Lime Versions: Update.
 - d1292dc - Enable new docker cache.
 - b174095 - Re-enable separate cache as otherwise we need to checkout code.
 - c3e68cb - Use the maven cache in setup-java.  Update version of setup java.
 - 79b43e1 - Maven cache to use repository id rather than always being remade on a pom.xml change.
-- 19742a0 - Lime Versions: Update.
-- e2983a0 - Lime Versions: Update.
-- 0417131 - Lime Versions: Update.
 - 0ea2b27 - Updated for new blog article
-- 5d061d1 - Lime Versions: Update.
-- 22864e0 - Lime Versions: Update.
 - 4e51773 - Fix for SQS modulith events
 - ab30851 - Add permissions for security checks.
 - da45130 - Add permissions for security checks.
@@ -558,100 +467,32 @@
 - 4661957 - Switch default name to artifactId.  Add explicit dependency for spring-modulith-events-aws-sns as its currently a SNAPSHOT in the BOM.
 - 1ae4f5c - Import modulith in attempt to remove SNAPSHOT complaint on publish.
 - 6eae695 - After central release failure, reformat all after adding name to all poms.  Updated versions to latest.  Updated plugins to latest.
-- da28e77 - Version update once a week
-- 62744fd - Lime Versions: Update.
-- c5afd36 - Lime Versions: Update.
-- 88f6c1b - Lime Versions: Update.
-- 47d36a3 - Lime Versions: Update.
-- fc3c339 - Lime Versions: Update.
-- 4879c61 - Lime Versions: Update.
-- 437cbef - Lime Versions: Update.
-- 9159124 - Lime Versions: Update.
-- 84eda56 - Lime Versions: Update.
-- 09e4ba2 - Lime Versions: Update.
-- 2c1e28a - Lime Versions: Update.
-- 9524fcd - Lime Versions: Update.
-- 0bc17dd - Lime Versions: Update.
-- 44cc0f4 - Lime Versions: Update.
-- 684e7b5 - Lime Versions: Update.
-- ceba5df - Lime Versions: Update.
-- fe2ea49 - Lime Versions: Update.
-- 67b98be - Lime Versions: Update.
-- 9b7595e - Lime Versions: Update.
-- 43b0d6b - Lime Versions: Update.
-- 752e670 - Lime Versions: Update.
-- 672ea75 - Lime Versions: Update.
-- 374a189 - Lime Versions: Update.
-- 1db4531 - Lime Versions: Update.
-- 0e4b78a - Lime Versions: Update.
-- 08d5aa4 - Lime Versions: Update.
-- 5178168 - Lime Versions: Update.
-- 68e092b - Lime Versions: Update.
-- 98ef44c - Lime Versions: Update.
-- 75a0168 - Lime Versions: Update.
-- e73b20b - Lime Versions: Update.
-- 24c16aa - Lime Versions: Update.
-- 1062dc9 - Lime Versions: Update.
-- 5aa61ea - Lime Versions: Update.
-- 4beee22 - Lime Versions: Update.
-- 5c3c22a - Lime Versions: Update.
-- bb54d43 - Lime Versions: Update.
-- 2084dfe - Lime Versions: Update.
-- 31623f9 - Lime Versions: Update.
-- 17d63fc - Lime Versions: Update.
-- 77ae2ff - Lime Versions: Update.
-- 7f5e2d9 - Lime Versions: Update.
 - d8b2aac - Cleanup documentation
 - 09e0d14 - Disabled docker cache as not working with cache layer anymore (unmaintained).
-- 04d0d7a - Lime Versions: Update.
-- 5c3ad8b - Lime Versions: Update.
-- 5d8b695 - Lime Versions: Update.
 - b7475e5 - GW-640: Disable wait until published as the wait is over ten minutes!
 - cecf140 - GW-640: Update deployment to the central repository rather than the OSSRH.  Update minor version, update plugins.  Update readme for versions set instructions.
-- 897b3f2 - Lime Versions: Update.
 - 52fc94b - Reduce invocations to once every 10 days.
 - 0ce7e9e - Add an example for keeping a SnapStart version hot.
-- e99a675 - Lime Versions: Update.
 - 5ca57cf - Fixes from build
-- 254c254 - Lime Versions: Update.
 - 9e03c06 - Experiment with Juli to "Find and fix coding errors in codebase."  Some null argument handling, etc.
-- 417366f - Lime Versions: Update.
-- 88cbdf5 - Lime Versions: Update.
 - c5bd46b - FX2-531: Clean build.
 - 646c785 - FX2-531: SQS and SNS support to have exists, unsubscribe, destroy methods and compatibility with REAL AWS (IAM roles for subscriptions) so we can use them in system tests.  SQS destroy also cleans up DLQ as required.  SNS destroy unsubscribes any subscriptions remaining.
-- 6fe1696 - Lime Versions: Update.
 - a0d2cbc - FX2-531: Enable method parameters on compile.
-- f66b3ae - Lime Versions: Update.
-- c7d8920 - Lime Versions: Update.
-- eb31458 - Lime Versions: Update.
-- eba9364 - Lime Versions: Update.
-- 0b1b228 - Lime Versions: Update.
 - cbf066a - FX2-525: switch from draft or assigned for review.
 - 0d08258 - FX2-525: Build on open pull request open
 - 6fd0ef4 - FX2-525: BUild on open pull request.
 - e219367 - FX2-525: Remove json-utilities from explicit  test classpath
 - f49da04 - FX2-525: Api Gateway Context to wrap event and authentication information into an object that can be added to a function decoration.  Added ApiGatewayPrincipal to represent the base data from cognito (JWT IDP).  Added access to raw JWT, claims from the http event and the event so we don't need to parse the JWT ourselves unless truly necessary.  Updated tests. Json helper method to convert to map.
-- 8ed4399 - Lime Versions: Update.
 - 3103ca2 - FX2-525: Authentication mapping from API Gateway data.  Added tests for various API gateway events.  Enabled coverage testing.
 - 66c190d - FX2-525:  Rework exception handler to be pluggable and support spring security exception mapping to a 403.  Switch to JsonLoader for json manipulation.  Allow override of exception mapper if another bean is present.  Add unit test with docker.  Refactor configuration to a configuration class for decorator factory.  Draft authentication manager pre claims check.
-- 9d39341 - Lime Versions: Update.
-- c0f268f - Lime Versions: Update.
 - d74b9f0 - Remove faulty restore key
-- 0cb3dc9 - Lime Versions: Update.
-- a1e066e - Lime Versions: Update.
 - d460fb6 - Filter PRs on ready to review.
-- 765c19f - Lime Versions: Update.
 - 2f22e54 - Add support to create topic from ARN and return topic name.
 - 1d137bd - Add support for docker in unit tests, with the caveat that for spring testing "integration-test" profile would be required for localstack, etc.
-- 494d669 - Lime Versions: Update.
-- 1c41acb - Lime Versions: Update.
 - a7ee6af - Update versions to include parent versions.  Stop backup poms being generated by default.
-- 0bbbcdc - Lime Versions: Update.
-- 6d5d1a0 - Lime Versions: Update.
 - ed5d3d9 - Further split to skip AWS for version check.
 - 8413d92 - Separate out env setup so docker can be skipped for version checks.
 - 38f76b9 - Draft so that workflow merge build triggering is easy from portal.
-- eff8637 - Lime Versions: Update.
 - dcede48 - Adjust GITHUB token to allow write for PR.
 - 8c09ed7 - Adjust GITHUB token to allow write for PR.
 - a3c7137 - Adjust triggers
@@ -685,7 +526,6 @@
 - 27d7e2a - FX2-445: Correct release snafu.
 - d0970af - FX2-445:Updated Readme.md
 - 0234924 - FX2-445: Reduce minimum maven version.
-- a6301c9 - FX2-445: docker cache version update.
 - 19e3271 - FX2-445: Java 21 Support on actions
 - bf54203 - FX2-445: Java 21 Support.
 - 4e5b453 - FX2-450: Fix release build so we sign poms as well.
@@ -774,7 +614,6 @@
 - 1ce29c1 - GW-510: Made final.
 - 2033236 - GW-510: Github utility program to set branch permissions, and team access.
 - 9e6b7d5 - Update Readme.md
-- e462407 - GW-498: Manual version update.
 - cb83794 - GW-498: Checkout master before pushing as previous state was detached.  Release builds are always on master.
 - ae83606 - GW-498: Perform versions updates and commit before release build.  Release build from tag.  Push after build.
 - d13a6d9 - GW-498: Do not cancel in progress.
@@ -823,7 +662,6 @@
 - 1ce274f - GW-498: Use import action.
 - 71beb1b - GW-498: Set git commit key by env variable.
 - 43a3012 - GW-498: Set git commit key.
-- d9ebe53 - GW-498: Switched to in process as docker in docker won't work with build.  Version update using build helper, commit, then release:perform.
 - 5b6ca2e - GW-498: Use an action for release build.
 - 6aeeacf - GW-498: Remove copy paste error.
 - 4620d86 - GW-498: Import LimeBuildAgent keys to do the release.
@@ -866,6 +704,7 @@
 - d1e2be4 - Updated readme after blog post.
 - 837f85d - Docker waitfor
 - 3b8caaf - Healthcheck via s3 ls
+- Updated library versions in pom.xml
 
 ### 13.0.1
 - f54dc55 - Remove volumes on shutdown as well.
