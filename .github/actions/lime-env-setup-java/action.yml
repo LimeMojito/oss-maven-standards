@@ -39,8 +39,8 @@ runs:
             <servers>
              <server>
                <id>central</id>
-               <username>${{ inputs.central-id }}</username>
-               <password>${{ inputs.central-key }}</password>
+               <username>![CDATA[${{ inputs.central-id }}]]</username>
+               <password>![CDATA[${{ inputs.central-key }}]]</password>
              </server>
             </servers>
             <activeProfiles>
@@ -50,7 +50,7 @@ runs:
              <profile>
                <id>localstack</id>
                <properties>
-                 <localstack.token>${{ inputs.localstack-token }}</localstack.token>
+                 <localstack.token>![CDATA[${{ inputs.localstack-token }}]]</localstack.token>
                </properties>
              </profile>
             </profiles>
