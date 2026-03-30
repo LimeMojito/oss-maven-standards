@@ -57,7 +57,9 @@ runs:
           </settings>
         EOF
         # remove this
+        echo "START"
         cat "$localSettings"
+        echo "END"
 
     - name: Import GPG key for Jar signing
       uses: crazy-max/ghaction-import-gpg@v6
