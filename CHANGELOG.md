@@ -1,5 +1,4 @@
 ### 1.0.0
-
 7c7e3fe - [maven-release-plugin] prepare release oss-maven-standards-1.0.0
 ef23152 - GW-4: Made checkstyle a property
 5a7aade - GW-4: Cleaned up the DRY with more properties.
@@ -27,4 +26,3 @@ b1a1726 - [maven-release-plugin] rollback the release of oss-maven-standards-1.0
 0d3fa5c - [maven-release-plugin] prepare release oss-maven-standards-1.0.0
 4d67891 - GW-4: Perform a release
 cf4964e - GW-5: Deploy to OSSRH using maven.
-
