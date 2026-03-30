@@ -28,6 +28,8 @@ git tag | while read -r tag; do
     # Check if the target tag already exists locally
     if git tag -l | grep -q "^$version$"; then
       echo "Skipping rename of $tag to $version as $version already exists"
+      git push origin --delete "$tag"
+      git tag -d "$tag"
     else
       echo "Renaming tag $tag to $version"
       git tag "$version" "$tag"
@@ -36,8 +38,12 @@ git tag | while read -r tag; do
       git tag -d "$tag"
     fi
   else
-    echo "Deleting tag $tag (does not match version format)"
-    git push origin --delete "$tag"
-    git tag -d "$tag"
+    if [[ "$tag" == "$version" ]]; then
+      echo "Skipping $tag"
+    else
+      echo "Deleting tag $tag (does not match version format)"
+      git push origin --delete "$tag"
+      git tag -d "$tag"
+    fi
   fi
 done
