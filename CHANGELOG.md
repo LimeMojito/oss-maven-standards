@@ -1,5 +1,4 @@
 ### 14.0.18
-- bae0e5e - Add CHANGELOG for 14.0.18
 - cf63d2d - [Release] updated version in pom.xml
 - e462407 - GW-498: Manual version update.
 - cb83794 - GW-498: Checkout master before pushing as previous state was detached.  Release builds are always on master.
@@ -12,7 +11,6 @@
 - 6e1cd2d - GW-498: Don't increment a patch twice.
 
 ### 14.0.15
-- 9717a6e - Add CHANGELOG for 14.0.15
 - 554dd4a - [Release] updated version in pom.xml
 - dcbf68e - GW-498: Disable the deploy plugin in release builds.  Align development version with current release.  Update readme.
 - 4b430b8 - GW-498: Make file locations output values.
@@ -52,14 +50,12 @@
 - d81e8fe - [Release] updated version in pom.xml
 
 ### 14.0.13
-- d84d66a - Add CHANGELOG for 14.0.13
 - 571a537 - [Release] updated version in pom.xml
 - b53d6f5 - GW-498: Fix tag parameters
 - ca2dd7c - GW-498: Not using release plugin as commit work is broken with tags not passable into maven.
 - 5fd5b79 - [maven-release-plugin] prepare for next development iteration
 
 ### 14.0.11
-- 8deb83e - Add CHANGELOG for 14.0.11
 - 751f50b - [maven-release-plugin] prepare release oss-maven-standards-14.0.11
 - 0b32f69 - GW-498: Remove Old Bouncy castle.
 - 97dbf1d - [Development] updated development version in pom.xml
@@ -103,7 +99,6 @@
 - 29b780d - [maven-release-plugin] prepare for next development iteration
 
 ### 14.0.1
-- 4143cc5 - Add CHANGELOG for 14.0.1
 - 5d45128 - [maven-release-plugin] prepare release oss-maven-standards-14.0.1
 - 5b6ca2e - GW-498: Use an action for release build.
 - 6aeeacf - GW-498: Remove copy paste error.
@@ -117,7 +112,6 @@
 - 7c843f2 - [maven-release-plugin] prepare for next development iteration
 
 ### 14.0.0
-- bd000bf - Add CHANGELOG for 14.0.0
 - 0f51603 - [maven-release-plugin] prepare release oss-maven-standards-14.0.0
 - 29fb286 - GW-498: Shared Release Build
 - 48a2e90 - GW-498: Specifiy shell for python command.
@@ -158,7 +152,6 @@
 - 6b53b72 - [maven-release-plugin] prepare for next development iteration
 
 ### 13.0.4
-- e07d7b7 - Add CHANGELOG for 13.0.4
 - 1e92ece - [maven-release-plugin] prepare release oss-maven-standards-13.0.4
 - 837f85d - Docker waitfor
 - e30b13f - Merge remote-tracking branch 'origin/master'
@@ -166,10 +159,9 @@
 - 340437b - [maven-release-plugin] prepare for next development iteration
 
 ### 13.0.3
-- 1995623 - Add CHANGELOG for 13.0.3
+No changes
 
 ### 13.0.2
-- 0bef533 - Add CHANGELOG for 13.0.2
 - 58cfe62 - [Release] updated version in pom.xml
 - 1e3a2a2 - GW-678: Removed usage of ant export properties.  Updated docker startup time as had timing failures.
 - 5f59c9c - GW-678: Disable FAIL_ON_NULL_FOR_PRIMITIVES as this is a sane default for our usages.
@@ -738,7 +730,6 @@
 - a720a4e - [maven-release-plugin] prepare for next development iteration
 
 ### 13.0.1
-- 3ede21b - Add CHANGELOG for 13.0.1
 - c4a136e - [maven-release-plugin] prepare release oss-maven-standards-13.0.1
 - f54dc55 - Remove volumes on shutdown as well.
 - 28b5251 - Add health checks to docker to stop false starts
@@ -750,7 +741,6 @@
 - 0f372f7 - [maven-release-plugin] prepare for next development iteration
 
 ### 13.0.0
-- 11e83ca - Add CHANGELOG for 13.0.0
 - 52293be - [maven-release-plugin] prepare release oss-maven-standards-13.0.0
 - a18daea - Add docker plugin to correct order in plugins list.
 - 38b859e - Updated copyright.
@@ -761,19 +751,16 @@
 - 5a45dad - [maven-release-plugin] prepare for next development iteration
 
 ### 3.1.0
-- 5adfca6 - Add CHANGELOG for 3.1.0
 - a324853 - [maven-release-plugin] prepare release oss-maven-standards-3.1.0
 - 59d41ed - Updated to latest patch jar versions.  Updated copyright.
 - b83e57a - [maven-release-plugin] prepare for next development iteration
 
 ### 3.0.1
-- 7033150 - Add CHANGELOG for 3.0.1
 - 06210e9 - [maven-release-plugin] prepare release oss-maven-standards-3.0.1
 - 56ca7ac - Remove alternate deploy as breaking with maven 3_9
 - 730d84e - [maven-release-plugin] prepare for next development iteration
 
 ### 3.0.0
-- c4cc756 - Add CHANGELOG for 3.0.0
 - 2dbce5b - [maven-release-plugin] prepare release oss-maven-standards-3.0.0
 - 3b591a8 - FX2-374: Dependencies and polishing pre-release after integration testing.
 - fcee4ce - FX2-374: Remove old logback fixed version.  Add dependencies for lambda event processing.
@@ -781,44 +768,37 @@
 - b8b6fd5 - [maven-release-plugin] prepare for next development iteration
 
 ### 2.7.9
-- 846783c - Add CHANGELOG for 2.7.9
 - 9866bf2 - [maven-release-plugin] prepare release oss-maven-standards-2.7.9
 - af09f8d - Update with nexus plugin again as we want to avoid automatic releases.  Try and disable the nexus auto removal of deploy plugin.
 - 1cc69b2 - [maven-release-plugin] prepare for next development iteration
 
 ### 2.7.8
-- 6034920 - Add CHANGELOG for 2.7.8
 - 70893e5 - [maven-release-plugin] prepare release oss-maven-standards-2.7.8
 - 9ce000e - Remove nexus plugin, attempt release to both repos
 - 5951835 - [maven-release-plugin] prepare for next development iteration
 
 ### 2.7.7
-- 6f876bf - Add CHANGELOG for 2.7.7
 - 21773d1 - [maven-release-plugin] prepare release oss-maven-standards-2.7.7
 - 474e2d6 - Due to thevery slow release to central and propagation multi releases take a very long time to deploy if they are independent.  We work around this by deploying to the closed source repository in a release, followed by the "manual" release via an explicit call to the nexus staging plugin on teamcity.
 - 1078293 - [maven-release-plugin] prepare for next development iteration
 
 ### 2.7.6
-- 15c0f96 - Add CHANGELOG for 2.7.6
 - a7e96df - [maven-release-plugin] prepare release oss-maven-standards-2.7.6
 - 92e9cf0 - Explicitly set release profile to use.
 - 386d27c - [maven-release-plugin] prepare for next development iteration
 
 ### 2.7.5
-- 5313b98 - Add CHANGELOG for 2.7.5
 - 7d1305d - [maven-release-plugin] prepare release oss-maven-standards-2.7.5
 - ec8f796 - Deploy at end appears to fail during release cycle (not called).
 - 47ad942 - [maven-release-plugin] prepare for next development iteration
 
 ### 2.7.4
-- bc1f07f - Add CHANGELOG for 2.7.4
 - f5efb02 - [maven-release-plugin] prepare release oss-maven-standards-2.7.4
 - fe0235a - Merge remote-tracking branch 'origin/master'
 - 39ed9dd - A better configuration to copy on release.
 - 77d434f - [maven-release-plugin] prepare for next development iteration
 
 ### 2.7.3
-- a83aa7f - Add CHANGELOG for 2.7.3
 - 88631f7 - [maven-release-plugin] prepare release oss-maven-standards-2.7.3
 - 5733c99 - Deploy to lime at end of release build as OSS release can take hours to propagate.
 - d337aeb - [maven-release-plugin] rollback changes from release preparation of my-branch
@@ -826,46 +806,39 @@
 - d605f16 - [maven-release-plugin] prepare for next development iteration
 
 ### 2.7.2
-- dfb2881 - Add CHANGELOG for 2.7.2
 - 41b7563 - [maven-release-plugin] prepare release oss-maven-standards-2.7.2
 - a03700b - Deploy at end of build.
 - 8e28cc8 - [maven-release-plugin] prepare for next development iteration
 
 ### 2.7.1
-- f20ba84 - Add CHANGELOG for 2.7.1
 - 8239ac6 - [maven-release-plugin] prepare release oss-maven-standards-2.7.1
 - 534d255 - Merge remote-tracking branch 'origin/master'
 - b320f22 - Enabled failsafe by default in appropriate phase.
 - cc3d80e - [maven-release-plugin] prepare for next development iteration
 
 ### 2.7.0
-- ae8a95c - Add CHANGELOG for 2.7.0
 - a636ee4 - [maven-release-plugin] prepare release oss-maven-standards-2.7.0
 - 50a7f97 - Updated compiler to use release over source and target.
 - 5b13e29 - Rearrange plugin management so that plugins are fetched even when release profile is off.  Refactor libraries to match closed source.
 - 2eb11e3 - [maven-release-plugin] prepare for next development iteration
 
 ### 2.6.1
-- 9b00550 - Add CHANGELOG for 2.6.1
 - 72eef12 - [maven-release-plugin] prepare release oss-maven-standards-2.6.1
 - 35016fe - Cleanup release profile.
 - 4a720bc - [maven-release-plugin] prepare for next development iteration
 
 ### 2.6.0
-- 40c2d35 - Add CHANGELOG for 2.6.0
 - 9123e71 - [maven-release-plugin] prepare release oss-maven-standards-2.6.0
 - 8aa7751 - Updated to support boot applications being open sourced.  Library updates for security vulnerabilities.  Changed release to enable the release profile - moved source and doc gen into the release profile.
 - 948eec1 - [maven-release-plugin] prepare for next development iteration
 
 ### 2.5.1
-- dd3631d - Add CHANGELOG for 2.5.1
 - 4826944 - [maven-release-plugin] prepare release oss-maven-standards-2.5.1
 - c7b571d - Lombok delombok to fire just before javadoc to avoid Intellij issues.  Confirmed javadoc jar generation.
 - fe4b317 - Fallback to source directory if lombok not set.
 - 33be931 - [maven-release-plugin] prepare for next development iteration
 
 ### 2.5.0
-- a4e11ed - Add CHANGELOG for 2.5.0
 - c329a96 - [maven-release-plugin] prepare release oss-maven-standards-2.5.0
 - e09818c - Lombok to annotation processor, default dependencies.  Use spring starter logging as logging dance setup.
 - e688143 - Added delombok so the javadoc plugin stops complaining.
@@ -874,7 +847,6 @@
 - d146bcb - [maven-release-plugin] prepare for next development iteration
 
 ### 2.0.0
-- eb1e713 - Add CHANGELOG for 2.0.0
 - 04ce724 - [maven-release-plugin] prepare release oss-maven-standards-2.0.0
 - 7a54741 - Remove no fork.
 - 5d9b8ca - Relax processig for lombok.
@@ -882,14 +854,12 @@
 - e914256 - [maven-release-plugin] prepare for next development iteration
 
 ### 1.0.1
-- 57d2d22 - Add CHANGELOG for 1.0.1
 - 7725e04 - [maven-release-plugin] prepare release oss-maven-standards-1.0.1
 - ee75653 - GW-5: Remove use of scm.url as its a maven property.
 - 86bac19 - GW-5: Realized javadoc is not executing.  Update plugin definition and versions for javadoc and source.
 - 4000f6b - [maven-release-plugin] prepare for next development iteration
 
 ### 1.0.0
-- 8e41114 - Add CHANGELOG for 1.0.0
 - 7c7e3fe - [maven-release-plugin] prepare release oss-maven-standards-1.0.0
 - ef23152 - GW-4: Made checkstyle a property
 - 5a7aade - GW-4: Cleaned up the DRY with more properties.
