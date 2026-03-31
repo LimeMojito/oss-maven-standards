@@ -1,8 +1,11 @@
-Get all the tags for this git repository and sort the tags in semantic version format M.m.p where M is major version, m is minor version then p is patch version.
+"Semantic Version" is a version number system with the following format: M.m.p where M is a number representing the major version, m is a number representing the minor version, and p is a number representing the patch version. Sorting of semantic version numbers is done by comparing the numbers in each component from left to right.
+                                                                                   
+Get all the tags for this git repository and sort the tags in semantic version format sorted in ascending order.
 
-For each tag sorted in semantic version order - M then m then p compared numerically in ascending order
-  - summarize the changes from the last tag to this tag into a- CHANGELOG.md file with a heading for this version by examining the source code and summarizing the source changes between the tags. This summary should consist of a markdown formatted list that is easy to read.  The version headings should be in descending order of semantic version.
-    - Where there are multiple items referring to "version update" or "Update versions" replace with a single item the describes the version update.
+For each tag:
+  - checkout the tag
+  - summarize the changes from the previous tag to this tag into a CHANGELOG.md file with a heading for this tag by examining the source code and summarizing the source changes between the tags. This summary should consist of a markdown formatted list that is easy to read.  The version headings should be in descending order of semantic version.
+    - Where there are multiple items referring to "version update" or "Update versions" then replace them with a single item that describes the version update.
     - Remove all summary items that contain 
       - [maven-release-plugin]
       - [Release]
@@ -12,4 +15,4 @@ For each tag sorted in semantic version order - M then m then p compared numeric
       - merge remote-tracking branch
       - updating poms
       - Update versions
-    - Add this updated CHANGELOG.md file to the source represented by the tag.
+  - Add the CHANGELOG.md file to the git repository at the tag performing git local operations to achieve this outcome.
