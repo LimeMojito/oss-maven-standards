@@ -1,3 +1,5 @@
+The aim of this task is to have a CHANGELOG.md file at each tag in the repository.
+
 "Semantic Version" is a version number system with the following format: M.m.p where M is a number representing the major version, m is a number representing the minor version, and p is a number representing the patch version. Sorting of semantic version numbers is done by comparing the numbers in each component from left to right.
                                                                                    
 Get all the tags for this git repository and sort the tags in semantic version format sorted in ascending order.
@@ -16,3 +18,5 @@ For each tag:
       - updating poms
       - Update versions
   - Add the CHANGELOG.md file to the git repository at the tag performing git local operations to achieve this outcome.
+             
+Validate that each tag when checked out has had a CHANGELOG.md file generated or updated.
