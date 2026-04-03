@@ -66,4 +66,4 @@ jobs:
       - name: Version ${{steps.build.outputs.lime-version}}
         shell: bash
         run: |
-          echo -e "\n\nFeature Build ${{steps.build.outputs.lime-version}} build ${github.run_number}"
+          echo -e "\n\nFeature Build ${{steps.build.outputs.lime-version}} build ${{ github.run_number }}"
