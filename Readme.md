@@ -42,7 +42,7 @@ These profiles add capabilities to our builds or allow "quick checks" as wanted 
            
 ---
 
-# Building maintainable maven projects
+# Building Maintainable Maven Projects
 
 See [article](https://limemojito.com/maintainable-builds-with-maven/) here for why we use maven and how our the POM
 model works.
@@ -94,11 +94,16 @@ mvn versions:use-latest-releases -U
 
 ## Github Workflow
 
-For just running version updates on git using OSS lime mojito, there is a pre-canned workflow at
-.github/actions/oss-maven-patch-version.yml that updates and creates a PR. Suggest configuring to run daily on a
-repository.
+Github workflows now automatically run the version updates as part of the default branch build.
 
 See Article: https://limemojito.com/version-dependency-updates-automated-in-maven/
+
+---
+
+# Using AI in the build process.
+* [Technology Choices](docs/ai/00-technology-choices.md)
+* [AI Setup Local](docs/ai/01-ai-setup-local.md)
+* [Github Setup](docs/ai/02-github-setup.md)
 
 ---
 

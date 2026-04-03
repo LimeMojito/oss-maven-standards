@@ -1,0 +1,66 @@
+name: lime-code-agent
+on:
+  issue_comment:
+    types: [ created ]
+  pull_request_review_comment:
+    types: [ created ]
+  issues:
+    types: [ assigned ]
+  pull_request_review:
+    types: [ submitted ]
+
+jobs:
+  checkuser:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: allowed-user-check
+        id: auth_check
+        uses: morfien101/actions-authorized-user@v3
+        with:
+          username: ${{ github.actor }}
+          org: ${{ github.repo_owner }}
+          team: "Developers"
+          github_token: ${{ secrets.LIME_CODE_AGENT_GITHUB_TOKEN }}
+          whitelist: ''
+      - name: result
+        shell: bash
+        run: |
+          echo "${{ github.actor}} is allowed to invoke AI agent? ${{ steps.auth_check.outputs.allowed }}"
+          git push
+    outputs:
+      allowed: ${{ steps.auth_check.outputs.allowed }}
+
+  junie:
+    needs: checkuser
+    if: |
+      (needs.checkuser.outputs.allowed) && (
+        (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
+        (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
+        (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@Lime-Code-Agent')) ||
+        (github.event_name == 'issues' && (contains(github.event.issue.body, '@Lime-Code-Agent') || contains(github.event.issue.title, '@Lime-Code-Agent')))
+      )
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write      # Required to create branches, make commits, and push changes
+      pull-requests: write # Required to create PRs, add comments to PRs, and update PR status
+      issues: write        # Required to add comments to issues and update issue metadata
+      checks: read         # Optional: needed for CI failure analysis with MCP servers
+      actions: read        # Optional: needed for CI failure analysis with MCP servers (to fetch logs)
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Run Junie
+        id: junie
+        uses: JetBrains/junie-github-action@v1
+        with:
+          junie_api_key: ${{ secrets.LIME_CODE_AGENT_JUNIE_TOKEN }}
+          allowed_mcp_servers: "mcp_github_checks_server"
+          trigger_phrase: "@Lime-Code-Agent"
+          assignee_trigger: Lime-Code-Agent
+          label_trigger: lime-code-agent
