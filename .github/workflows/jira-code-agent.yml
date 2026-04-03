@@ -7,7 +7,7 @@ on:
         required: true
         type: choice
         options:
-          - jira-event
+          - jira_event
       issue_key:
         description: 'Jira issue key (e.g., TEST-1)'
         required: true
