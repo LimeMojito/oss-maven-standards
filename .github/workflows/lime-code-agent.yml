@@ -27,6 +27,8 @@ jobs:
 
       - name: allowed-user-check
         id: auth_check
+        env:
+          DEBUG: true
         uses: morfien101/actions-authorized-user@v3
         with:
           username: ${{ github.actor }}
