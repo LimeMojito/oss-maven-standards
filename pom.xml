@@ -30,13 +30,16 @@
     <packaging>pom</packaging>
 
     <properties>
+        <!-- This should be set in derived OSS projects -->
+        <git.project.slug>LimeMojito/oss-maven-standards</git.project.slug>
+
         <!-- Overridden by build server -->
         <build.number>LOCAL</build.number>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <github.url>https://github.com/LimeMojito/oss-maven-standards</github.url>
-        <git.url>git@github.com:LimeMojito/oss-maven-standards.git</git.url>
+        <github.url>https://github.com/${git.project.slug}</github.url>
+        <git.url>git@github.com:${git.project.slug}.git</git.url>
         <lime.scm.url>scm:git:${git.url}</lime.scm.url>
         <lime.website.url>https://limemojito.com</lime.website.url>
         <central.base.url>https://central.sonatype.com</central.base.url>
