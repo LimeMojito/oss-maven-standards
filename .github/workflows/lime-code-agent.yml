@@ -1,4 +1,4 @@
-name: lime-code-agent
+name: Lime Code Agent
 on:
   issue_comment:
     types: [ created ]
