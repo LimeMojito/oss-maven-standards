@@ -4,7 +4,6 @@
 # It is designed to be delegated to from other repositories or triggered by common events.
 
 name: OSS Maven Standards Lime Code Agent
-run-name: Lime Code Agent on ${{ github.repository }} for ${{ github.actor }} due to ${{ github.event_name }}
 
 on:
   workflow_call:
