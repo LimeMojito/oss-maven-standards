@@ -84,7 +84,7 @@ jobs:
           code-signing-key-name: Lime Mojito Pty Ltd
           code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
 
-      - name: Version
+      - name: Version ${{ steps.maven-release-build.outputs.release-version }}
         shell: bash
         run: |
           echo "Release Version: ${{ steps.maven-release-build.outputs.release-version }}"
