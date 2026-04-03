@@ -43,7 +43,7 @@ on:
 
 jobs:
   call-lime-code-agent:
-    uses: LimeMojito/oss-maven-standards/.github/workflows/oss-lime-code-agent.yml@main
+    uses: LimeMojito/oss-maven-standards/.github/workflows/oss-lime-code-agent.yml@master
     secrets: inherit
     permissions:
       id-token: write
