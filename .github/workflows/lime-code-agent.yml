@@ -15,7 +15,7 @@ jobs:
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
       (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
       (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@Lime-Code-Agent')) ||
-      (github.event_name == 'issues' && (contains(github.event.issue.body, '@Lime-Code-Agent') || contains(github.event.issue.title, '@Lime-Code-Agent')) || contains(github.event.assignee.login, '@Lime-Code-Agent'))
+      (github.event_name == 'issues' && (contains(github.event.issue.body, '@Lime-Code-Agent') || contains(github.event.issue.title, '@Lime-Code-Agent')) || contains(github.event.assignee.login, 'Lime-Code-Agent'))
     runs-on: ubuntu-latest
     permissions:
       contents: write      # Required to create branches, make commits, and push changes
