@@ -51,6 +51,7 @@ permissions:
 jobs:
   lime-code-agent:
     if: |
+      github.event_name == 'dispatch' && github.event.inputs.action == 'jira_event' ||
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
       (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
       (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@Lime-Code-Agent')) ||
