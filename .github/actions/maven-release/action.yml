@@ -38,7 +38,7 @@ runs:
         git add .
         git commit -S -m "[Development] updated development version in pom.xml"
 
-    - name: Checkout and perform Test Build with Maven on release tag
+    - name: Test Build for ${{ steps.git_release_version.outputs.lime-release-version }}
       shell: bash
       run: |
         echo "Checking out ${{steps.git_release_version.outputs.lime-release-version}}"
@@ -52,7 +52,7 @@ runs:
           -Prelease \
           install
 
-    - name: Upload Docker logs
+    - name: Upload Docker logs for Test step
       if: always()
       uses: actions/upload-artifact@v7
       with:
@@ -61,7 +61,7 @@ runs:
           target/docker-logs/
           **/target/docker-logs
 
-    - name: Perform Release Deployment with Maven
+    - name: Perform Release Deployment of ${{ steps.git_release_version.outputs.lime-release-version }}
       shell: bash
       run: |
         export MAVEN_GPG_PASSPHRASE="${{ inputs.code-signing-passphrase }}"
@@ -75,7 +75,7 @@ runs:
           -DskipITs=true \
           deploy
 
-    - name: Push version and tag to repository
+    - name: Push changes and tag ${{steps.git_release_version.outputs.lime-release-version}}
       shell: bash
       run: |
         defaultBranch=$(git remote show origin | grep "HEAD branch" | sed 's/.*: //')
