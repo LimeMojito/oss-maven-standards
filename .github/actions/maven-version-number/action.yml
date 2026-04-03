@@ -11,7 +11,7 @@ runs:
     - name: Extract Maven Version
       id: version
       shell: bash
-      run: !
+      run: |
         projectVersion=$(mvn -B help:evaluate -Dexpression=project.version -q -DforceStdout )
         echo "maven-version-number=$projectVersion" >> "$GITHUB_OUTPUT"
 
