@@ -1,5 +1,5 @@
 name: Invoke Agent
-description: !
+description: |
   Invoke AI Agent with a specific prompt.  Note this action is a "raw" Junie invoke and does not support
   the github workflow version that generates PRs, responds to issues and chats etc.
 
