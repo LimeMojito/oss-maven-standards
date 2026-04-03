@@ -9,6 +9,14 @@ on:
   pull_request_review:
     types: [ submitted ]
 
+permissions:
+  id-token: write
+  contents: write      # Required to create branches, make commits, and push changes
+  pull-requests: write # Required to create PRs, add comments to PRs, and update PR status
+  issues: write        # Required to add comments to issues and update issue metadata
+  checks: read         # Optional: needed for CI failure analysis with MCP servers
+  actions: read        # Optional: needed for CI failure analysis with MCP servers (to fetch logs)
+
 jobs:
   lime-code-agent:
     if: |
@@ -17,13 +25,6 @@ jobs:
       (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@Lime-Code-Agent')) ||
       (github.event_name == 'issues' && (contains(github.event.issue.body, '@Lime-Code-Agent') || contains(github.event.issue.title, '@Lime-Code-Agent')) || contains(github.event.assignee.login, 'Lime-Code-Agent'))
     runs-on: ubuntu-latest
-    permissions:
-      contents: write      # Required to create branches, make commits, and push changes
-      pull-requests: write # Required to create PRs, add comments to PRs, and update PR status
-      issues: write        # Required to add comments to issues and update issue metadata
-      checks: read         # Optional: needed for CI failure analysis with MCP servers
-      actions: read        # Optional: needed for CI failure analysis with MCP servers (to fetch logs)
-
     steps:
       - name: allowed-user-check
         id: auth_check
