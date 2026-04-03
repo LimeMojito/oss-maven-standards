@@ -50,8 +50,8 @@ jobs:
             CHANGELOG.md.
             
             In the summary that has been added perform the following;
-              - where there are multiple summary items referring to related issues keys (#XXXXX or AA-XXX format) group 
-                and summarize these items into one item per issue.
+              - where there are multiple summary items containing related issues keys (#XXXXX or AAA-XXX format) group 
+                these items and summarize into one description of the changes per issue.
               - where there are multiple summary items referring to version updates or pom updates, replace them with a 
                 single item that is "Updated versions and security patches."
               - remove all summary items that contain any of the following
