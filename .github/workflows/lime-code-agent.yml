@@ -30,7 +30,7 @@ jobs:
         uses: morfien101/actions-authorized-user@v3
         with:
           username: ${{ github.actor }}
-          org: ${{ github.repo_owner }}
+          org: "LimeMojito"
           team: "Developers"
           github_token: ${{ secrets.LIME_CODE_AGENT_GITHUB_TOKEN }}
           whitelist: ''
@@ -38,7 +38,7 @@ jobs:
       - name: check-result
         shell: bash
         run: |
-          echo "${{ github.actor}} is allowed to invoke AI agent? ${{ steps.auth_check.outputs.allowed }}"
+          echo "${{ github.actor}} is allowed to invoke AI agent? $( ${{ steps.auth_check.outputs.allowed }} ? 'yes' : 'no')"
 
       - name: Run Junie
         if: |
