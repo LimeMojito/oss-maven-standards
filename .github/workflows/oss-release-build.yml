@@ -50,6 +50,8 @@ jobs:
             CHANGELOG.md.
             
             In the summary that has been added perform the following;
+              - where there are multiple summary items referring to related issues keys (#XXXXX or AA-XXX format) group 
+                and summarize these items into one item per issue.
               - where there are multiple summary items referring to version updates or pom updates, replace them with a 
                 single item that is "Updated versions and security patches."
               - remove all summary items that contain any of the following
@@ -62,6 +64,8 @@ jobs:
             
             Add a heading of Latest Changes with content as a link to the CHANGELOG.md in the Readme.md file if it 
             doesn't already exist.
+
+            Do not commit these changes or make a pull request, leave the files edited in the version control workspace.
 
       - name: Commit Documentation updates
         shell: bash
