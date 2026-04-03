@@ -1,0 +1,17 @@
+name: maven-version-number
+description: Retrieves maven version number from checked out pom.xml.
+outputs:
+  maven-version-number:
+    description: The version number direct from the pom.xml
+    value: ${{ steps.version.outputs.maven-version-number }}
+
+runs:
+  using: composite
+  steps:
+    - name: Extract Maven Version
+      id: version
+      shell: bash
+      run: !
+        projectVersion=$(mvn -B help:evaluate -Dexpression=project.version -q -DforceStdout )
+        echo "maven-version-number=$projectVersion" >> "$GITHUB_OUTPUT"
+
