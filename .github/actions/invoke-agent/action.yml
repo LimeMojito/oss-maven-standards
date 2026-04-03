@@ -15,7 +15,7 @@ runs:
     - name: Invoke Junie
       uses: JetBrains/junie-github-action@v1
       with:
-        junie_api_key: ${{ inputs.junie-token }}
+        junie_api_key: ${{ inputs.agent-token }}
         allowed_mcp_servers: "mcp_github_checks_server"
         use_single_comment: true
         prompt: ${{ inputs.prompt }}
