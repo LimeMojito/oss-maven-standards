@@ -25,15 +25,8 @@ jobs:
       actions: read        # Optional: needed for CI failure analysis with MCP servers (to fetch logs)
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 1
-
       - name: allowed-user-check
         id: auth_check
-        env:
-          DEBUG: true
         uses: GuillaumeFalourd/github-team-members@v1
         with:
           org_slug: LimeMojito
@@ -47,6 +40,19 @@ jobs:
       - if: steps.auth_check.outputs.actor-belongs-team == 'false'
         run: echo "${{ github.actor }} doesn't belong to Team"
         shell: bash
+
+      - name: Environment Setup
+        uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup@master
+        with:
+          aws-region: ${{ secrets.LIME_AWS_REGION }}
+          role-to-assume: ${{ secrets.LIME_AWS_ROLE_ARN }}
+          code-signing-key: ${{ secrets.LIME_SIGNING_KEY }}
+          code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
+          git-access-key: ${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}
+          git-signing-key: ${{ secrets.LIME_BUILD_AGENT_GIT_SIGNING_KEY }}
+          central-id: ${{ secrets.LIME_CENTRAL_ID}}
+          central-key: ${{ secrets.LIME_CENTRAL_KEY }}
+          localstack-token: ${{ secrets.LIME_LOCALSTACK_TOKEN }}
 
       - name: Run Junie
         if: steps.auth_check.outputs.actor-belongs-team == 'true'
