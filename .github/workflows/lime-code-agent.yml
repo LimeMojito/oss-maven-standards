@@ -29,18 +29,28 @@ jobs:
         id: auth_check
         env:
           DEBUG: true
-        uses: TheModdingInquisition/actions-team-membership@v1.0
+        uses: GuillaumeFalourd/github-team-members@v1
         with:
-          organization: "LimeMojito"
-          team: "developers"
+          org_slug: LimeMojito
+          team_slug: developers
           token: ${{ secrets.LIME_CODE_AGENT_GITHUB_TOKEN }}
+
+      - if: steps.get-members.outputs.actor-belongs-team == 'true'
+        run: echo "${{ github.actor }} belongs to Team"
+        shell: bash
+
+      - if: steps.get-members.outputs.actor-belongs-team == 'false'
+        run: echo "${{ github.actor }} doesn't belong to Team"
+        shell: bash
 
       - name: Run Junie
         if: |
-          (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
-          (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
-          (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@Lime-Code-Agent')) ||
-          (github.event_name == 'issues' && (contains(github.event.issue.body, '@Lime-Code-Agent') || contains(github.event.issue.title, '@Lime-Code-Agent')))
+          steps.auth_check.outputs.actor-belongs-team == 'true' && (
+            (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
+            (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
+            (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@Lime-Code-Agent')) ||
+            (github.event_name == 'issues' && (contains(github.event.issue.body, '@Lime-Code-Agent') || contains(github.event.issue.title, '@Lime-Code-Agent')))
+          )
         id: junie
         uses: JetBrains/junie-github-action@v1
         with:
