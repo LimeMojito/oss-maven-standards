@@ -1,3 +1,6 @@
+# This workflow runs the standard feature build process for OSS Maven projects.
+# It is designed to be delegated to from other repositories or triggered by common events.
+
 name: OSS Maven Standards Feature Build
 
 on:

@@ -1,3 +1,6 @@
+# This workflow performs a release build for OSS Maven projects.
+# It is designed to be delegated to from other repositories or triggered by common events.
+
 name: OSS Release Build
 
 on:

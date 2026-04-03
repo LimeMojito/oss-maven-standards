@@ -1,3 +1,6 @@
+# This workflow performs a feature build for OSS Maven projects.
+# It is designed to be delegated to from other repositories or triggered by common events.
+
 name: OSS Feature Build
 
 on:
