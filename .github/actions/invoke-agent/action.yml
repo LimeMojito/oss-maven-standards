@@ -15,7 +15,10 @@ runs:
     - name: Install Junie CLI
       shell: bash
       run: |
-        curl -fsSL https://junie.jetbrains.com/install.sh | bash
+        if ! command -v junie &> /dev/null
+        then
+          curl -fsSL https://junie.jetbrains.com/install.sh | bash
+        fi
 
     - name: Invoke Junie
       shell: bash
