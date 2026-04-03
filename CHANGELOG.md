@@ -1,3 +1,8 @@
+### 17.0.15
+- #117: Refactored and standardized workflows for better visibility, external project support, and more descriptive run naming.
+- #116: Enhanced AI integration with Jira and refined workflow events and environment overrides.
+- #108: Optimized Junie installation by ensuring it's only installed if missing.
+
 ### 17.0.14
 - #108: Setup and optimization of the Junie AI agent invocation via CLI, including improved prompt passing and token handling.
 - #112: Enhanced the AI coding agent environment with AWS permissions, signing keys, and refined job triggers.
