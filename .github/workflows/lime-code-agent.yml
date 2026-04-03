@@ -10,37 +10,8 @@ on:
     types: [ submitted ]
 
 jobs:
-  checkuser:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: allowed-user-check
-        id: auth_check
-        uses: morfien101/actions-authorized-user@v3
-        with:
-          username: ${{ github.actor }}
-          org: ${{ github.repo_owner }}
-          team: "Developers"
-          github_token: ${{ secrets.LIME_CODE_AGENT_GITHUB_TOKEN }}
-          whitelist: ''
-      - name: result
-        shell: bash
-        run: |
-          echo "${{ github.actor}} is allowed to invoke AI agent? ${{ steps.auth_check.outputs.allowed }}"
-          git push
-    outputs:
-      allowed: ${{ steps.auth_check.outputs.allowed }}
-
-  junie:
+  agent:
     needs: checkuser
-    if: |
-      (needs.checkuser.outputs.allowed) && (
-        (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
-        (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
-        (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@Lime-Code-Agent')) ||
-        (github.event_name == 'issues' && (contains(github.event.issue.body, '@Lime-Code-Agent') || contains(github.event.issue.title, '@Lime-Code-Agent')))
-      )
     runs-on: ubuntu-latest
     permissions:
       contents: write      # Required to create branches, make commits, and push changes
@@ -55,7 +26,29 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: allowed-user-check
+        id: auth_check
+        uses: morfien101/actions-authorized-user@v3
+        with:
+          username: ${{ github.actor }}
+          org: ${{ github.repo_owner }}
+          team: "Developers"
+          github_token: ${{ secrets.LIME_CODE_AGENT_GITHUB_TOKEN }}
+          whitelist: ''
+
+      - name: check-result
+        shell: bash
+        run: |
+          echo "${{ github.actor}} is allowed to invoke AI agent? ${{ steps.auth_check.outputs.allowed }}"
+
       - name: Run Junie
+        if: |
+          (steps.auth_check.outputs.allowed) && (
+            (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
+            (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
+            (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@Lime-Code-Agent')) ||
+            (github.event_name == 'issues' && (contains(github.event.issue.body, '@Lime-Code-Agent') || contains(github.event.issue.title, '@Lime-Code-Agent')))
+          )
         id: junie
         uses: JetBrains/junie-github-action@v1
         with:
