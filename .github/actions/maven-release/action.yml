@@ -38,7 +38,7 @@ runs:
         git add .
         git commit -S -m "[Development] updated development version in pom.xml"
 
-    - name: Test Build for ${{ steps.git_release_version.outputs.lime-release-version }}
+    - name: Test Build
       shell: bash
       run: |
         echo "Checking out ${{steps.git_release_version.outputs.lime-release-version}}"
@@ -61,7 +61,7 @@ runs:
           target/docker-logs/
           **/target/docker-logs
 
-    - name: Perform Release Deployment of ${{ steps.git_release_version.outputs.lime-release-version }}
+    - name: Perform Release Deployment
       shell: bash
       run: |
         export MAVEN_GPG_PASSPHRASE="${{ inputs.code-signing-passphrase }}"
@@ -75,7 +75,7 @@ runs:
           -DskipITs=true \
           deploy
 
-    - name: Push changes and tag ${{steps.git_release_version.outputs.lime-release-version}}
+    - name: Push changes and tag
       shell: bash
       run: |
         defaultBranch=$(git remote show origin | grep "HEAD branch" | sed 's/.*: //')
