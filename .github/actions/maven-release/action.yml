@@ -81,3 +81,8 @@ runs:
         echo "Pushing version and tag changes"
         git push
         git push origin tag ${{steps.git_release_version.outputs.lime-release-version}}
+
+    - name: "Release Version: ${{ steps.git_release_version.outputs.lime-release-version }}"
+      shell: bash
+      run: |
+        echo "Release Version: ${{ steps.git_release_version.outputs.lime-release-version }}"
