@@ -29,27 +29,18 @@ jobs:
         id: auth_check
         env:
           DEBUG: true
-        uses: morfien101/actions-authorized-user@v3
+        uses: TheModdingInquisition/actions-team-membership@v1.0
         with:
-          username: ${{ github.actor }}
-          org: "LimeMojito"
+          organization: "LimeMojito"
           team: "developers"
-          github_token: ${{ secrets.LIME_CODE_AGENT_GITHUB_TOKEN }}
-          whitelist: ''
-
-      - name: check-result
-        shell: bash
-        run: |
-          echo "${{ github.actor}} is allowed to invoke AI agent? ${{ steps.auth_check.outputs.authorized }}"
+          token: ${{ secrets.LIME_CODE_AGENT_GITHUB_TOKEN }}
 
       - name: Run Junie
         if: |
-          (steps.auth_check.outputs.allowed) && (
-            (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
-            (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
-            (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@Lime-Code-Agent')) ||
-            (github.event_name == 'issues' && (contains(github.event.issue.body, '@Lime-Code-Agent') || contains(github.event.issue.title, '@Lime-Code-Agent')))
-          )
+          (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
+          (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
+          (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@Lime-Code-Agent')) ||
+          (github.event_name == 'issues' && (contains(github.event.issue.body, '@Lime-Code-Agent') || contains(github.event.issue.title, '@Lime-Code-Agent')))
         id: junie
         uses: JetBrains/junie-github-action@v1
         with:
