@@ -55,4 +55,4 @@ jobs:
         shell: bash
         run: |
           echo "Pushing changes to calling branch."
-          git push
+          BRANCH=$(git branch --show-current) && [ -n "$BRANCH" ] && git push

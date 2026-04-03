@@ -17,6 +17,6 @@ jobs:
     uses: LimeMojito/oss-maven-standards/.github/workflows/oss-feature-build.yml@master
     secrets: inherit
     permissions:
-      contents: read
+      contents: write
       packages: read
       id-token: write

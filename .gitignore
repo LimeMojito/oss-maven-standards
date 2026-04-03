@@ -3,3 +3,5 @@ atlassian-ide-plugin.xml
 .idea
 target
 cdk.out
+.junie
+!.junie/guidelines.md
