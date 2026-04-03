@@ -8,6 +8,37 @@ on:
     types: [ assigned ]
   pull_request_review:
     types: [ submitted ]
+  workflow_dispatch:
+    # fancy Jira space name replacement: {{issue.project.name.toLowerCase().replaceAll(" ", "-").urlEncode()}}
+    inputs:
+      action:
+        description: Action to perform
+        required: true
+        type: choice
+        options:
+          - jira_event
+      issue_key:
+        description: 'Jira issue key (e.g., TEST-1)'
+        required: true
+        type: string
+      issue_summary:
+        description: 'Jira issue summary/title'
+        required: true
+        type: string
+      issue_description:
+        description: 'Jira issue description'
+        required: false
+        type: string
+      issue_comments:
+        description: 'Jira issue comments'
+        required: false
+      issue_attachments:
+        description: 'Jira issue attachments'
+        required: false
+      trigger_comment:
+        description: 'Comment that triggered Junie (used as user instruction)'
+        required: false
+        type: string
 
 permissions:
   id-token: write
