@@ -104,6 +104,7 @@ See Article: https://limemojito.com/version-dependency-updates-automated-in-mave
 * [Technology Choices](docs/ai/00-technology-choices.md)
 * [AI Setup Local](docs/ai/01-ai-setup-local.md)
 * [Github Setup](docs/ai/02-github-setup.md)
+* [Responding to Issues](docs/ai/03-responding-to-issues.md)
 
 ---
 
