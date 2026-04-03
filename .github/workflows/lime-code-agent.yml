@@ -33,7 +33,7 @@ jobs:
         with:
           username: ${{ github.actor }}
           org: "LimeMojito"
-          team: "Developers"
+          team: "developers"
           github_token: ${{ secrets.LIME_CODE_AGENT_GITHUB_TOKEN }}
           whitelist: ''
 
