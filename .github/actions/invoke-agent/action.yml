@@ -1,0 +1,21 @@
+name: Invoke Agent
+description: Invoke AI Agent with a specific prompt.
+
+inputs:
+  prompt:
+    description: Markdown prompt to invoke agent with.
+    required: true
+  agent-token:
+    description: The api key to use agent with
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Invoke Junie
+      uses: JetBrains/junie-github-action@v1
+      with:
+        junie_api_key: ${{ inputs.junie-token }}
+        allowed_mcp_servers: "mcp_github_checks_server"
+        use_single_comment: true
+        prompt: ${{ inputs.prompt }}

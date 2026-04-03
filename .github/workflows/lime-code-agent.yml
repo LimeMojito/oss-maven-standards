@@ -57,7 +57,7 @@ jobs:
           central-key: ${{ secrets.LIME_CENTRAL_KEY }}
           localstack-token: ${{ secrets.LIME_LOCALSTACK_TOKEN }}
 
-      - name: Run Junie
+      - name: Run Junie Agentic AI
         if: steps.auth_check.outputs.actor-belongs-team == 'true'
         id: junie
         uses: JetBrains/junie-github-action@v1
