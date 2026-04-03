@@ -94,6 +94,10 @@ jobs:
         if: steps.auth_check.outputs.actor-belongs-team == 'true'
         id: junie
         uses: JetBrains/junie-github-action@v1
+        env:
+          JIRA_BASE_URL: ${{ secrets.LIME_CODE_AGENT_JIRA_BASE_URL }}
+          JIRA_EMAIL: ${{ secrets.LIME_CODE_AGENT_JIRA_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.LIME_CODE_AGENT_JIRA_API_TOKEN }}
         with:
           junie_api_key: ${{ secrets.LIME_CODE_AGENT_JUNIE_TOKEN }}
           allowed_mcp_servers: "mcp_github_checks_server"
