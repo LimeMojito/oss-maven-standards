@@ -39,9 +39,12 @@ jobs:
         uses: LimeMojito/oss-maven-standards/.github/actions/maven-version-update@master
 
       - name: Build with Maven
+        id: build
         # install is required for the framework as CDK is trying to load the current library in another process.
         run: |
           export MAVEN_GPG_PASSPHRASE="${{ secrets.LIME_SIGNING_PASSPHRASE }}"
+          projectVersion=$(mvn -B help:evaluate -Dexpression=project.version -q -DforceStdout )
+          echo "lime-version=$tagName" >> "$GITHUB_OUTPUT"
           mvn -B -Dstyle.color=always --file pom.xml -Dbuild.number=${{github.run_number}} -Dgpg.keyname='Lime Mojito Pty Ltd' install
 
       - name: Upload Docker logs
@@ -59,3 +62,8 @@ jobs:
         run: |
           echo "Pushing changes to calling branch."
           BRANCH=$(git branch --show-current) && [ -n "$BRANCH" ] && git push
+
+      - name: Version ${{steps.build.outputs.lime-version}}
+        shell: bash
+        run: |
+          echo -e "\n\nFeature Build ${{steps.build.outputs.lime-version}} build ${github.run_number}"
