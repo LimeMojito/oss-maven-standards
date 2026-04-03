@@ -41,7 +41,7 @@ jobs:
         run: |
           echo "${{ github.actor}} is allowed to invoke AI agent? ${{ steps.auth_check.outputs.allowed }}"
 
-      - name: Run Junie
+      - name: Run Junie Agentic AI
         if: |
           (steps.auth_check.outputs.allowed) && (
             (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
@@ -49,7 +49,6 @@ jobs:
             (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@Lime-Code-Agent')) ||
             (github.event_name == 'issues' && (contains(github.event.issue.body, '@Lime-Code-Agent') || contains(github.event.issue.title, '@Lime-Code-Agent')))
           )
-        id: junie
         uses: JetBrains/junie-github-action@v1
         with:
           junie_api_key: ${{ secrets.LIME_CODE_AGENT_JUNIE_TOKEN }}
