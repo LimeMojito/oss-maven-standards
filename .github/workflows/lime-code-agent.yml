@@ -43,6 +43,7 @@ jobs:
         shell: bash
 
       - name: Environment Setup
+        if: steps.auth_check.outputs.actor-belongs-team == 'true'
         uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup@master
         with:
           git-access-key: ${{ secrets.LIME_CODE_AGENT_GIT_KEY }}
@@ -67,3 +68,6 @@ jobs:
           trigger_phrase: "@Lime-Code-Agent"
           assignee_trigger: Lime-Code-Agent
           label_trigger: lime-code-agent
+          jira_base_url: ${{ secrets.LIME_CODE_AGENT_JIRA_BASE_URL }}
+          jira_email: ${{ secrets.LIME_CODE_AGENT_JIRA_EMAIL }}
+          jira_api_token: ${{ secrets.LIME_CODE_AGENT_JIRA_API_TOKEN }}
