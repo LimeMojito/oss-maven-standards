@@ -10,8 +10,7 @@ on:
     types: [ submitted ]
 
 jobs:
-  agent:
-    needs: checkuser
+  lime-code-agent:
     runs-on: ubuntu-latest
     permissions:
       contents: write      # Required to create branches, make commits, and push changes
