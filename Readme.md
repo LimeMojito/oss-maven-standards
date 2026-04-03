@@ -100,6 +100,12 @@ See Article: https://limemojito.com/version-dependency-updates-automated-in-mave
 
 ---
 
+# Latest Changes
+
+See [CHANGELOG.md](CHANGELOG.md) for a summary of changes.
+
+---
+
 # Using AI in the build process.
 * [Technology Choices](docs/ai/00-technology-choices.md)
 * [AI Setup Local](docs/ai/01-ai-setup-local.md)

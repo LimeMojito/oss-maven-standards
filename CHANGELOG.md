@@ -1,3 +1,11 @@
+### 17.0.14
+- #108: Setup and optimization of the Junie AI agent invocation via CLI, including improved prompt passing and token handling.
+- #112: Enhanced the AI coding agent environment with AWS permissions, signing keys, and refined job triggers.
+- #107: Implemented organizational authorization checks for AI invocation and refined GitHub workflows for feature builds and security.
+- Improved AI prompts and release processes, including CHANGELOG.md summarization and repository cleanup scripts.
+- Refined tag and version update management to reduce build noise.
+- Updated versions and security patches.
+
 ### 17.0.11
 - d63dea4 - Use latest localstack docker.  Pass through token.
 
