@@ -19,7 +19,8 @@ Customized junie workflow to reject non members invoking it.
       4. Expire 1 year
       5. All repo access
       6. Contents Permission (read only)
-      7. Generate
+      7. Administration (read only)
+      8. Generate
 4. Grant access to LimeCodeAgentRepoAccess fine grained token as the organisation 
    1. OWNER_USER | Lime Mojito Pty Ltd | Settings | Developer Settings | Personal access tokens | LimeCodeAgentRepoAccess | Grant access
    2. Approve

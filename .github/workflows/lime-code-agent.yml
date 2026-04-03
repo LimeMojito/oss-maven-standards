@@ -38,7 +38,7 @@ jobs:
       - name: check-result
         shell: bash
         run: |
-          echo "${{ github.actor}} is allowed to invoke AI agent? $( ${{ steps.auth_check.outputs.allowed }} ? 'yes' : 'no')"
+          echo "${{ github.actor}} is allowed to invoke AI agent? ${{ steps.auth_check.outputs.authorized }}"
 
       - name: Run Junie
         if: |
