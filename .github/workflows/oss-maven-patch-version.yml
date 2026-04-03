@@ -1,7 +1,7 @@
 # This workflow updates Maven project versions.
 # It is designed to be delegated to from other repositories or triggered by common events.
 
-name: Lime OSS Update Maven Versions
+name: OSS Maven Standards Update Maven Versions
 
 on:
   workflow_call:

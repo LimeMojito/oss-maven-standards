@@ -3,7 +3,7 @@
 # `invoke-agent` action.
 # It is designed to be delegated to from other repositories or triggered by common events.
 
-name: OSS Lime Code Agent
+name: OSS Maven Standards Lime Code Agent
 
 on:
   workflow_call:
