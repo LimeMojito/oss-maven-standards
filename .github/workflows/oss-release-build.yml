@@ -78,7 +78,13 @@ jobs:
           git commit -S -m "Updated Documentation for release build."
 
       - name: Maven Release Build
+        id: maven-release-build
         uses: LimeMojito/oss-maven-standards/.github/actions/maven-release@master
         with:
           code-signing-key-name: Lime Mojito Pty Ltd
           code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
+
+      - name: "Version: ${{ steps.maven-release-build.outputs.release-version }}"
+        shell: bash
+        run: |
+          echo "Release Version: ${{ steps.maven-release-build.outputs.release-version }}"

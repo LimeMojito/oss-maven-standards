@@ -1,4 +1,3 @@
-name: "Lime Maven Release"
 description: "Performs a build and maven deployment similar to a maven release with commits pushed at the end."
 inputs:
   code-signing-key-name:
@@ -10,6 +9,10 @@ inputs:
   extra-mvn-options:
     description: 'Extra maven command line options'
     required: false
+outputs:
+  release-version:
+    description: 'The release version'
+    value: ${{ steps.git_release_version.outputs.lime-release-version }}
 
 runs:
   using: composite
@@ -81,8 +84,3 @@ runs:
         echo "Pushing version and tag changes"
         git push
         git push origin tag ${{steps.git_release_version.outputs.lime-release-version}}
-
-    - name: "Release Version: ${{ steps.git_release_version.outputs.lime-release-version }}"
-      shell: bash
-      run: |
-        echo "Release Version: ${{ steps.git_release_version.outputs.lime-release-version }}"
