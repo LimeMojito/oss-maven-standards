@@ -21,4 +21,6 @@ runs:
       shell: bash
       run: |
         export JUNIE_API_KEY=${{ inputs.agent-token }}
-        junie --skip-update-check --auth="${JUNIE_API_KEY}" "${{ inputs.prompt }}"
+        junie --skip-update-check --auth="${JUNIE_API_KEY}" << 'EOF'
+        {{ inputs.prompt }}
+        EOF
