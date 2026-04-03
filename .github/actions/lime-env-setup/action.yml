@@ -28,6 +28,14 @@ inputs:
   localstack-token:
     description: 'LocalStack access token'
     required: true
+  git-id-email:
+    description: Email address of the entity performing commits
+    required: false
+    default: "build@limemojito.com"
+  git-id-name:
+    description: Name of the entity performing commits
+    required: false
+    default: "Lime Build Agent"
 
 runs:
   using: composite
@@ -37,6 +45,8 @@ runs:
       with:
         git-access-key: ${{ inputs.git-access-key }}
         git-signing-key: ${{ inputs.git-signing-key }}
+        git-id-email: ${{ inputs.git-id-email }}
+        git-id-name: ${{ inputs.git-id-name }}
 
     - name: Lime Setup Java
       uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-java@master
