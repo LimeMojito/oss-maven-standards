@@ -1,5 +1,5 @@
 name: Lime Code Agent
-run-name: "Lime Code Agent for ${{ github.actor }} due to ${{ github.event_name }}"
+run-name: "AI: ${{ github.actor }} due to ${{ github.event_name }} ${{github.event.inputs.action}}"
 
 on:
   issue_comment:

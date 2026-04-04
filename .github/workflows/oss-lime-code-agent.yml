@@ -65,7 +65,6 @@ jobs:
         if: steps.auth_check.outputs.actor-belongs-team == 'true'
         id: junie
         uses: JetBrains/junie-github-action@v1
-#        uses: LimeMojito/junie-github-action@feature/fix-jira-env-passing
         env:
           JIRA_BASE_URL: ${{ secrets.LIME_CODE_AGENT_JIRA_BASE_URL }}
           JIRA_EMAIL: ${{ secrets.LIME_CODE_AGENT_JIRA_EMAIL }}
