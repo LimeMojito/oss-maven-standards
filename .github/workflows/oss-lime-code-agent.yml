@@ -21,6 +21,7 @@ permissions:
 
 jobs:
   lime-code-agent:
+    timeout-minutes: 30
     if: |
       github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'jira_event' ||
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
