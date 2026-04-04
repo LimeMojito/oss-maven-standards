@@ -78,4 +78,4 @@ jobs:
           label_trigger: lime-code-agent
           jira_base_url: ${{ secrets.LIME_CODE_AGENT_JIRA_BASE_URL }}
           jira_email: ${{ secrets.LIME_CODE_AGENT_JIRA_EMAIL }}
-          jira_api_token: ${{ secrets.LIME_CODE_AGENT_JIRA_API_TOKEN }}
+          jira_api_token: ${{ secrets.LIME_CODE_AGENT_JIRA_TOKEN }}
