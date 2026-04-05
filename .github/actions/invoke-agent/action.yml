@@ -43,6 +43,16 @@ runs:
           iex (irm 'https://junie.jetbrains.com/install.ps1')
         }
 
+    - name: Invoke Junie Windows
+      if: runner.os == 'Windows' && steps.auth_check.outputs.actor-belongs-team == 'true'
+      shell: pwsh
+      run: |
+        $junieKey = '${{ inputs.agent-token }}'
+        $prompt = @'
+            ${{inputs.prompt}}
+        '@
+        Write-Output $prompt | junie -k $junieKey
+
     - name: Install Junie CLI Unix
       if: (runner.os == 'Linux' || runner.os == 'macOS') && steps.auth_check.outputs.actor-belongs-team == 'true'
       shell: bash
@@ -52,8 +62,8 @@ runs:
           curl -fsSL https://junie.jetbrains.com/install.sh | bash
         fi
 
-    - name: Invoke Junie
-      if: steps.auth_check.outputs.actor-belongs-team == 'true'
+    - name: Invoke Junie Unix
+      if: (runner.os == 'Linux' || runner.os == 'macOS') && steps.auth_check.outputs.actor-belongs-team == 'true'
       shell: bash
       run: |
         export JUNIE_API_KEY=${{ inputs.agent-token }}
