@@ -44,6 +44,7 @@ jobs:
         uses: LimeMojito/oss-maven-standards/.github/actions/maven-version-update@master
 
       - name: Update Documentation
+        timeout-minutes: 5
         uses: LimeMojito/oss-maven-standards/.github/actions/invoke-agent@master
         with:
           agent-token: ${{ secrets.LIME_CODE_AGENT_JUNIE_TOKEN }}
