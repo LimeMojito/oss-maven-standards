@@ -2,13 +2,18 @@
 # Junie GitHub Workflow that will **ALWAYS** create a PR for changes, etc. To use a brave mode style action, see the
 # `invoke-agent` action.
 # It is designed to be delegated to from other repositories or triggered by common events.
+# A calling workflow can pass the runner type to use, e.g. `runner: ubuntu-latest`.  The runner will default to ubuntu-latest.
 
 name: OSS Maven Standards Lime Code Agent
 
 on:
   workflow_call:
     # This workflow inherits the github.event object which the Junit workflow is using to work out use cases to execute.
-
+    inputs:
+      runner:
+        required: false
+        type: string
+        default: ubuntu-latest
 
 permissions:
   id-token: write
@@ -26,7 +31,7 @@ jobs:
       (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
       (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@Lime-Code-Agent')) ||
       (github.event_name == 'issues' && (contains(github.event.issue.body, '@Lime-Code-Agent') || contains(github.event.issue.title, '@Lime-Code-Agent')) || contains(github.event.assignee.login, 'Lime-Code-Agent'))
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner }}
     steps:
       - name: allowed-user-check
         id: auth_check
