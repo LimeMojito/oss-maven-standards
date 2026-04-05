@@ -17,9 +17,9 @@ runs:
       shell: bash
       run: |
         echo "Updating Maven library versions"
-        mvn versions:update-parent -q 
-        mvn versions:update-properties -q 
-        mvn versions:use-latest-releases -q
+        mvn -B versions:update-parent -q 
+        mvn -B versions:update-properties -q 
+        mvn -B versions:use-latest-releases -q
 
     - name: Check of changes
       id: check-changes
