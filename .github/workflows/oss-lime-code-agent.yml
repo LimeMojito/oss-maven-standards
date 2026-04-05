@@ -8,14 +8,11 @@ name: OSS Maven Standards Lime Code Agent
 
 on:
   workflow_call:
-    # This workflow inherits the github.event object which the Junit workflow is using to work out use cases to execute.
-# 6/4/2026: Junie supplied github action does not run under windows due to issues detecting OS version and bash shell
-#           dependencies.  ``` Unsupported OS: MINGW64_NT-10.0-26100 ```
-#    inputs:
-#      runner:
-#        required: false
-#        type: string
-#        default: ubuntu-latest
+    inputs:
+      runs-on:
+        required: false
+        type: string
+        default: ubuntu-latest
 
 permissions:
   id-token: write
@@ -34,8 +31,16 @@ jobs:
       (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@Lime-Code-Agent')) ||
       (github.event_name == 'issues' && (contains(github.event.issue.body, '@Lime-Code-Agent') || contains(github.event.issue.title, '@Lime-Code-Agent')) || contains(github.event.assignee.login, 'Lime-Code-Agent'))
     # 6/4/2026 Not supported runs-on: ${{ inputs.runner }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runs-on }}
     steps:
+      - name: Check OS
+        if: runner.os == 'Windows'
+        shell: bash
+        run: echo "Unsupported OS due to Junie Github Action" && exit 1
+        # This workflow inherits the github.event object which the Junit workflow is using to work out use cases to execute.
+        # 6/4/2026: Junie supplied github action does not run under windows due to issues detecting OS version and bash shell
+        #           dependencies.  ``` Unsupported OS: MINGW64_NT-10.0-26100 ```
+
       - name: allowed-user-check
         id: auth_check
         uses: GuillaumeFalourd/github-team-members@v1
