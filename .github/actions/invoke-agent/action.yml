@@ -1,7 +1,8 @@
 name: Invoke Agent
 description: |
   Invoke AI Agent with a specific prompt.  Note this action is a "raw" Junie invoke and does not support
-  the github workflow version that generates PRs, responds to issues and chats etc.
+  the github workflow version that generates PRs, responds to issues and chats etc.  This action will not run unless the 
+  caller is a member of the developers team.
 
 inputs:
   prompt:
@@ -10,21 +11,40 @@ inputs:
   agent-token:
     description: The api key to use agent with
     required: true
+  github-token:
+    description: The github token to use for github requests by this action.
+    required: true
 
 runs:
   using: composite
   steps:
+    - name: allowed-user-check
+      id: auth_check
+      uses: GuillaumeFalourd/github-team-members@v1
+      with:
+        org_slug: LimeMojito
+        team_slug: developers
+        token: ${{ inputs.github-token }}
+
+    - if: steps.auth_check.outputs.actor-belongs-team == 'true'
+      run: echo "${{ github.actor }} belongs to Team"
+      shell: bash
+
+    - if: steps.auth_check.outputs.actor-belongs-team == 'false'
+      run: echo "${{ github.actor }} doesn't belong to Team"
+      shell: bash
+
     - name: Install Junie CLI Windows
-      if: runner.os == 'Windows'
+      if: runner.os == 'Windows' && steps.auth_check.outputs.actor-belongs-team == 'true'
       shell: pwsh
       run: |
-          if (!(Get-Command junie -ErrorAction SilentlyContinue)) {
-            echo "Junie CLI not found. Installing..."
-            iex (irm 'https://junie.jetbrains.com/install.ps1')
-          }
+        if (!(Get-Command junie -ErrorAction SilentlyContinue)) {
+          echo "Junie CLI not found. Installing..."
+          iex (irm 'https://junie.jetbrains.com/install.ps1')
+        }
 
     - name: Install Junie CLI Unix
-      if: runner.os == 'Linux' || runner.os == 'macOS'
+      if: (runner.os == 'Linux' || runner.os == 'macOS') && steps.auth_check.outputs.actor-belongs-team == 'true'
       shell: bash
       run: |
         if ! command -v junie &> /dev/null
@@ -33,6 +53,7 @@ runs:
         fi
 
     - name: Invoke Junie
+      if: steps.auth_check.outputs.actor-belongs-team == 'true'
       shell: bash
       run: |
         export JUNIE_API_KEY=${{ inputs.agent-token }}

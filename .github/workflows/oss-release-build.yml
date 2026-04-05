@@ -47,6 +47,7 @@ jobs:
         uses: LimeMojito/oss-maven-standards/.github/actions/invoke-agent@master
         with:
           agent-token: ${{ secrets.LIME_CODE_AGENT_JUNIE_TOKEN }}
+          github-token: ${{ secrets.LIME_CODE_AGENT_GITHUB_TOKEN }}
           prompt: |
             Using the version number from pom.xml minus -SNAPSHOT, update CHANGELOG.md to summarize the git commits since 
             the last release tag, where the last release tag is the top most heading of changes in the current 
