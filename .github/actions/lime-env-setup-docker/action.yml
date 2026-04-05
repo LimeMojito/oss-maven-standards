@@ -1,17 +1,21 @@
 name: "Lime Environment Setup Docker"
 description: |
-  Configures the build environment to work with Docker[ARM] on x86.
+  Configures the build environment to work with Docker[ARM] on x86.  
+  Does not support Windows runners and skips installation.
 
 runs:
   using: composite
   steps:
     - uses: docker/setup-qemu-action@v4
+      if: runner.os != 'Windows'
       with:
         platforms: 'arm64'
 
     - uses: docker/setup-buildx-action@v4
+      if: runner.os != 'Windows'
 
     - name: Cache Docker images.
+      if: runner.os != 'Windows'
       uses: AndreKurait/docker-cache@0.6.0
       with:
         key: docker-LimeMojito-OSS
