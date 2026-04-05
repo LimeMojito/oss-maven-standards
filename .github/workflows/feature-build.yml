@@ -1,4 +1,5 @@
 name: Feature Build
+run-name: Build Feature on ${{ github.head_ref || github.ref_name }} by @${{ github.actor }}
 
 on:
   workflow_dispatch:

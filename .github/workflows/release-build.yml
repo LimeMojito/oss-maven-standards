@@ -1,5 +1,5 @@
 name: Release Build
-run-name: Release Build
+run-name: Build Release on ${{ github.head_ref || github.ref_name }} by @${{ github.actor }}
 
 on:
   workflow_dispatch:
