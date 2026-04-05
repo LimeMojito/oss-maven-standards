@@ -58,7 +58,7 @@ runs:
         $prompt = @'
             ${{inputs.prompt}}
         '@
-        Write-Output $prompt | junie -k $junieKey
+        Write-Output $prompt | junie --skip-update-check --auth $junieKey
 
     - name: Install Junie CLI Unix
       if: (runner.os == 'Linux' || runner.os == 'macOS') && steps.auth_check.outputs.actor-belongs-team == 'true'
