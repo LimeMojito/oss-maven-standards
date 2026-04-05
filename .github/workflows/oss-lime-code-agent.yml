@@ -30,7 +30,6 @@ jobs:
       (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
       (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@Lime-Code-Agent')) ||
       (github.event_name == 'issues' && (contains(github.event.issue.body, '@Lime-Code-Agent') || contains(github.event.issue.title, '@Lime-Code-Agent')) || contains(github.event.assignee.login, 'Lime-Code-Agent'))
-    # 6/4/2026 Not supported runs-on: ${{ inputs.runner }}
     runs-on: ${{ inputs.runs-on }}
     steps:
       - name: Check OS
