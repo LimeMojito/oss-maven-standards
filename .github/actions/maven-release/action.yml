@@ -65,12 +65,11 @@ runs:
         # perform an install build under the release profile, no deployments.
         mvn -B \
           --no-transfer-progress \ 
-          ${{ inputs.extra-mvn-options }} \
           -Dstyle.color=always \
           -Dbuild.number=${{github.run_number}} \
           -Dgpg.keyname='${{inputs.code-signing-key-name}}' \
           -Prelease \
-          install
+          ${{ inputs.extra-mvn-options }} install
 
     - name: Upload Docker logs for Test step
       if: always()
@@ -89,14 +88,13 @@ runs:
         # deploy to OSSRH
         mvn -B \
           --no-transfer-progress \ 
-          ${{ inputs.extra-mvn-options }} \
           -Dstyle.color=always \
           -Prelease \
           -Dbuild.number=${{github.run_number}} \
           -Dgpg.keyname='${{inputs.code-signing-key-name}}' \
           -DskipTests=true \
           -DskipITs=true \
-          deploy
+          ${{ inputs.extra-mvn-options }} deploy
 
     - name: Push changes and tag
       shell: bash
