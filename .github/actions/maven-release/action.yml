@@ -22,7 +22,14 @@ runs:
       shell: bash
       run: |
         echo -e "Incrementing release version\n\n"
-        mvn -B -Dstyle.color=always build-helper:parse-version versions:set -DprocessAllModules=true -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion} versions:commit
+        mvn -B \
+          --no-transfer-progress \
+          -Dstyle.color=always \
+          build-helper:parse-version \
+          versions:set \
+            -DprocessAllModules=true \
+            -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion} \
+          versions:commit
         projectVersion=$(mvn -B help:evaluate -Dexpression=project.version -q -DforceStdout )
         git add .
         git commit -S -m "[Release] updated version in pom.xml"
@@ -35,7 +42,14 @@ runs:
       shell: bash
       run: |
         echo -e "\n\nIncrementing developer version"
-        mvn -B -Dstyle.color=always build-helper:parse-version versions:set -DprocessAllModules=true -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT versions:commit
+        mvn -B \
+          --no-transfer-progress \
+          -Dstyle.color=always   \
+          build-helper:parse-version \
+          versions:set \
+            -DprocessAllModules=true \
+            -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT \
+          versions:commit
         developmentVersion=$(mvn -B help:evaluate -Dexpression=project.version -q -DforceStdout )
         echo "Adding version change to ${developmentVersion} to git"
         git add .
@@ -49,7 +63,9 @@ runs:
         git checkout ${{steps.git_release_version.outputs.lime-release-version}}
         export MAVEN_GPG_PASSPHRASE="${{ inputs.code-signing-passphrase }}"
         # perform an install build under the release profile, no deployments.
-        mvn -B ${{ inputs.extra-mvn-options }} \
+        mvn -B \
+          --no-transfer-progress \ 
+          ${{ inputs.extra-mvn-options }} \
           -Dstyle.color=always \
           -Dbuild.number=${{github.run_number}} \
           -Dgpg.keyname='${{inputs.code-signing-key-name}}' \
@@ -71,7 +87,9 @@ runs:
         echo -e "\n\nDeploying Release version ${{steps.git_release_version.outputs.lime-release-version}}"
         export MAVEN_GPG_PASSPHRASE="${{ inputs.code-signing-passphrase }}"
         # deploy to OSSRH
-        mvn -B ${{ inputs.extra-mvn-options }} \
+        mvn -B \
+          --no-transfer-progress \ 
+          ${{ inputs.extra-mvn-options }} \
           -Dstyle.color=always \
           -Prelease \
           -Dbuild.number=${{github.run_number}} \
