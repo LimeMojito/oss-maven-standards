@@ -55,6 +55,7 @@ runs:
     - name: Invoke Junie
       if: steps.auth_check.outputs.actor-belongs-team == 'true'
       shell: bash
+      timeout-minutes: 10
       run: |
         export JUNIE_API_KEY=${{ inputs.agent-token }}
         junie --skip-update-check --auth="${JUNIE_API_KEY}" << 'EOF'
