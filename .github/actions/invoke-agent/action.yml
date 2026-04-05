@@ -14,7 +14,17 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Install Junie CLI
+    - name: Install Junie CLI Windows
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+          if (!(Get-Command junie -ErrorAction SilentlyContinue)) {
+            echo "Junie CLI not found. Installing..."
+            iex (irm 'https://junie.jetbrains.com/install.ps1')
+          }
+
+    - name: Install Junie CLI Unix
+      if: runner.os == 'Linux' || runner.os == 'macOS'
       shell: bash
       run: |
         if ! command -v junie &> /dev/null
