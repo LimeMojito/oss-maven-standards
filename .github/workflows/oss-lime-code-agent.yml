@@ -1,4 +1,4 @@
-# This workflow invokes the Lime Code Agent for GitHub events and Jira issues.  Note that this workflow invokes
+# This workflow invokes the Lime Code Agent for GitHub events.  Note that this workflow invokes
 # Junie GitHub Workflow that will **ALWAYS** create a PR for changes, etc. To use a brave mode style action, see the
 # `invoke-agent` action.
 # It is designed to be delegated to from other repositories or triggered by common events.
@@ -8,8 +8,7 @@ name: OSS Maven Standards Lime Code Agent
 on:
   workflow_call:
     # This workflow inherits the github.event object which the Junit workflow is using to work out use cases to execute.
-    # Note that Jira dispatches are expected to use fancy Jira space name replacement:
-    #     {{issue.project.name.toLowerCase().replaceAll(" ", "-").urlEncode()}}
+
 
 permissions:
   id-token: write
@@ -23,7 +22,6 @@ jobs:
   lime-code-agent:
     timeout-minutes: 30
     if: |
-      github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'jira_event' ||
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
       (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@Lime-Code-Agent')) ||
       (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@Lime-Code-Agent')) ||
@@ -72,10 +70,7 @@ jobs:
           JIRA_API_TOKEN: ${{ secrets.LIME_CODE_AGENT_JIRA_API_TOKEN }}
         with:
           junie_api_key: ${{ secrets.LIME_CODE_AGENT_JUNIE_TOKEN }}
-          allowed_mcp_servers: "mcp_github_checks_server"
+          allowed_mcp_servers: "mcp_github_checks_server, mcp_github_inline_comment_server"
           trigger_phrase: "@Lime-Code-Agent"
           assignee_trigger: Lime-Code-Agent
           label_trigger: lime-code-agent
-          jira_base_url: ${{ secrets.LIME_CODE_AGENT_JIRA_BASE_URL }}
-          jira_email: ${{ secrets.LIME_CODE_AGENT_JIRA_EMAIL }}
-          jira_api_token: ${{ secrets.LIME_CODE_AGENT_JIRA_TOKEN }}
