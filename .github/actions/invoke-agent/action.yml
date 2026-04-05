@@ -39,8 +39,15 @@ runs:
       shell: pwsh
       run: |
         if (!(Get-Command junie -ErrorAction SilentlyContinue)) {
-          echo "Junie CLI not found. Installing..."
+          Write-Host "Junie CLI not found. Installing..."
           iex (irm 'https://junie.jetbrains.com/install.ps1')
+        
+          $junieBin = Join-Path $env:USERPROFILE '.local\bin'
+          "$junieBin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          $env:PATH = "$junieBin;$env:PATH"
+          
+          Write-Host "Junie path added to workflow PATH."
+          Get-Command junie | Out-String | Write-Host
         }
 
     - name: Invoke Junie Windows
