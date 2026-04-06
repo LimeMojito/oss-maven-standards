@@ -1,3 +1,6 @@
+### 17.0.17
+- #118: Force color for spring in tests.
+
 ### 17.0.16
 - #118: Remove maven black and white / explicit color. Update docker ups to skip on individual skipTest defines as well as fast-build profiles.
 - #117: Standardized Junie AI agent invocation across Linux and Windows, refined maven logging, and improved workflow parameter handling.
