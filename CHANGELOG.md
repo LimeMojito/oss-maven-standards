@@ -1,3 +1,10 @@
+### 17.0.16
+- #118: Remove maven black and white / explicit color. Update docker ups to skip on individual skipTest defines as well as fast-build profiles.
+- #117: Standardized Junie AI agent invocation across Linux and Windows, refined maven logging, and improved workflow parameter handling.
+- #115: Refined Junie environment and configuration, transitioning from JIRA to GitHub Projects and optimizing runtime performance.
+- #19: Optimized Junie action calls with execution timeouts, descriptive run names, and restricted access for improved security and visibility.
+- Updated versions and security patches.
+
 ### 17.0.15
 - #117: Refactored and standardized workflows for better visibility, external project support, and more descriptive run naming.
 - #116: Enhanced AI integration with Jira and refined workflow events and environment overrides.
