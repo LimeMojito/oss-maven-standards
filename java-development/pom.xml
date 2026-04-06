@@ -396,6 +396,9 @@
                         <argLine>-XX:+EnableDynamicAgentLoading</argLine>
                         <!-- as Lombok generated classes are NOT seen by boot -->
                         <classesDirectory>${project.build.outputDirectory}</classesDirectory>
+                        <environmentVariables>
+                            <SPRING_OUTPUT_ANSI_ENABLED>ALWAYS</SPRING_OUTPUT_ANSI_ENABLED>
+                        </environmentVariables>
                     </configuration>
                     <executions>
                         <execution>
@@ -481,6 +484,9 @@
                         <!--suppress UnresolvedMavenProperty -->
                         <!-- Setup for mockito as per https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3 -->
                         <argLine>@{argLine} -XX:+EnableDynamicAgentLoading</argLine>
+                        <environmentVariables>
+                            <SPRING_OUTPUT_ANSI_ENABLED>ALWAYS</SPRING_OUTPUT_ANSI_ENABLED>
+                        </environmentVariables>
                     </configuration>
                 </plugin>
                 <plugin>
