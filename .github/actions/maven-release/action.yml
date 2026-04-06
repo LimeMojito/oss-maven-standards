@@ -22,9 +22,7 @@ runs:
       shell: bash
       run: |
         echo -e "Incrementing release version\n\n"
-        mvn -B \
-          --no-transfer-progress \
-          -Dstyle.color=always \
+        mvn -B  --no-transfer-progress -Dstyle.color=always \
           build-helper:parse-version \
           versions:set \
             -DprocessAllModules=true \
@@ -42,9 +40,7 @@ runs:
       shell: bash
       run: |
         echo -e "\n\nIncrementing developer version"
-        mvn -B \
-          --no-transfer-progress \
-          -Dstyle.color=always   \
+        mvn -B --no-transfer-progress -Dstyle.color=always   \
           build-helper:parse-version \
           versions:set \
             -DprocessAllModules=true \
