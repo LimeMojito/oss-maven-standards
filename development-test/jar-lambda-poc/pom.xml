@@ -28,7 +28,7 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-lambda-development</artifactId>
-        <version>17.0.16-SNAPSHOT</version>
+        <version>17.0.16</version>
         <relativePath>../../jar-lambda-development</relativePath>
     </parent>
 
