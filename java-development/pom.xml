@@ -147,12 +147,40 @@
                                             </not>
                                         </or>
                                     </condition>
+                                    <condition property="docker.unit.test.skip" else="false">
+                                        <or>
+                                            <equals arg1="${lime.fast-build}" arg2="true"/>
+                                            <equals arg1="${skipTests}" arg2="true"/>
+                                            <!--suppress UnresolvedMavenProperty -->
+                                            <equals arg1="${docker.test.compose.skip}" arg2="true"/>
+                                        </or>
+                                    </condition>
+                                    <condition property="docker.integration.test.skip" else="false">
+                                        <or>
+                                            <equals arg1="${lime.fast-build}" arg2="true"/>
+                                            <equals arg1="${skipITs}" arg2="true"/>
+                                            <!--suppress UnresolvedMavenProperty -->
+                                            <equals arg1="${docker.test.compose.skip}" arg2="true"/>
+                                        </or>
+                                    </condition>
                                     <!--suppress UnresolvedMavenProperty -->
-                                    <echo level="info"
-                                          message="docker.test.compose.skip is ${docker.test.compose.skip}"/>
+                                    <echo level="info">
+                                        docker.test.compose.skip is ${docker.test.compose.skip},
+                                        docker.unit.test.skip=${docker.unit.test.skip},
+                                        docker.integration.test.skip=${docker.integration.test.skip}
+                                    </echo>>
                                     <!--suppress UnresolvedMavenProperty -->
                                     <echo file="${docker.test.properties}"
-                                          message="docker.test.compose.skip=${docker.test.compose.skip}"/>
+                                          append="false"
+                                          message="docker.test.compose.skip=${docker.test.compose.skip}${line.separator}"/>
+                                    <!--suppress UnresolvedMavenProperty -->
+                                    <echo file="${docker.test.properties}"
+                                          append="true"
+                                          message="docker.integration.test.skip=${docker.integration.test.skip}${line.separator}"/>
+                                    <!--suppress UnresolvedMavenProperty -->
+                                    <echo file="${docker.test.properties}"
+                                          append="true"
+                                          message="docker.unit.test.skip=${docker.unit.test.skip}${line.separator}"/>
                                 </target>
                             </configuration>
                         </execution>
@@ -168,7 +196,7 @@
                             <phase>test-compile</phase>
                             <configuration>
                                 <!--suppress MavenModelInspection -->
-                                <skip>${docker.test.compose.skip}</skip>
+                                <skip>${docker.unit.test.skip}</skip>
                                 <target if="${docker.unit.test}">
                                     <exec executable="docker"
                                           dir="${docker.test.compose.dir}"
@@ -176,6 +204,7 @@
                                           failonerror="true">
                                         <arg value="compose"/>
                                         <arg value="up"/>
+                                        <arg value="--quiet-pull"/>
                                         <arg value="--wait"/>
                                         <arg value="--detach"/>
                                         <env key="LOCALSTACK_AUTH_TOKEN" value="${localstack.token}"/>
@@ -195,7 +224,7 @@
                             <phase>pre-integration-test</phase>
                             <configuration>
                                 <!--suppress MavenModelInspection -->
-                                <skip>${docker.test.compose.skip}</skip>
+                                <skip>${docker.integration.test.skip}</skip>
                                 <target unless="${docker.unit.test}">
                                     <exec executable="docker"
                                           dir="${docker.test.compose.dir}"
@@ -203,6 +232,7 @@
                                           failonerror="true">
                                         <arg value="compose"/>
                                         <arg value="up"/>
+                                        <arg value="--quiet-pull"/>
                                         <arg value="--wait"/>
                                         <arg value="--detach"/>
                                         <env key="LOCALSTACK_AUTH_TOKEN" value="${localstack.token}"/>

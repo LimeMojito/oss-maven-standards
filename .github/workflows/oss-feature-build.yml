@@ -47,7 +47,7 @@ jobs:
         # install is required for the framework as CDK is trying to load the current library in another process.
         run: |
           export MAVEN_GPG_PASSPHRASE="${{ secrets.LIME_SIGNING_PASSPHRASE }}"
-          mvn -B -Dstyle.color=always --file pom.xml -Dbuild.number=${{github.run_number}} -Dgpg.keyname='Lime Mojito Pty Ltd' install
+          mvn --file pom.xml -Dbuild.number=${{github.run_number}} -Dgpg.keyname='Lime Mojito Pty Ltd' install
 
       - name: Upload Docker logs
         if: always()
