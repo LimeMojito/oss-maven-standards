@@ -12,6 +12,6 @@ runs:
       id: version
       shell: bash
       run: |
-        projectVersion=$(mvn --no-transfer-progress help:evaluate -Dexpression=project.version -q -DforceStdout )
+        projectVersion=$(mvn -B --color always --no-transfer-progress help:evaluate -Dexpression=project.version -q -DforceStdout )
         echo "maven-version-number=$projectVersion" >> "$GITHUB_OUTPUT"
         echo pom.xml version is $projectVersion

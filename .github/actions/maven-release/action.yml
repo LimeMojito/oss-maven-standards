@@ -22,7 +22,7 @@ runs:
       shell: bash
       run: |
         echo -e "Incrementing release version\n\n"
-        mvn --no-transfer-progress \
+        mvn -B --color always --no-transfer-progress \
           build-helper:parse-version \
           versions:set \
             -DprocessAllModules=true \
@@ -40,7 +40,7 @@ runs:
       shell: bash
       run: |
         echo -e "\n\nIncrementing developer version"
-        mvn --no-transfer-progress   \
+        mvn -B --color always --no-transfer-progress   \
           build-helper:parse-version \
           versions:set \
             -DprocessAllModules=true \
@@ -59,7 +59,7 @@ runs:
         git checkout ${{steps.git_release_version.outputs.lime-release-version}}
         export MAVEN_GPG_PASSPHRASE="${{ inputs.code-signing-passphrase }}"
         # perform an install build under the release profile, no deployments.
-        mvn --no-transfer-progress \
+        mvn -B --color always --no-transfer-progress \
           -Dbuild.number=${{github.run_number}} \
           -Dgpg.keyname='${{inputs.code-signing-key-name}}' \
           -Prelease \
@@ -80,7 +80,7 @@ runs:
         echo -e "\n\nDeploying Release version ${{steps.git_release_version.outputs.lime-release-version}}"
         export MAVEN_GPG_PASSPHRASE="${{ inputs.code-signing-passphrase }}"
         # deploy to OSSRH
-        mvn --no-transfer-progress \
+        mvn -B --color always --no-transfer-progress \
           -Prelease \
           -Dbuild.number=${{github.run_number}} \
           -Dgpg.keyname='${{inputs.code-signing-key-name}}' \
