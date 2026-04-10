@@ -51,14 +51,26 @@ if [ -n "$BASE_SHA" ] && [ -n "$HEAD_SHA" ] && [ "$BASE_SHA" != "$HEAD_SHA" ]; t
         # 1. Root pom.xml
         # 2. .github directory
         # 3. scripts directory (this script and others)
-        # 4. Any other file in the root directory (excluding dotfiles maybe, but let's be safe)
-        GLOBAL_FILES_REGEX="^(pom\.xml|\.github/|scripts/|\.gitignore|LICENSE|CHANGELOG|Readme|[^/]+$)"
+        GLOBAL_FILES_REGEX="^(pom\.xml|\.github/|scripts/)"
+        
+        # Regex for files that can be safely ignored (don't trigger any build if only these change)
+        # e.g., Markdown files, documentation, LICENSE, etc.
+        IGNORE_FILES_REGEX="(\.md$|\.txt$|\.gitignore|LICENSE|CHANGELOG|docs/|Readme)"
         
         FULL_BUILD=false
         CHANGED_MODULES=""
+        CODE_CHANGES_FOUND=false
         
         while IFS= read -r file; do
             if [ -z "$file" ]; then continue; fi
+
+            if [[ $file =~ $IGNORE_FILES_REGEX ]]; then
+                echo "Ignored file change: $file"
+                continue
+            fi
+
+            CODE_CHANGES_FOUND=true
+
             if [[ $file =~ $GLOBAL_FILES_REGEX ]]; then
                 echo "Global file change detected: $file. Forcing full build."
                 FULL_BUILD=true
@@ -84,20 +96,34 @@ if [ -n "$BASE_SHA" ] && [ -n "$HEAD_SHA" ] && [ "$BASE_SHA" != "$HEAD_SHA" ]; t
             fi
         done <<< "$CHANGED_FILES"
         
-        if [ "$FULL_BUILD" = false ] && [ -n "$CHANGED_MODULES" ]; then
+        if [ "$FULL_BUILD" = true ]; then
+            echo "Full build required (global or unknown file change)."
+            PL_FLAGS=""
+        elif [ "$CODE_CHANGES_FOUND" = false ]; then
+            echo "No code changes detected (only ignored files changed). Skipping build optimization (full build avoided if used in logic)."
+            # We use a special marker to indicate that the build can be skipped if the workflow handles it
+            PL_FLAGS="SKIP"
+        elif [ -n "$CHANGED_MODULES" ]; then
             echo "Building modules: $CHANGED_MODULES"
             PL_FLAGS="-pl $CHANGED_MODULES -am -amd"
         else
             echo "Full build required."
+            PL_FLAGS=""
         fi
     fi
 else
     echo "Could not determine diff range or same SHA. Defaulting to full build."
+    PL_FLAGS=""
 fi
 
 # Set output for GitHub Actions
 if [ -n "$GITHUB_OUTPUT" ]; then
     echo "pl_flags=$PL_FLAGS" >> "$GITHUB_OUTPUT"
+    if [ "$PL_FLAGS" == "SKIP" ]; then
+        echo "skip_build=true" >> "$GITHUB_OUTPUT"
+    else
+        echo "skip_build=false" >> "$GITHUB_OUTPUT"
+    fi
 fi
 
 echo "Final pl_flags: $PL_FLAGS"
