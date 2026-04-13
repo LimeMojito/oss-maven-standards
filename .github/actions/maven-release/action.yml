@@ -57,6 +57,8 @@ runs:
         echo -e "\n\nTest Build ${{steps.git_release_version.outputs.lime-release-version}}"
         echo "Checking out ${{steps.git_release_version.outputs.lime-release-version}}"
         git checkout ${{steps.git_release_version.outputs.lime-release-version}}
+        # Needs to match github runner architecture.
+        export DOCKER_DEFAULT_PLATFORM=linux/amd64
         export MAVEN_GPG_PASSPHRASE="${{ inputs.code-signing-passphrase }}"
         # perform an install build under the release profile, no deployments.
         mvn -B --color always --no-transfer-progress \
@@ -78,6 +80,8 @@ runs:
       shell: bash
       run: |
         echo -e "\n\nDeploying Release version ${{steps.git_release_version.outputs.lime-release-version}}"
+        # Needs to match github runner architecture.
+        export DOCKER_DEFAULT_PLATFORM=linux/amd64
         export MAVEN_GPG_PASSPHRASE="${{ inputs.code-signing-passphrase }}"
         # deploy to OSSRH
         mvn -B --color always --no-transfer-progress \
