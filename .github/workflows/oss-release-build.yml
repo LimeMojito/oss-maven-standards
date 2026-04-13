@@ -19,7 +19,8 @@ jobs:
   build:
     if: github.actor != 'Lime-Build-Agent'
 
-    runs-on: ubuntu-24.04-arm
+    # 13/04/2025 Localstack does not like the github ARM runners, reverting to X86
+    runs-on: ubuntu-latest
 
     permissions:
       contents: write
