@@ -3,6 +3,7 @@
 # `invoke-agent` action.
 # It is designed to be delegated to from other repositories or triggered by common events.
 # A calling workflow can pass the runner type to use, e.g. `runner: ubuntu-24.04-arm`.  The runner will default to ubuntu-24.04-arm.
+# A calling workflow can pass the runner type to use, e.g. `runs-on: ubuntu-24.04-arm`.  The runner will default to ubuntu-24.04-arm.
 
 name: OSS Maven Standards Lime Code Agent
 
