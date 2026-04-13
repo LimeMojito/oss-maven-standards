@@ -2,7 +2,7 @@
 # Junie GitHub Workflow that will **ALWAYS** create a PR for changes, etc. To use a brave mode style action, see the
 # `invoke-agent` action.
 # It is designed to be delegated to from other repositories or triggered by common events.
-# A calling workflow can pass the runner type to use, e.g. `runner: ubuntu-latest`.  The runner will default to ubuntu-latest.
+# A calling workflow can pass the runner type to use, e.g. `runner: ubuntu-24.04-arm`.  The runner will default to ubuntu-24.04-arm.
 
 name: OSS Maven Standards Lime Code Agent
 
@@ -12,7 +12,7 @@ on:
       runs-on:
         required: false
         type: string
-        default: ubuntu-latest
+        default: ubuntu-24.04-arm
 
 permissions:
   id-token: write
@@ -76,10 +76,6 @@ jobs:
         if: steps.auth_check.outputs.actor-belongs-team == 'true'
         id: junie
         uses: JetBrains/junie-github-action@v1
-        env:
-          JIRA_BASE_URL: ${{ secrets.LIME_CODE_AGENT_JIRA_BASE_URL }}
-          JIRA_EMAIL: ${{ secrets.LIME_CODE_AGENT_JIRA_EMAIL }}
-          JIRA_API_TOKEN: ${{ secrets.LIME_CODE_AGENT_JIRA_API_TOKEN }}
         with:
           junie_api_key: ${{ secrets.LIME_CODE_AGENT_JUNIE_TOKEN }}
           allowed_mcp_servers: "mcp_github_checks_server, mcp_github_inline_comment_server"
