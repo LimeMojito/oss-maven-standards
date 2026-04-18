@@ -6,7 +6,7 @@ description: |
   Requires a PAS (classic) token with repo read and issues write permissions.
 inputs:
   issue-token:
-    description: 'GitHub Issue Token'
+    description: 'GitHub Issue Token.  Repo read, Issues write'
     required: true
   template-file:
     description: 'name of GitHub file created by github issue templates.'
@@ -19,6 +19,11 @@ inputs:
     description: 'Filter issues by month.  Format: 1,2,3,4,5,6,7,8,9,10,11,12 | 3,6,9,12 etc'
     required: false
     default: '1,2,3,4,5,6,7,8,9,10,11,12'
+  project:
+    description: |
+      Path of the user or organization project, e.g. "users/{username}/projects/{number}" or "orgs/{name}/projects/{number}"
+    required: false
+    default: ''
 
 runs:
   using: composite
@@ -56,5 +61,6 @@ runs:
       with:
         assignees: ${{ steps.extract.outputs.assignees }}
         labels: ${{ steps.extract.outputs.labels }}
+        project-v2-path: ${{ inputs.project }}
         title: "${{ steps.extract.outputs.title }} ${{inputs.title-suffix}}"
         body: ${{ steps.extract.outputs.body }}
