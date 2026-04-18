@@ -31,6 +31,8 @@ jobs:
       - uses: LimeMojito/oss-maven-standards/.github/actions/create-issue-template@master
         name: Backup Website
         with:
+          # This is a file created with the GitHub Issues Template wizard on the website.
+          # they are stored in .github/ISSUE_TEMPLATE/
           template-file: chore-website.md
           issue-token: ${{ secrets.CREATE_MONTHLY_ISSUES }}
           title-suffix: ${{ steps.time.outputs.monthYearLong }}
