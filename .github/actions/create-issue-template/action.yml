@@ -3,6 +3,7 @@ description: |
   Creates an issue from an existing template with suffix for title.  
   Can be supplied a month filter so that issues can only be created if the current month matches.
   Delegates to imjohnbo/issue-bot.
+  Requires a PAS (classic) token with repo read and issues write permissions.
 inputs:
   issue-token:
     description: 'GitHub Issue Token'
