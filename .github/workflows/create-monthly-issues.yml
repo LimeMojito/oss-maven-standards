@@ -1,0 +1,36 @@
+name: Create Monthly Issues
+
+on:
+  schedule:
+    # Run on the 1st day of every month at 00:00 UTC
+    - cron: '0 0 1 * *'
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: read
+  issues: write
+  repository-projects: write
+
+jobs:
+  create-issue-templates:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v6
+
+      - id: time
+        name: Time Variables
+        run: |
+          echo month=$(date +"+%-m") >> "$GITHUB_OUTPUT"
+          echo monthLong=$(date +"%B") >> "$GITHUB_OUTPUT"
+          echo monthYear=$(date +"+%-m-%Y") >> "$GITHUB_OUTPUT"
+          echo monthYearLong=$(date +"%B %Y") >> "$GITHUB_OUTPUT"
+          echo year=$(date +"%Y") >> "$GITHUB_OUTPUT"
+
+      ################# CHORES ########################
+
+      - uses: LimeMojito/oss-maven-standards/.github/actions/create-issue-template@master
+        name: Backup Website
+        with:
+          template-file: chore-website.md
+          issue-token: ${{ secrets.CREATE_MONTHLY_ISSUES }}
+          title-suffix: ${{ steps.time.outputs.monthYearLong }}

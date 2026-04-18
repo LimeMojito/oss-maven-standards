@@ -1,0 +1,59 @@
+name: Create Issue From Template
+description: |
+  Creates an issue from an existing template with suffix for title.  
+  Can be supplied a month filter so that issues can only be created if the current month matches.
+  Delegates to imjohnbo/issue-bot.
+inputs:
+  issue-token:
+    description: 'GitHub Issue Token'
+    required: true
+  template-file:
+    description: 'name of GitHub file created by github issue templates.'
+    required: true
+  title-suffix:
+    description: Suffix to add to the issue title.  Support Mustache.
+    required: false
+    default: ''
+  month-filter:
+    description: 'Filter issues by month.  Format: 1,2,3,4,5,6,7,8,9,10,11,12 | 3,6,9,12 etc'
+    required: false
+    default: '1,2,3,4,5,6,7,8,9,10,11,12'
+
+runs:
+  using: composite
+  steps:
+    - id: monthCheck
+      shell: bash
+      run: |
+        IFS=',' read -ra months <<< "${{ inputs.month-filter }}"
+        current=$(date "+%-m")
+        found=0
+        for item in "${months[@]}"; do
+          if [[ "$item" == "$current" ]]; then
+            found=1
+            break
+          fi
+        done
+        echo "current month: $current, filtering for months: ${months[@]} was $found"
+        if [ $found -eq 1 ]; then
+          echo "monthCheck=true" >> $GITHUB_OUTPUT
+        else
+          echo "monthCheck=false" >> $GITHUB_OUTPUT
+        fi
+    # Read more: https://github.com/imjohnbo/extract-issue-template-fields
+    - id: extract
+      if: steps.monthCheck.outputs.monthCheck == 'true'
+      uses: imjohnbo/extract-issue-template-fields@v1.0.3
+      with:
+        # assignees, labels, and title defined in issue template header
+        path: .github/ISSUE_TEMPLATE/${{ inputs.template-file }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.issue-token }}
+
+    - uses: imjohnbo/issue-bot@v3
+      if: steps.monthCheck.outputs.monthCheck == 'true'
+      with:
+        assignees: ${{ steps.extract.outputs.assignees }}
+        labels: ${{ steps.extract.outputs.labels }}
+        title: "${{ steps.extract.outputs.title }} ${{inputs.title-suffix}}"
+        body: ${{ steps.extract.outputs.body }}
