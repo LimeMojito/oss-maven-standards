@@ -6,7 +6,7 @@ description: |
   Requires a PAS (classic) token with repo read and issues write permissions.
 inputs:
   issue-token:
-    description: 'GitHub Issue Token.  Repo read, Issues write'
+    description: 'GitHub Issue Token.  Repo read, Issues write, [Org Project Read]'
     required: true
   template-file:
     description: 'name of GitHub file created by github issue templates.'
@@ -59,6 +59,7 @@ runs:
     - uses: imjohnbo/issue-bot@v3
       if: steps.monthCheck.outputs.monthCheck == 'true'
       with:
+        token: ${{ inputs.issue-token }}
         assignees: ${{ steps.extract.outputs.assignees }}
         labels: ${{ steps.extract.outputs.labels }}
         project-v2-path: ${{ inputs.project }}
