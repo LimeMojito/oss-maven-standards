@@ -1,3 +1,9 @@
+### 17.0.18
+- #123: Enhanced project documentation, refined token usage for organizational testing, and implemented recurring task automation via custom action.
+- #118: Optimized CI/CD by standardizing docker architectures, refining GitHub responder scopes, and adjusting documentation generation timeouts.
+- Applied automated code suggestions.
+- Updated versions and security patches.
+
 ### 17.0.17
 - #118: Force color for spring in tests.
 
