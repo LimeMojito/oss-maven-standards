@@ -213,7 +213,7 @@
                 <!-- Guava secure -->
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava-bom</artifactId>
-                <version>33.5.0-jre</version>
+                <version>33.6.0-jre</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -228,7 +228,7 @@
                 <!-- AWS SDK V2-->
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>bom</artifactId>
-                <version>2.42.33</version>
+                <version>2.42.36</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
