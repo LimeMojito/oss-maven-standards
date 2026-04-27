@@ -1,3 +1,6 @@
+### 17.0.19
+- Updated library versions in pom.xml
+
 ### 17.0.18
 - #123: Enhanced project documentation, refined token usage for organizational testing, and implemented recurring task automation via custom action.
 - #118: Optimized CI/CD by standardizing docker architectures, refining GitHub responder scopes, and adjusting documentation generation timeouts.
