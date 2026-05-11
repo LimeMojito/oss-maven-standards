@@ -1,3 +1,6 @@
+### 17.0.21
+- Updated library versions in pom.xml
+
 ### 17.0.20
 - Updated library versions in pom.xml
 
