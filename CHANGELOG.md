@@ -1,3 +1,7 @@
+### 17.0.22
+- #123: Back to full environment setup so can answer questions and run tests.
+- Updated library versions in pom.xml
+
 ### 17.0.21
 - Updated library versions in pom.xml
 
