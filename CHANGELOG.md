@@ -1,3 +1,6 @@
+### 17.0.23
+- #123: Force some netty BOM magic to get the apple silicon dependency to behave.
+
 ### 17.0.22
 - #123: Back to full environment setup so can answer questions and run tests.
 - Updated library versions in pom.xml
