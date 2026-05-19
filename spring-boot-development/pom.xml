@@ -54,6 +54,12 @@
             <artifactId>json-utilities</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <!-- Because we love our Macs: macOS to always use Apple Silicon -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-resolver-dns-native-macos</artifactId>
+            <classifier>osx-aarch_64</classifier>
+        </dependency>
     </dependencies>
 
     <build>
