@@ -1,3 +1,7 @@
+### 17.0.24
+- #123: Setup node to 24 to stop warnings from CDK, etc
+- Updated versions and security patches.
+
 ### 17.0.23
 - #123: Force some netty BOM magic to get the apple silicon dependency to behave.
 
