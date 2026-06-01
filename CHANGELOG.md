@@ -1,3 +1,7 @@
+### 17.0.25
+- #126: Delete .github/ISSUE_TEMPLATE/chore-website.md
+- Updated library versions in pom.xml
+
 ### 17.0.24
 - #123: Setup node to 24 to stop warnings from CDK, etc
 - Updated versions and security patches.
