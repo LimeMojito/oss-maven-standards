@@ -1,3 +1,6 @@
+### 17.0.26
+- Updated library versions in pom.xml
+
 ### 17.0.25
 - #126: Delete .github/ISSUE_TEMPLATE/chore-website.md
 - Updated library versions in pom.xml
