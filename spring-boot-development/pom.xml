@@ -28,7 +28,7 @@
     <parent>
         <groupId>com.limemojito.oss.standards</groupId>
         <artifactId>jar-development</artifactId>
-        <version>17.0.28-SNAPSHOT</version>
+        <version>17.0.28</version>
         <relativePath>../jar-development</relativePath>
     </parent>
 
