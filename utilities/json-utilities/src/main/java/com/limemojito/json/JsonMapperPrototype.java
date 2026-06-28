@@ -19,12 +19,15 @@ package com.limemojito.json;
 
 
 import tools.jackson.databind.json.JsonMapper;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.function.Consumer;
 
 /**
  * The JsonMapperPrototype class provides a utility methods for building a customized object mapper.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonMapperPrototype {
 
     /**

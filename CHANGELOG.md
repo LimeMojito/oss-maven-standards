@@ -1,3 +1,8 @@
+### 17.0.29
+- Enhanced AI agent documentation by adding a dedicated skills directory at `docs/ai/skills/`.
+- Updated `AGENTS.md` to include references to the skills directory for improved discoverability.
+- Added a new skill guide for improving code coverage.
+
 ### 17.0.28
 - Updated library versions in pom.xml
 

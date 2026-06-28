@@ -19,9 +19,8 @@ package com.limemojito.json;
 
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.json.JsonMapper;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
@@ -33,8 +32,6 @@ import java.util.Map;
  * Uses an instance of ObjectMapper to perform the deserialization.  Exceptions are converted to runtime
  * to assist with functional style programming.
  */
-@RequiredArgsConstructor
-@SuppressWarnings("ClassCanBeRecord")
 public class JsonLoader {
 
     /**
@@ -46,6 +43,15 @@ public class JsonLoader {
     private final JsonMapper jsonMapper;
 
     /**
+     * Creates a new JSON loader.
+     *
+     * @param jsonMapper Jackson object mapper to delegate JSON parsing to.
+     */
+    public JsonLoader(JsonMapper jsonMapper) {
+        this.jsonMapper = jsonMapper;
+    }
+
+    /**
      * Parses the supplied string json to an object value.
      *
      * @param json  String json to convert.
@@ -53,7 +59,6 @@ public class JsonLoader {
      * @param <T>   Instance type expected.
      * @return Instance of the supplied class.
      */
-    @SneakyThrows
     public <T> T convert(String json, Class<T> clazz) {
         return jsonMapper.readValue(json, clazz);
     }
@@ -66,7 +71,6 @@ public class JsonLoader {
      * @param <T>   Instance type expected.
      * @return Instance of the supplied class.
      */
-    @SneakyThrows
     public <T> T convert(byte[] json, Class<T> clazz) {
         return jsonMapper.readValue(json, clazz);
     }
@@ -79,7 +83,6 @@ public class JsonLoader {
      * @param <T>   Instance type expected.
      * @return Instance of the supplied class.
      */
-    @SneakyThrows
     public <T> T convert(InputStream json, Class<T> clazz) {
         return jsonMapper.readValue(json, clazz);
     }
@@ -92,7 +95,6 @@ public class JsonLoader {
      * @param <T>           Instance type expected.
      * @return Instance of the supplied class.
      */
-    @SneakyThrows
     public <T> T convert(String json, TypeReference<T> typeReference) {
         return jsonMapper.readValue(json, typeReference);
     }
@@ -105,7 +107,6 @@ public class JsonLoader {
      * @param <T>           Instance type expected.
      * @return Instance of the supplied class.
      */
-    @SneakyThrows
     public <T> T convert(InputStream json, TypeReference<T> typeReference) {
         return jsonMapper.readValue(json, typeReference);
     }
@@ -118,7 +119,6 @@ public class JsonLoader {
      * @param <T>           Instance type expected.
      * @return Instance of the supplied class.
      */
-    @SneakyThrows
     public <T> T convert(byte[] json, TypeReference<T> typeReference) {
         return jsonMapper.readValue(json, typeReference);
     }
@@ -149,7 +149,6 @@ public class JsonLoader {
      * @param instance Instance to convert.
      * @return String in json format.
      */
-    @SneakyThrows
     public String toJson(Object instance) {
         return jsonMapper.writeValueAsString(instance);
     }
@@ -160,7 +159,6 @@ public class JsonLoader {
      * @param output   Output Stream to write to.
      * @param instance Instance to convert.
      */
-    @SneakyThrows
     public void toJson(OutputStream output, Object instance) {
         jsonMapper.writeValue(output, instance);
     }
@@ -171,7 +169,6 @@ public class JsonLoader {
      * @param outputWriter Writer to write to.
      * @param instance     Instance to convert.
      */
-    @SneakyThrows
     public void toJson(Writer outputWriter, Object instance) {
         jsonMapper.writeValue(outputWriter, instance);
     }
@@ -184,12 +181,8 @@ public class JsonLoader {
      * @param <T>          The type of the target object.
      * @return The deserialized object of the specified class.
      */
-    @SneakyThrows
     public <T> T loadFrom(String resourcePath, Class<T> aClass) {
-        try (InputStream resourceAsStream = getClass().getResourceAsStream(resourcePath)) {
-            assertStreamFound(resourcePath, resourceAsStream);
-            return jsonMapper.readValue(resourceAsStream, aClass);
-        }
+        return loadFrom(resourcePath, (stream) -> jsonMapper.readValue(stream, aClass));
     }
 
     /**
@@ -200,11 +193,29 @@ public class JsonLoader {
      * @param <T>           The type of the target object.
      * @return The deserialized object of the specified type.
      */
-    @SneakyThrows
     public <T> T loadFrom(String resourcePath, TypeReference<T> typeReference) {
-        try (InputStream resourceAsStream = getClass().getResourceAsStream(resourcePath)) {
-            assertStreamFound(resourcePath, resourceAsStream);
-            return jsonMapper.readValue(resourceAsStream, typeReference);
+        return loadFrom(resourcePath, (stream) -> jsonMapper.readValue(stream, typeReference));
+    }
+
+    /**
+     * Loads a resource as a stream.
+     *
+     * @param resourcePath Path to the resource.
+     * @return The resource stream.
+     */
+    protected InputStream getResourceAsStream(String resourcePath) {
+        return getClass().getResourceAsStream(resourcePath);
+    }
+
+    private <T> T loadFrom(String resourcePath, Parser<T> parser) {
+        InputStream resourceAsStream = getResourceAsStream(resourcePath);
+        assertStreamFound(resourcePath, resourceAsStream);
+        try {
+            T result = parser.parse(resourceAsStream);
+            resourceAsStream.close();
+            return result;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -212,5 +223,10 @@ public class JsonLoader {
         if (resourceAsStream == null) {
             throw new IllegalArgumentException("Could not load %s from classpath.".formatted(resourcePath));
         }
+    }
+
+    @FunctionalInterface
+    private interface Parser<T> {
+        T parse(InputStream stream) throws IOException;
     }
 }

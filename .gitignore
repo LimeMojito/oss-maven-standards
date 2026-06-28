@@ -3,5 +3,12 @@ atlassian-ide-plugin.xml
 .idea
 target
 cdk.out
-.junie
-!.junie/guidelines.md
+# Junie configuration
+.junie/
+!.junie/config.json
+!.junie/skills/
+!.junie/agents/
+!.junie/commands/
+!.junie/mcp/
+!.junie/models/
+!AGENTS.md
