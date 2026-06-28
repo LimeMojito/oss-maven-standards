@@ -15,5 +15,7 @@
  *
  */
 
+package com.limemojito.json;
+
 public record TestRecord(String string, int number) {
 }
