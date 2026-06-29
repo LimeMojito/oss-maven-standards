@@ -70,12 +70,7 @@ Our Open Source Standards library supports the following module types (archetype
 * maven-versions-plugin has backup poms disabled as VCS is here.
 
 ## Set a new release version
-
-```shell
-mvn versions:set -DprocessAllModules -DgenerateBackupPoms=false -DnewVersion=XX-SNAPSHOT 
-```
-
-Do a replacement in this readme file so that examples are updated to the new version.
+We use the [Multi Module Maven Release Plugin](https://danielflower.github.io/multi-module-maven-release-plugin).  This adds the build number to the "patch" level in Major.minor.patch-SNAPSHOT.  When releasing, the build will update to M.m.p automatically __for only those modules affected__. 
 
 ## Report on what plugin updates are available
 
