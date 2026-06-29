@@ -459,7 +459,7 @@
                         <extensions>true</extensions>
                         <configuration>
                             <!-- Default branch name is passed in from github action -->
-                            <!--                            <referenceBranch>refs/heads/master</referenceBranch>-->
+                            <!-- <referenceBranch>refs/heads/master</referenceBranch>-->
                         </configuration>
                     </plugin>
                 </plugins>
