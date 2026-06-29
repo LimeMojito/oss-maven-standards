@@ -39,7 +39,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <github.url>https://github.com/${git.project.slug}</github.url>
-        <git.url>${github.url}</git.url>
+        <git.url>git@github.com:${git.project.slug}.git</git.url>
         <lime.scm.url>scm:git:${git.url}</lime.scm.url>
         <lime.website.url>https://limemojito.com</lime.website.url>
         <central.base.url>https://central.sonatype.com</central.base.url>
