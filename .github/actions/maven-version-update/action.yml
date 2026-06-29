@@ -1,7 +1,7 @@
 name: "Maven Version Update"
 description: |
   Checks for version updates (see oss-maven-standards/pom.xml) and updates if required.
-  Expects maven setup and checkout to have occured, and project to be standard.
+  Expects maven setup and checkout to have occurred, and project to be standard.
 outputs:
   has_changes:
     description: "Whether the action produced git changes"
