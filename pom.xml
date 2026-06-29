@@ -397,7 +397,7 @@
                         <artifactId>multi-module-maven-release-plugin</artifactId>
                         <configuration>
                             <buildNumber>${build.number}</buildNumber>
-                            <serverId>github</serverId>
+                            <serverId>github.com</serverId>
                         </configuration>
                     </plugin>
                     <plugin>
