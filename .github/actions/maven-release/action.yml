@@ -17,8 +17,15 @@ outputs:
 runs:
   using: composite
   steps:
-    - id: git_release_version
-      name: Increment Release Version
+    - name: Maven Fast Build
+      uses: LimeMojito/oss-maven-standards/.github/actions/maven-fast-build@master
+      with:
+        signing-passphrase: ${{ inputs.signing-passphrase }}
+        code-signing-key-name: ${{ inputs.code-signing-key-name }}
+        extra-mvn-options: ${{ inputs.extra-mvn-options }}
+
+    - name: Increment Release Version
+      id: git_release_version
       shell: bash
       run: |
         echo -e "Tag release version\n\n"
@@ -40,5 +47,5 @@ runs:
           -Dbuild.number=${{github.run_number}}
           -Dgpg.keyname='${{inputs.code-signing-key-name}}' \
           ${{ inputs.extra-mvn-options }} \
-          -Darguments='${{ inputs.extra-mvn-options }}' \
+          -Darguments='-B --color always --no-transfer-progress ${{ inputs.extra-mvn-options }}' \
           releaser:release

@@ -1,0 +1,34 @@
+name: Maven Fast Build
+description: |
+  Runs a fast build to align binaries with checked out source code.  No logging of fast build.
+inputs:
+  signing-passphrase:
+    description: |
+      The passphrase for the GPG key used to sign artifacts.
+    required: true
+  code-signing-key-name:
+    description: |
+      The name of the GPG key used to sign artifacts.
+    required: true
+  extra-mvn-options:
+    description: 'Extra maven command line options'
+    required: false
+runs:
+  using: composite
+  steps:
+    - name: Maven Fast build (threaded and quiet)
+      shell: bash
+      run: |
+        export MAVEN_GPG_PASSPHRASE="${{ inputs.signing-passphrase }}"
+        # Needs to match github runner architecture.
+        export DOCKER_DEFAULT_PLATFORM=linux/amd64
+        echo -e "\n\n**************************\n  Fast build, all modules.\n**************************\n"
+        mvn -B --color always --no-transfer-progress \
+          --file pom.xml \
+          -Dbuild.number=${{github.run_number}} \
+          -Dgpg.keyname='${{inputs.code-signing-key-name}}' \
+          -Pfast-build \
+          -Dgib.disable \
+          --quiet -T 2C \
+          ${{ inputs.extra-mvn-options }} \
+          install
