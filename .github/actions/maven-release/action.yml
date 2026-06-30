@@ -29,7 +29,7 @@ runs:
       shell: bash
       run: |
         echo -e "Tag release version\n\n"
-        tagName=${$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout )/-SNAPSHOT/.${{ github.run_number }} }
+        tagName="${$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout )/-SNAPSHOT/}.${{ github.run_number }}"
         echo "Tagging repository with [$tagName]"
         git tag -s $tagName -m "[Release] $tagName"        
         git push origin "$tagName"
