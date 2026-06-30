@@ -50,7 +50,7 @@ runs:
              </server>
              <server>
                <id>github-release</id>
-               <username>${{ git.access-id }}</username>
+               <username>${{ inputs.git-access-id }}</username>
                <password>${{ inputs.git-access-key }}</password>
              </server>
             </servers>
