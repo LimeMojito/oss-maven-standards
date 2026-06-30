@@ -51,6 +51,7 @@ runs:
     - name: Lime Setup Java
       uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-java@master
       with:
+        git-access-key: ${{ inputs.git-access-key }}
         code-signing-key: ${{ inputs.code-signing-key }}
         code-signing-passphrase: ${{ inputs.code-signing-passphrase }}
         central-id: ${{ inputs.central-id }}

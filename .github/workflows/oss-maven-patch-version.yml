@@ -25,6 +25,8 @@ jobs:
       - name: Environment Setup
         uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-java@master
         with:
+          git-access-key: ${{ secrets.LIME_CODE_AGENT_GIT_KEY  }}
+          git-access-id: Lime-Code-Agent
           code-signing-key: ${{ secrets.LIME_SIGNING_KEY }}
           code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
           central-id: ${{ secrets.LIME_CENTRAL_ID}}

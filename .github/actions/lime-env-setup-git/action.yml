@@ -33,8 +33,9 @@ runs:
         git_committer_email: "${{ inputs.git-id-email }}"
         git_committer_name: "${{ inputs.git-id-name }}"
         git_user_signingkey: true
-        git_tag_gpgsign: true
-        git_commit_gpgsign: true
+        # disabled as jGit in the release plugin has issues with accessing gpg keys.
+        git_tag_gpgsign: false
+        git_commit_gpgsign: false
         git_config_global: true
         # not supported as at 2026-03-01
         git_push_gpgsign: false

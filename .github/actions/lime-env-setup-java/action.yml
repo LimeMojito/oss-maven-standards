@@ -18,6 +18,13 @@ inputs:
   localstack-token:
     description: 'LocalStack access token'
     required: true
+  git-access-id:
+    description: 'GitHub access id'
+    default: 'Lime-Build-Agent'
+    required: false
+  git-access-key:
+    description: 'GitHub access key'
+    required: true
 runs:
   using: composite
   steps:
@@ -40,6 +47,11 @@ runs:
                <id>central</id>
                <username>${{ inputs.central-id }}</username>
                <password>${{ inputs.central-key }}</password>
+             </server>
+             <server>
+               <id>github-release</id>
+               <username>${{ git.access-id }}</username>
+               <password>${{ inputs.git-access-key }}</password>
              </server>
             </servers>
             <activeProfiles>
