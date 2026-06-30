@@ -40,6 +40,7 @@
 
         <github.url>https://github.com/${git.project.slug}</github.url>
         <git.url>git@github.com:${git.project.slug}.git</git.url>
+        <git.defaultBranch>master</git.defaultBranch>
         <lime.scm.url>scm:git:${git.url}</lime.scm.url>
         <lime.website.url>https://limemojito.com</lime.website.url>
         <central.base.url>https://central.sonatype.com</central.base.url>
@@ -69,7 +70,7 @@
         <!-- Useful things made from the development archetypes -->
         <module>applications</module>
 
-        <!-- Publish a BOM so it is easy to manage dependencies -->
+        <!-- Publish a BOM so that it is easy to manage dependencies -->
         <module>lime-oss-maven-standards-bom</module>
 
         <!-- Test the dev framework -->
@@ -441,10 +442,11 @@
         </profile>
 
         <profile>
-            <id>ci</id>
-            <properties>
-                <ci>true</ci>
-            </properties>
+            <id>incremental</id>
+            <!--
+              Note this profile may interfere with the Multi Module Maven Release plugin.  It is not enabled by default
+              The disable-gib profile automatically disables this in Intellij.
+             -->
             <build>
                 <plugins>
                     <plugin>
@@ -452,8 +454,9 @@
                         <artifactId>gitflow-incremental-builder</artifactId>
                         <extensions>true</extensions>
                         <configuration>
-                            <!-- Default branch name is passed in from github action -->
-                            <!-- <referenceBranch>refs/heads/master</referenceBranch>-->
+                            <!-- Default branch name is passed in from GitHub action -->
+                            <referenceBranch>refs/remotes/origin/${git.defaultBranch}</referenceBranch>
+                            <fetchReferenceBranch>true</fetchReferenceBranch>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -464,7 +467,7 @@
             <id>disable-gib-in-intellij</id>
             <activation>
                 <property>
-                    <!-- This property is natively exported by IntelliJ during imports/builds -->
+                    <!-- IntelliJ natively exports this property during imports/builds -->
                     <name>idea.version</name>
                 </property>
             </activation>

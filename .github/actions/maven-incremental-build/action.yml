@@ -40,8 +40,9 @@ runs:
           --file pom.xml \
           -Dbuild.number=${{github.run_number}} \
           -Dgpg.keyname='Lime Mojito Pty Ltd' \
-          -Dgib.referenceBranch=refs/heads/${DEFAULT_BRANCH} \
+          -Dgit.defaultBranch=${DEFAULT_BRANCH} \
           ${{ inputs.extra-mvn-options }} \
+          -Pincremental \
           clean install 
 
     - name: Upload Reports
