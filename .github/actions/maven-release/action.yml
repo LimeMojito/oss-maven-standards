@@ -12,7 +12,7 @@ inputs:
 outputs:
   release-version:
     description: 'The release version'
-    value: ${{ steps.git_release_version.outputs.lime-release-version }}
+    value: ${{ steps.git_release_version.outputs.build-version }}
 
 runs:
   using: composite
@@ -24,13 +24,15 @@ runs:
         code-signing-key-name: ${{ inputs.code-signing-key-name }}
         extra-mvn-options: ${{ inputs.extra-mvn-options }}
 
-    - name: Increment Release Version
+    - name: Calculate Release Version
       id: git_release_version
+      uses: LimeMojito/oss-maven-standards/.github/actions/calculate-build-version@master
+
+    - name: Tag Release Version
       shell: bash
       run: |
         echo -e "Tag release version\n\n"
-        currentVersion=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout )
-        tagName="${currentVersion/-SNAPSHOT/}.${{ github.run_number }}"
+        tagName="${{steps.git_release_version.outputs.build-version }}"
         echo "Tagging repository with [$tagName]"
         git tag -s $tagName -m "[Release] $tagName"        
         git push origin "$tagName" --quiet
@@ -39,7 +41,7 @@ runs:
     - name: Perform Release Deployment
       shell: bash
       run: |
-        echo -e "\n\nDeploying Release version ${{steps.git_release_version.outputs.lime-release-version}}"
+        echo -e "\n\nDeploying Release version ${{steps.git_release_version.outputs.build-version }}"
         # Needs to match github runner architecture.
         export DOCKER_DEFAULT_PLATFORM=linux/amd64
         export MAVEN_GPG_PASSPHRASE="${{ inputs.code-signing-passphrase }}"

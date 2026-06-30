@@ -1,0 +1,17 @@
+description: Calculates the build version from pom.xml plus github build number.  Expects the repository checked out.
+outputs:
+  build-version:
+    description: 'The build version'
+    value: ${{ steps.release_version.outputs.build-version }}
+
+runs:
+  using: composite
+  steps:
+    - name: Calculate Release Version
+      id: release_version
+      shell: bash
+      run: |
+        echo -e "Calculate release version for build ${{ github.run_number }}\n"
+        currentVersion=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout )
+        tagName="${currentVersion/-SNAPSHOT/}.${{ github.run_number }}"
+        echo "build-version=$tagName" >> "$GITHUB_OUTPUT"

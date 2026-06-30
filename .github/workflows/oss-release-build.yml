@@ -41,8 +41,12 @@ jobs:
           central-key: ${{ secrets.LIME_CENTRAL_KEY }}
           localstack-token: ${{ secrets.LIME_LOCALSTACK_TOKEN }}
 
-      - name: Update Versions
+      - name: Update Library Versions
         uses: LimeMojito/oss-maven-standards/.github/actions/maven-version-update@master
+
+      - name: Calculate Release Version
+        id: git_release_version
+        uses: LimeMojito/oss-maven-standards/.github/actions/calculate-build-version@master
 
       - name: Update Documentation
         timeout-minutes: 8
@@ -51,9 +55,9 @@ jobs:
           agent-token: ${{ secrets.LIME_CODE_AGENT_JUNIE_TOKEN }}
           github-token: ${{ secrets.LIME_CODE_AGENT_GITHUB_TOKEN }}
           prompt: |
-            Using the version number from pom.xml minus -SNAPSHOT, update CHANGELOG.md to summarize the git commits since 
-            the last release tag, where the last release tag is the top most heading of changes in the current 
-            CHANGELOG.md.
+            Using the version number ${{steps.git_release_version.outputs.build-version}}, update CHANGELOG.md to 
+            summarize the git commits since the last release tag, where the last release tag is the top most heading of 
+            changes in the current CHANGELOG.md.
             
             In the summary that has been added perform the following;
               - where there are multiple summary items containing related issues keys (#XXXXX or AAA-XXX format) group 
