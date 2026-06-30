@@ -5,4 +5,3 @@ target
 cdk.out
 # Old Junie configuration
 .junie/
-!AGENTS.md
