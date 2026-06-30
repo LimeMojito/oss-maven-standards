@@ -439,6 +439,7 @@
                             <skip>true</skip>
                         </configuration>
                     </plugin>
+                   <!-- disable until oSS limits are fixed.
                     <plugin>
                         <groupId>org.sonatype.central</groupId>
                         <artifactId>central-publishing-maven-plugin</artifactId>
@@ -447,10 +448,10 @@
                             <autoPublish>true</autoPublish>
                             <centralBaseUrl>${central.base.url}</centralBaseUrl>
                             <publishingServerId>central</publishingServerId>
-                            <!-- Publishing takes ten minutes, so release the gitlab worker on the validating ok. -->
+                            &lt;!&ndash; Publishing takes ten minutes, so release the gitlab worker on the validating ok. &ndash;&gt;
                             <waitUntil>validated</waitUntil>
                         </configuration>
-                    </plugin>
+                    </plugin>-->
                 </plugins>
             </build>
         </profile>
