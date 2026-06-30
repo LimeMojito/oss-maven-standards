@@ -1,3 +1,6 @@
+### 18.0.267
+- #127: Versions check to once per month.
+
 ### 18.0.265
 - #127: Disable until OSSH limit problems are worked out.
 
