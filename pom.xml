@@ -145,6 +145,8 @@
                         <releaseProfile>release</releaseProfile>
                     </releaseProfiles>
                     <arguments>&apos;-Dbuild.number=${build.number}&apos;</arguments>
+                    <!-- needs to match token access in settings.xml -->
+                    <serverId>github-release</serverId>
                 </configuration>
             </plugin>
             <plugin>
