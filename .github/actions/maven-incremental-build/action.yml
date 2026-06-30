@@ -7,7 +7,9 @@ inputs:
     description: |
       The passphrase for the GPG key used to sign artifacts.
     required: true
-
+  extra-mvn-options:
+    description: 'Extra maven command line options'
+    required: false
 runs:
   using: composite
   steps:
@@ -17,7 +19,14 @@ runs:
         export MAVEN_GPG_PASSPHRASE="${{ inputs.signing-passphrase }}"
         # Needs to match github runner architecture.
         export DOCKER_DEFAULT_PLATFORM=linux/amd64
-        mvn -B --color always --no-transfer-progress --file pom.xml -Dbuild.number=${{github.run_number}} -Dgpg.keyname='Lime Mojito Pty Ltd' -Pfast-build -Dgib.disable install
+        mvn -B --color always --no-transfer-progress \
+          --file pom.xml \
+          -Dbuild.number=${{github.run_number}} \
+          -Dgpg.keyname='Lime Mojito Pty Ltd' \
+          -Pfast-build \
+          -Dgib.disable \
+          ${{ inputs.extra-mvn-options }} \
+          install
 
     - name: CI Build with Maven Updated Modules Only
       shell: bash
@@ -27,7 +36,13 @@ runs:
         export DOCKER_DEFAULT_PLATFORM=linux/amd64
         # Query origin for the HEAD branch name (e.g., origin/main)
         DEFAULT_BRANCH=$(git remote show origin | awk '/HEAD branch/ {print $NF}')
-        mvn -B --color always --no-transfer-progress --file pom.xml -Dbuild.number=${{github.run_number}} -Dgpg.keyname='Lime Mojito Pty Ltd' clean install -Dgib.referenceBranch=refs/heads/${DEFAULT_BRANCH}  
+        mvn -B --color always --no-transfer-progress \
+          --file pom.xml \
+          -Dbuild.number=${{github.run_number}} \
+          -Dgpg.keyname='Lime Mojito Pty Ltd' \
+          -Dgib.referenceBranch=refs/heads/${DEFAULT_BRANCH} \
+          ${{ inputs.extra-mvn-options }} \
+          clean install 
 
     - name: Upload Reports
       if: always()

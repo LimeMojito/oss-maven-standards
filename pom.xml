@@ -393,14 +393,6 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>com.github.danielflower.mavenplugins</groupId>
-                        <artifactId>multi-module-maven-release-plugin</artifactId>
-                        <configuration>
-                            <buildNumber>${build.number}</buildNumber>
-                            <serverId>github.com</serverId>
-                        </configuration>
-                    </plugin>
-                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
                         <executions>
@@ -439,6 +431,7 @@
                 </plugins>
             </build>
         </profile>
+
         <profile>
             <id>fast-build</id>
             <properties>
@@ -446,6 +439,7 @@
                 <lime.fast-build>true</lime.fast-build>
             </properties>
         </profile>
+
         <profile>
             <id>ci</id>
             <properties>
@@ -465,6 +459,7 @@
                 </plugins>
             </build>
         </profile>
+
         <profile>
             <id>disable-gib-in-intellij</id>
             <activation>
