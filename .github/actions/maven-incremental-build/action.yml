@@ -1,0 +1,49 @@
+name: Maven Incremental Build
+description: |
+  Runs a fast build to align binaries with checked out source code.   Then runs a full CI build for modules
+  that have source code changes against the default branch of the repository.
+inputs:
+  signing-passphrase:
+    description: |
+      The passphrase for the GPG key used to sign artifacts.
+    required: true
+  extra-mvn-options:
+    description: 'Extra maven command line options'
+    required: false
+runs:
+  using: composite
+  steps:
+    - name: Maven Fast build
+      shell: bash
+      run: |
+        export MAVEN_GPG_PASSPHRASE="${{ inputs.signing-passphrase }}"
+        # Needs to match github runner architecture.
+        export DOCKER_DEFAULT_PLATFORM=linux/amd64
+        mvn -B --color always --no-transfer-progress \
+          --file pom.xml \
+          -Dbuild.number=${{github.run_number}} \
+          -Dgpg.keyname='Lime Mojito Pty Ltd' \
+          -Pfast-build \
+          -Dgib.disable \
+          ${{ inputs.extra-mvn-options }} \
+          install
+
+    - name: CI Build with Maven Updated Modules Only
+      shell: bash
+      run: |
+        export MAVEN_GPG_PASSPHRASE="${{ inputs.signing-passphrase }}"
+        # Needs to match github runner architecture.
+        export DOCKER_DEFAULT_PLATFORM=linux/amd64
+        # Query origin for the HEAD branch name (e.g., origin/main)
+        DEFAULT_BRANCH=$(git remote show origin | awk '/HEAD branch/ {print $NF}')
+        mvn -B --color always --no-transfer-progress \
+          --file pom.xml \
+          -Dbuild.number=${{github.run_number}} \
+          -Dgpg.keyname='Lime Mojito Pty Ltd' \
+          -Dgib.referenceBranch=refs/heads/${DEFAULT_BRANCH} \
+          ${{ inputs.extra-mvn-options }} \
+          clean install 
+
+    - name: Upload Reports
+      if: always()
+      uses: LimeMojito/oss-maven-standards/.github/actions/maven-report-upload@master

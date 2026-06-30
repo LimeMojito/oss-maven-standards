@@ -1,0 +1,24 @@
+name: Maven Report Upload
+description: |
+  Upload various reports after a build.
+
+runs:
+  using: composite
+  steps:
+    - name: Upload Docker logs
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: docker-logs
+        path: ${{ github.workspace }}/**/target/docker-logs/*
+        retention-days: 1
+        compression-level: 9
+
+    - name: Upload Coverage Report
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: coverage-report
+        path: ${{ github.workspace }}/**/target/site/jacoco
+        retention-days: 1
+        compression-level: 9

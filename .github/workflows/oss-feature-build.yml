@@ -35,39 +35,18 @@ jobs:
           central-key: ${{ secrets.LIME_CENTRAL_KEY }}
           localstack-token: ${{ secrets.LIME_LOCALSTACK_TOKEN }}
 
-      - name: Update Versions
+      - name: Update Library Versions
         id: update_versions
         uses: LimeMojito/oss-maven-standards/.github/actions/maven-version-update@master
 
-      - name: Calculate Current Version
+      - name: Calculate Current Project Version
         id: current_version
         uses: LimeMojito/oss-maven-standards/.github/actions/maven-version-number@master
 
-      - name: Fast build
-        run: |
-          export MAVEN_GPG_PASSPHRASE="${{ secrets.LIME_SIGNING_PASSPHRASE }}"
-          # Needs to match github runner architecture.
-          export DOCKER_DEFAULT_PLATFORM=linux/amd64
-          mvn -B --color always --no-transfer-progress --file pom.xml -Dbuild.number=${{github.run_number}} -Dgpg.keyname='Lime Mojito Pty Ltd' -Pfast-build -Dgib.disable install
-
-      - name: CI Build with Maven Updated Modules Only
-        id: build
-        run: |
-          export MAVEN_GPG_PASSPHRASE="${{ secrets.LIME_SIGNING_PASSPHRASE }}"
-          # Needs to match github runner architecture.
-          export DOCKER_DEFAULT_PLATFORM=linux/amd64
-          # Query origin for the HEAD branch name (e.g., origin/main)
-          DEFAULT_BRANCH=$(git remote show origin | awk '/HEAD branch/ {print $NF}')
-          mvn -B --color always --no-transfer-progress --file pom.xml -Dbuild.number=${{github.run_number}} -Dgpg.keyname='Lime Mojito Pty Ltd' clean install -Dgib.referenceBranch=refs/heads/${DEFAULT_BRANCH}  
-
-      - name: Upload Docker logs
-        if: always()
-        uses: actions/upload-artifact@v7
+      - name: Maven Incremental Module Build
+        uses: LimeMojito/oss-maven-standards/.github/actions/maven-incremental-build@master
         with:
-          name: docker-logs
-          path: ${{ github.workspace }}/**/target/docker-logs/*
-          retention-days: 1
-          compression-level: 9
+          signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
 
       - name: Push any changes
         if: steps.update_versions.outputs.has_changes == 'true'

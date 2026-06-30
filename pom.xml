@@ -26,7 +26,7 @@
 
     <groupId>com.limemojito.oss.standards</groupId>
     <artifactId>oss-maven-standards</artifactId>
-    <version>17.0.29-SNAPSHOT</version>
+    <version>18.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -189,8 +189,13 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                <groupId>eu.maveniverse.maven.plugins</groupId>
-                <artifactId>bom-builder3</artifactId>
+                    <groupId>com.github.danielflower.mavenplugins</groupId>
+                    <artifactId>multi-module-maven-release-plugin</artifactId>
+                    <version>3.8.5</version>
+                </plugin>
+                <plugin>
+                    <groupId>eu.maveniverse.maven.plugins</groupId>
+                    <artifactId>bom-builder3</artifactId>
                     <version>1.3.3</version>
                 </plugin>
                 <plugin>
@@ -247,7 +252,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.10.0</version>
+                    <version>3.11.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -257,12 +262,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.6.2</version>
+                    <version>3.6.3</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>3.5.5</version>
+                    <version>3.5.6</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -302,7 +307,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.5.5</version>
+                    <version>3.5.6</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -358,7 +363,7 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.14</version>
+                    <version>0.8.15</version>
                 </plugin>
                 <plugin>
                     <groupId>org.projectlombok</groupId>
@@ -368,7 +373,7 @@
                 <plugin>
                     <groupId>org.sonatype.central</groupId>
                     <artifactId>central-publishing-maven-plugin</artifactId>
-                    <version>0.10.0</version>
+                    <version>0.11.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
@@ -434,6 +439,7 @@
                 <lime.fast-build>true</lime.fast-build>
             </properties>
         </profile>
+
         <profile>
             <id>ci</id>
             <properties>
@@ -447,12 +453,13 @@
                         <extensions>true</extensions>
                         <configuration>
                             <!-- Default branch name is passed in from github action -->
-<!--                            <referenceBranch>refs/heads/master</referenceBranch>-->
+                            <!-- <referenceBranch>refs/heads/master</referenceBranch>-->
                         </configuration>
                     </plugin>
                 </plugins>
             </build>
         </profile>
+
         <profile>
             <id>disable-gib-in-intellij</id>
             <activation>
