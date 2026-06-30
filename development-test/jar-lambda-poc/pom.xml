@@ -32,6 +32,20 @@
         <relativePath>../../jar-lambda-development</relativePath>
     </parent>
 
+    <build>
+        <!-- Do not upload large artifacts to central -->
+        <plugins>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <!-- Keep the same version used in your root POM -->
+                <configuration>
+                    <skipPublishing>true</skipPublishing>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <properties>
         <start-class>com.limemojito.lambda.poc.Application</start-class>
 

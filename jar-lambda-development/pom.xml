@@ -189,6 +189,8 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <!--suppress UnresolvedMavenProperty, MavenModelInspection -->
+                            <skip>${source.skip}</skip>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <shadedArtifactAttached>false</shadedArtifactAttached>
                             <outputFile>${project.build.directory}/${build.shaded.jar.name}</outputFile>
@@ -241,6 +243,8 @@
                             <goal>attach-artifact</goal>
                         </goals>
                         <configuration>
+                            <!--suppress UnresolvedMavenProperty, MavenModelInspection -->
+                            <skipAttach>${source.skip}</skipAttach>
                             <artifacts>
                                 <artifact>
                                     <file>${project.build.directory}/${build.shaded.jar.name}</file>
