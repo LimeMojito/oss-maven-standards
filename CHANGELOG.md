@@ -1,3 +1,7 @@
+### 18.0
+- #127: Optimized CI/CD by implementing the gitflow-incremental-builder with HTTPS support, factoring out fast builds with threading, and introducing a BOM for centralized dependency management.
+- Updated versions and security patches.
+
 ### 17.0.29
 - Enhanced AI agent documentation by adding a dedicated skills directory at `docs/ai/skills/`.
 - Updated `AGENTS.md` to include references to the skills directory for improved discoverability.
