@@ -455,7 +455,8 @@
                         <extensions>true</extensions>
                         <configuration>
                             <!-- Default branch name is passed in from GitHub action -->
-                           <referenceBranch>refs/heads/${git.defaultBranch}</referenceBranch>
+                            <referenceBranch>refs/remote/origin/${git.defaultBranch}</referenceBranch>
+                            <fetchReferenceBranch>true</fetchReferenceBranch>
                         </configuration>
                     </plugin>
                 </plugins>
