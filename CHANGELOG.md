@@ -1,5 +1,6 @@
 ### 18.0
-- #127: Optimized CI/CD by implementing the gitflow-incremental-builder with HTTPS support, factoring out fast builds with threading, and introducing a BOM for centralized dependency management.
+- #127: Optimized CI/CD by implementing the gitflow-incremental-builder with HTTPS support, factoring out fast builds with threading, and introducing a BOM for centralized dependency management. Also corrected tag substitution.
+- Updated Documentation for release build.
 - Updated versions and security patches.
 
 ### 17.0.29
