@@ -40,5 +40,7 @@
 
         <!-- Missing the main method -->
         <coverage.line.ratio>0.75</coverage.line.ratio>
+
+        <property.test.change/>
     </properties>
 </project>
