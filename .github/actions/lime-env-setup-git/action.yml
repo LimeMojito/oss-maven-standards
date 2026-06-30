@@ -23,6 +23,8 @@ runs:
     - uses: actions/checkout@v7
       with:
         token: '${{ inputs.git-access-key }}'
+        # All history so we can do incremental module builds.
+        fetch-depth: '0'
 
     - name: "Import GPG key for Build Commits as ${{ inputs.git-id-name }}"
       uses: crazy-max/ghaction-import-gpg@v7
