@@ -5,6 +5,12 @@ description: |
 runs:
   using: composite
   steps:
+    - name: Upload Banner
+      if: always()
+      shell: bash
+      run: |
+        echo "  echo -e "\n\n****************\n  Reports Upload\n****************\n"
+
     - name: Upload Docker logs
       if: always()
       uses: actions/upload-artifact@v7
