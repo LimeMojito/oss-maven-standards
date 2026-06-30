@@ -42,6 +42,7 @@ runs:
           -Dgpg.keyname='Lime Mojito Pty Ltd' \
           -Dgib.referenceBranch=refs/heads/${DEFAULT_BRANCH} \
           ${{ inputs.extra-mvn-options }} \
+          -Pincremental \
           clean install 
 
     - name: Upload Reports

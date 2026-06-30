@@ -441,10 +441,11 @@
         </profile>
 
         <profile>
-            <id>ci</id>
-            <properties>
-                <ci>true</ci>
-            </properties>
+            <id>incremental</id>
+            <!--
+              Note this profile may interfere with the Multi Module Maven Release plugin.  It is not enabled by default
+              The disable-gib profile automatically disables this in Intellij.
+             -->
             <build>
                 <plugins>
                     <plugin>
@@ -452,7 +453,7 @@
                         <artifactId>gitflow-incremental-builder</artifactId>
                         <extensions>true</extensions>
                         <configuration>
-                            <!-- Default branch name is passed in from github action -->
+                            <!-- Default branch name is passed in from GitHub action -->
                             <!-- <referenceBranch>refs/heads/master</referenceBranch>-->
                         </configuration>
                     </plugin>
@@ -464,7 +465,7 @@
             <id>disable-gib-in-intellij</id>
             <activation>
                 <property>
-                    <!-- This property is natively exported by IntelliJ during imports/builds -->
+                    <!-- IntelliJ natively exports this property during imports/builds -->
                     <name>idea.version</name>
                 </property>
             </activation>
