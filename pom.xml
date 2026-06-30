@@ -70,7 +70,7 @@
         <!-- Useful things made from the development archetypes -->
         <module>applications</module>
 
-        <!-- Publish a BOM so it is easy to manage dependencies -->
+        <!-- Publish a BOM so that it is easy to manage dependencies -->
         <module>lime-oss-maven-standards-bom</module>
 
         <!-- Test the dev framework -->
