@@ -1,3 +1,7 @@
+### 18.0.263
+- #127: Refined the release process by fixing action typos, factoring out build number calculations, and updating documentation prompts. Improved Maven release stability with settings.xml keys and reduced push logging, while fixing tag substitution and Maven call parameters.
+- Updated Documentation for release build.
+
 ### 18.0.0
 - #127: Optimized CI/CD by implementing the gitflow-incremental-builder with HTTPS support, factoring out fast builds with threading, and introducing a BOM for centralized dependency management. Also corrected tag substitution, reduced release push logging, and corrected the call to maven for release build.
 - Updated Documentation for the release build.
