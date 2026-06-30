@@ -394,6 +394,19 @@
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>com.github.danielflower.mavenplugins</groupId>
+                        <artifactId>multi-module-maven-release-plugin</artifactId>
+                        <configuration>
+                            <!-- Passed in on github runner -->
+                            <buildNumber>${build.number}</buildNumber>
+                            <!-- only pay attention to pom.xml and src directories -->
+                            <requiredPaths>
+                                <requiredPath>pom.xml</requiredPath>
+                                <requiredPath>src</requiredPath>
+                            </requiredPaths>
+                        </configuration>
+                    </plugin>
+                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
                         <executions>
