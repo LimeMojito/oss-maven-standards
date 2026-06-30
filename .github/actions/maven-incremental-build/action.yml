@@ -19,6 +19,7 @@ runs:
         export MAVEN_GPG_PASSPHRASE="${{ inputs.signing-passphrase }}"
         # Needs to match github runner architecture.
         export DOCKER_DEFAULT_PLATFORM=linux/amd64
+        echo "Fast build, all modules."
         mvn -B --color always --no-transfer-progress \
           --file pom.xml \
           -Dbuild.number=${{github.run_number}} \
@@ -36,6 +37,7 @@ runs:
         export DOCKER_DEFAULT_PLATFORM=linux/amd64
         # Query origin for the HEAD branch name (e.g., origin/main)
         DEFAULT_BRANCH=$(git remote show origin | awk '/HEAD branch/ {print $NF}')
+        echo "Incremental full build, all changed and dependent modules."
         mvn -B --color always --no-transfer-progress \
           --file pom.xml \
           -Dbuild.number=${{github.run_number}} \
