@@ -79,7 +79,7 @@ jobs:
           echo "Committing Documentation updates."
           git add .
           git commit -S -m "Updated Documentation for release build."
-          git push origin
+          git push origin --quiet
 
       - name: Maven Release Build
         id: maven-release-build
