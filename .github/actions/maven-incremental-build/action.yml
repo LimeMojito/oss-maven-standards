@@ -13,13 +13,13 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Maven Fast build
+    - name: Maven Fast build (threaded and quiet)
       shell: bash
       run: |
         export MAVEN_GPG_PASSPHRASE="${{ inputs.signing-passphrase }}"
         # Needs to match github runner architecture.
         export DOCKER_DEFAULT_PLATFORM=linux/amd64
-        echo "Fast build, all modules."
+        echo -e "\n\n**************************\n  Fast build, all modules.\n**************************\n"
         mvn -B --color always --no-transfer-progress \
           --file pom.xml \
           -Dbuild.number=${{github.run_number}} \
@@ -27,6 +27,7 @@ runs:
           -Pfast-build \
           -Dgib.disable \
           ${{ inputs.extra-mvn-options }} \
+          --quiet -T 2C \
           install
 
     - name: CI Build with Maven Updated Modules Only
@@ -37,7 +38,7 @@ runs:
         export DOCKER_DEFAULT_PLATFORM=linux/amd64
         # Query origin for the HEAD branch name (e.g., origin/main)
         DEFAULT_BRANCH=$(git remote show origin | awk '/HEAD branch/ {print $NF}')
-        echo "Incremental full build, all changed and dependent modules."
+        echo -e "\n\n************************************************************\n  Incremental full build, all changed and dependent modules.\n************************************************************\n"
         mvn -B --color always --no-transfer-progress \
           --file pom.xml \
           -Dbuild.number=${{github.run_number}} \
