@@ -39,9 +39,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <github.url>https://github.com/${git.project.slug}</github.url>
-        <git.url>git@github.com:${git.project.slug}.git</git.url>
         <git.defaultBranch>master</git.defaultBranch>
-        <lime.scm.url>scm:git:${git.url}</lime.scm.url>
+        <lime.scm.url>scm:git:${github.url}</lime.scm.url>
         <lime.website.url>https://limemojito.com</lime.website.url>
         <central.base.url>https://central.sonatype.com</central.base.url>
 
@@ -52,8 +51,8 @@
         <java.version>25</java.version>
         <!-- This has both library and build implications -->
         <spring.boot.version>4.1.0</spring.boot.version>
-        <aws-cdk-lib.version>2.232.1</aws-cdk-lib.version>
-        <lombok.version>1.18.40</lombok.version>
+        <aws-cdk-lib.version>2.260.0</aws-cdk-lib.version>
+        <lombok.version>1.18.46</lombok.version>
     </properties>
 
     <modules>
@@ -127,6 +126,27 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>com.github.danielflower.mavenplugins</groupId>
+                <artifactId>multi-module-maven-release-plugin</artifactId>
+                <configuration>
+                    <!-- Passed in on GitHub runner -->
+                    <buildNumber>${build.number}</buildNumber>
+                    <!-- only pay attention to pom.xml and src directories -->
+                    <requiredPaths>
+                        <requiredPath>pom.xml</requiredPath>
+                        <requiredPath>src</requiredPath>
+                    </requiredPaths>
+                    <goals>
+                        <goal>clean</goal>
+                        <goal>deploy</goal>
+                    </goals>
+                    <releaseProfiles>
+                        <releaseProfile>release</releaseProfile>
+                    </releaseProfiles>
+                    <arguments>&apos;-Dbuild.number=${build.number}&apos;</arguments>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
@@ -393,19 +413,6 @@
             <id>release</id>
             <build>
                 <plugins>
-                    <plugin>
-                        <groupId>com.github.danielflower.mavenplugins</groupId>
-                        <artifactId>multi-module-maven-release-plugin</artifactId>
-                        <configuration>
-                            <!-- Passed in on github runner -->
-                            <buildNumber>${build.number}</buildNumber>
-                            <!-- only pay attention to pom.xml and src directories -->
-                            <requiredPaths>
-                                <requiredPath>pom.xml</requiredPath>
-                                <requiredPath>src</requiredPath>
-                            </requiredPaths>
-                        </configuration>
-                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
