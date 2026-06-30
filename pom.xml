@@ -40,6 +40,7 @@
 
         <github.url>https://github.com/${git.project.slug}</github.url>
         <git.url>git@github.com:${git.project.slug}.git</git.url>
+        <git.defaultBranch>master</git.defaultBranch>
         <lime.scm.url>scm:git:${git.url}</lime.scm.url>
         <lime.website.url>https://limemojito.com</lime.website.url>
         <central.base.url>https://central.sonatype.com</central.base.url>
@@ -454,7 +455,7 @@
                         <extensions>true</extensions>
                         <configuration>
                             <!-- Default branch name is passed in from GitHub action -->
-                            <!-- <referenceBranch>refs/heads/master</referenceBranch>-->
+                           <referenceBranch>refs/heads/${git.defaultBranch}</referenceBranch>
                         </configuration>
                     </plugin>
                 </plugins>
