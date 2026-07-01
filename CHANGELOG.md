@@ -1,26 +1,8 @@
 ### 18.0.278
 - #134: Releaser to use arguments from command line only.
-
-### 18.0.276
-- #134: Adjust quotes for key name and maven releaser.
-- Updated library versions in pom.xml
-
-### 18.0.274
-- #134: Disable auto-publishing in Maven configuration.
-- Updated library versions in pom.xml
-
-### 18.0.272
-- #127: Updated release plugin arguments and addressed Maven Central release limit issues.
+- #134: Updated release plugin arguments and addressed Maven Central release limit issues.
 - Remove Backup Website step from monthly issues workflow.
 - Updated library versions in pom.xml
-
-### 18.0.267
-- #127: Versions check to once per month.
-
-### 18.0.265
-- #127: Disable until OSSH limit problems are worked out.
-
-### 18.0.263
 - #127: Refined the release process by fixing action typos, factoring out build number calculations, and updating documentation prompts. Improved Maven release stability with settings.xml keys and reduced push logging, while fixing tag substitution and Maven call parameters.
 - Updated Documentation for release build.
 
