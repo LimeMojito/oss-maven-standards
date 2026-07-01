@@ -51,11 +51,11 @@
         <spring.boot.version>4.1.0</spring.boot.version>
         <aws-cdk-lib.version>2.260.0</aws-cdk-lib.version>
         <lombok.version>1.18.46</lombok.version>
-        
+
         <!-- Overridden by build server.  LOCAL is used for local builds. -->
         <build.number>LOCAL</build.number>
         <releaser.arguments/>
-        
+
     </properties>
 
     <modules>
@@ -134,6 +134,7 @@
                 <artifactId>multi-module-maven-release-plugin</artifactId>
                 <configuration>
                     <!-- Passed in on GitHub runner -->
+                    <!--suppress MavenModelInspection -->
                     <buildNumber>${build.number}</buildNumber>
                     <!-- only pay attention to pom.xml and src directories -->
                     <requiredPaths>
@@ -147,7 +148,6 @@
                     <releaseProfiles>
                         <releaseProfile>release</releaseProfile>
                     </releaseProfiles>
-                    <arguments>&apos;-Dbuild.number=${build.number} ${releaser.arguments}&apos;</arguments>
                     <!-- needs to match token access in settings.xml -->
                     <serverId>github-release</serverId>
                 </configuration>

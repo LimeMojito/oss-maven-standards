@@ -45,9 +45,9 @@ runs:
         # Needs to match github runner architecture.
         export DOCKER_DEFAULT_PLATFORM=linux/amd64
         export MAVEN_GPG_PASSPHRASE="${{ inputs.code-signing-passphrase }}"
-        # deploy to OSSRH, extra options twice to make sure passed through to release.
+        # deploy to OSSRH, extra options twice to make sure passed through to release.  Note escaped quotes to arguments property.
         mvn -B --color always --no-transfer-progress \
           -Dbuild.number=${{github.run_number}} \
           -Dgpg.keyname='${{inputs.code-signing-key-name}}' ${{ inputs.extra-mvn-options }} \
-          -Dreleaser.arguments="-B --color always --no-transfer-progress -Dbuild.number=${{github.run_number}} -Dgpg.keyname="${{inputs.code-signing-key-name}}" ${{ inputs.extra-mvn-options }}" \
+          -Darguments="-B --color always --no-transfer-progress -Dbuild.number=${{github.run_number}} -Dgpg.keyname=\"${{inputs.code-signing-key-name}}\" ${{ inputs.extra-mvn-options }}" \
           releaser:release
