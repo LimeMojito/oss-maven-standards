@@ -447,7 +447,7 @@
                         <artifactId>central-publishing-maven-plugin</artifactId>
                         <extensions>true</extensions>
                         <configuration>
-                            <autoPublish>true</autoPublish>
+                            <autoPublish>false</autoPublish>
                             <centralBaseUrl>${central.base.url}</centralBaseUrl>
                             <publishingServerId>central</publishingServerId>
                             <!-- Publishing takes ten minutes, so release the gitlab worker on the validating ok. -->
