@@ -49,5 +49,5 @@ runs:
         mvn -B --color always --no-transfer-progress \
           -Dbuild.number=${{github.run_number}} \
           -Dgpg.keyname='${{inputs.code-signing-key-name}}' ${{ inputs.extra-mvn-options }} \
-          -Dreleaser.arguments="-B --color always --no-transfer-progress -Dbuild.number=${{github.run_number}} -Dgpg.keyname='${{inputs.code-signing-key-name}}' ${{ inputs.extra-mvn-options }}" \
+          -Dreleaser.arguments="-B --color always --no-transfer-progress -Dbuild.number=${{github.run_number}} -Dgpg.keyname="${{inputs.code-signing-key-name}}" ${{ inputs.extra-mvn-options }}" \
           releaser:release
