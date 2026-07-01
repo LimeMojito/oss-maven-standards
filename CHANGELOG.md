@@ -1,3 +1,6 @@
+### 18.0.278
+- #134: Releaser to use arguments from command line only.
+
 ### 18.0.276
 - #134: Adjust quotes for key name and maven releaser.
 - Updated library versions in pom.xml
