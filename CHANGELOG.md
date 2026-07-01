@@ -1,3 +1,6 @@
+### 18.0.280
+- #134: Adjust changelog for central unreleased versions.
+
 ### 18.0.278
 - #134: Releaser to use arguments from command line only.
 - #134: Updated release plugin arguments and addressed Maven Central release limit issues.
