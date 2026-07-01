@@ -1,3 +1,7 @@
+### 18.0.276
+- #134: Adjust quotes for key name and maven releaser.
+- Updated library versions in pom.xml
+
 ### 18.0.274
 - #134: Disable auto-publishing in Maven configuration.
 - Updated library versions in pom.xml
