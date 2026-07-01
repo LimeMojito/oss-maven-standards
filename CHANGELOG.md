@@ -1,3 +1,7 @@
+### 18.0.274
+- #134: Disable auto-publishing in Maven configuration.
+- Updated library versions in pom.xml
+
 ### 18.0.272
 - #127: Updated release plugin arguments and addressed Maven Central release limit issues.
 - Remove Backup Website step from monthly issues workflow.
