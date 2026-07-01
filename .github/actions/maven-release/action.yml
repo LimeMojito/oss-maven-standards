@@ -48,7 +48,6 @@ runs:
         # deploy to OSSRH, extra options twice to make sure passed through to release.
         mvn -B --color always --no-transfer-progress \
           -Dbuild.number=${{github.run_number}} \
-          -Dgpg.keyname='${{inputs.code-signing-key-name}}' \
-          ${{ inputs.extra-mvn-options }} \
-          -Darguments='-B --color always --no-transfer-progress ${{ inputs.extra-mvn-options }}' \
+          -Dgpg.keyname='${{inputs.code-signing-key-name}}' ${{ inputs.extra-mvn-options }} \
+          -Dreleaser.arguments="-B --color always --no-transfer-progress -Dbuild.number=${{github.run_number}} -Dgpg.keyname='${{inputs.code-signing-key-name}}' ${{ inputs.extra-mvn-options }}" \
           releaser:release

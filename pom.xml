@@ -33,8 +33,6 @@
         <!-- This should be set in derived OSS projects -->
         <git.project.slug>LimeMojito/oss-maven-standards</git.project.slug>
 
-        <!-- Overridden by build server -->
-        <build.number>LOCAL</build.number>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
@@ -53,6 +51,11 @@
         <spring.boot.version>4.1.0</spring.boot.version>
         <aws-cdk-lib.version>2.260.0</aws-cdk-lib.version>
         <lombok.version>1.18.46</lombok.version>
+        
+        <!-- Overridden by build server.  LOCAL is used for local builds. -->
+        <build.number>LOCAL</build.number>
+        <releaser.arguments/>
+        
     </properties>
 
     <modules>
@@ -144,7 +147,7 @@
                     <releaseProfiles>
                         <releaseProfile>release</releaseProfile>
                     </releaseProfiles>
-                    <arguments>&apos;-Dbuild.number=${build.number}&apos;</arguments>
+                    <arguments>&apos;-Dbuild.number=${build.number} ${releaser.arguments}&apos;</arguments>
                     <!-- needs to match token access in settings.xml -->
                     <serverId>github-release</serverId>
                 </configuration>
