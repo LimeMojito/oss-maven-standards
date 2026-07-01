@@ -1,3 +1,8 @@
+### 18.0.272
+- #127: Updated release plugin arguments and addressed Maven Central release limit issues.
+- Remove Backup Website step from monthly issues workflow.
+- Updated library versions in pom.xml
+
 ### 18.0.267
 - #127: Versions check to once per month.
 
