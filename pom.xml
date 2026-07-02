@@ -148,6 +148,8 @@
                     <releaseProfiles>
                         <releaseProfile>release</releaseProfile>
                     </releaseProfiles>
+                    <!-- Do nothing if no changes, but fail build for alerting -->
+                    <noChangesAction>FailBuild</noChangesAction>
                     <!-- needs to match token access in settings.xml -->
                     <serverId>github-release</serverId>
                 </configuration>
