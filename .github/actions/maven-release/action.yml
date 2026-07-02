@@ -28,16 +28,6 @@ runs:
       id: git_release_version
       uses: LimeMojito/oss-maven-standards/.github/actions/calculate-build-version@master
 
-    - name: Tag Release Version
-      shell: bash
-      run: |
-        echo -e "Tag release version\n\n"
-        tagName="${{steps.git_release_version.outputs.build-version }}"
-        echo "Tagging repository with [$tagName]"
-        git tag -s $tagName -m "[Release] $tagName"        
-        git push origin "$tagName" --quiet
-        echo "lime-release-version=$tagName" >> "$GITHUB_OUTPUT"
-
     - name: Perform Release Deployment
       shell: bash
       run: |
@@ -52,10 +42,22 @@ runs:
           -Darguments="-B --color always --no-transfer-progress -Dbuild.number=${{github.run_number}} -Dgpg.keyname=\"${{inputs.code-signing-key-name}}\" ${{ inputs.extra-mvn-options }}" \
           releaser:release
 
-    - name: Untag failed release
-      if: ${{ failure() }}
+    - name: Tag Release Version
       shell: bash
       run: |
+        echo -e "Tag release version\n\n"
         tagName="${{steps.git_release_version.outputs.build-version }}"
-        echo "Untaging release ${tagName}"
-        git push origin --delete "${tagName}" --quiet
+        echo "Tagging repository with [$tagName]"
+        git tag -s $tagName -m "[Release] $tagName"        
+        git push origin "$tagName" --quiet
+        echo "lime-release-version=$tagName" >> "$GITHUB_OUTPUT"
+
+    - name: Ensure No Git Changes Exist
+        run: |
+          if ! git diff --quiet; then
+            echo "❌ Error: Modified files detected!"
+            git diff
+            exit 1
+          else
+            echo "✅ Clean: No modified files found."
+          fi
