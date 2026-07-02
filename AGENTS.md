@@ -9,8 +9,8 @@ This project is a collection of Maven POMs and modules that define development s
 ### Tech Stack
 - **Language**: Java 25 (configured in `pom.xml`)
 - **Build Tool**: Maven
-- **Frameworks**: Spring Boot 4.1.0, AWS CDK 2.232.1
-- **Boilerplate**: Project Lombok 1.18.40
+- **Frameworks**: Spring Boot 4.1.0, AWS CDK 2.260.0
+- **Boilerplate**: Project Lombok 1.18.46
 - **Testing**: JUnit 5, Mockito, Localstack, Docker
 - **Standards**: Checkstyle (Custom Lime Mojito standard)
 
