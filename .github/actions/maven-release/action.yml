@@ -53,7 +53,8 @@ runs:
         echo "lime-release-version=$tagName" >> "$GITHUB_OUTPUT"
 
     - name: Ensure No Git Changes Exist
-        run: |
+      shell: bash
+      run: |
           if ! git diff --quiet; then
             echo "❌ Error: Modified files detected!"
             git diff
