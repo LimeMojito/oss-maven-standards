@@ -53,7 +53,7 @@ runs:
           releaser:release
 
     - name: Untag failed release
-      if: failed()
+      if: ${{ failed() }}
       shell: bash
       run: |
         tagName="${{steps.git_release_version.outputs.build-version }}"
