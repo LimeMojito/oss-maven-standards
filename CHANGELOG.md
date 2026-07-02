@@ -1,20 +1,11 @@
 ### 18.0.282
 - #134: Fail release action if nothing to release.
-- #127: Optimized the build process by refining GitHub origin references, forcing default branch usage, and implementing incremental build profiles. Updated documentation and cleaned up gitignore configurations for Junie files.
-- #119: Optimized Maven build to compile only changed modules.
-- #120: Optimized Maven build with path-based GitHub Actions filtering.
-- Updated versions and security patches.
-
-### 18.0.280
 - #134: Adjust changelog for central unreleased versions.
-
-### 18.0.278
-- #134: Releaser to use arguments from command line only.
 - #134: Updated release plugin arguments and addressed Maven Central release limit issues.
-- Remove Backup Website step from monthly issues workflow.
-- Updated library versions in pom.xml
-- #127: Refined the release process by fixing action typos, factoring out build number calculations, and updating documentation prompts. Improved Maven release stability with settings.xml keys and reduced push logging, while fixing tag substitution and Maven call parameters.
-- Updated Documentation for release build.
+- #127: Optimized the build process by refining GitHub origin references, forcing default branch usage, and implementing incremental build profiles. Updated documentation and cleaned up gitignore configurations for Junie files.
+- #127: Optimized Maven build to compile only changed modules.
+- #127: Optimized Maven build with path-based GitHub Actions filtering.
+- Updated versions and security patches.
 
 ### 18.0.0
 - #127: Optimized CI/CD by implementing the gitflow-incremental-builder with HTTPS support, factoring out fast builds with threading, and introducing a BOM for centralized dependency management. Also corrected tag substitution, reduced release push logging, and corrected the call to maven for release build.
