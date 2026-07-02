@@ -1,6 +1,3 @@
-### 18.0.285
-- #134: Updated documentation for visible versions on maven central.
-
 ### 18.0.282
 - #134: Fail release action if nothing to release.
 - #134: Adjust changelog for central unreleased versions.

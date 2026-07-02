@@ -48,6 +48,13 @@ jobs:
         id: git_release_version
         uses: LimeMojito/oss-maven-standards/.github/actions/calculate-build-version@master
 
+      - name: Maven Release Build
+        id: maven-release-build
+        uses: LimeMojito/oss-maven-standards/.github/actions/maven-release@master
+        with:
+          code-signing-key-name: Lime Mojito Pty Ltd
+          code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
+
       - name: Update Documentation
         timeout-minutes: 8
         uses: LimeMojito/oss-maven-standards/.github/actions/invoke-agent@master
@@ -85,13 +92,7 @@ jobs:
           git commit -S -m "Updated Documentation for release build."
           git push origin --quiet
 
-      - name: Maven Release Build
-        id: maven-release-build
-        uses: LimeMojito/oss-maven-standards/.github/actions/maven-release@master
-        with:
-          code-signing-key-name: Lime Mojito Pty Ltd
-          code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
-
+          
       - name: Version ${{ steps.maven-release-build.outputs.release-version }}
         shell: bash
         run: |
