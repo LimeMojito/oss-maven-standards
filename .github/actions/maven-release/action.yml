@@ -51,3 +51,10 @@ runs:
           -Dgpg.keyname='${{inputs.code-signing-key-name}}' ${{ inputs.extra-mvn-options }} \
           -Darguments="-B --color always --no-transfer-progress -Dbuild.number=${{github.run_number}} -Dgpg.keyname=\"${{inputs.code-signing-key-name}}\" ${{ inputs.extra-mvn-options }}" \
           releaser:release
+
+    - name: Untag failed release
+      shell: bash
+      run: |
+        tagName="${{steps.git_release_version.outputs.build-version }}"
+        echo "Untaging release ${tagName}"
+        git push origin --delete "${tagName}" --quiet
