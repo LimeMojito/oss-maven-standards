@@ -22,7 +22,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>lime-oss-maven-standards-bom</artifactId>
-    <name>${project.artifactId}</name>
     <packaging>pom</packaging>
 
     <parent>
@@ -44,11 +43,11 @@
                         </goals>
                         <configuration>
                             <attach>true</attach>
-                            <bomGroupId>>${project.groupId}</bomGroupId>
-                            <bomArtifactId>>${project.artifactId}</bomArtifactId>
+                            <!--<bomGroupId>>${project.groupId}</bomGroupId>
+                            <bomArtifactId>${project.artifactId}</bomArtifactId>-->
                             <bomName>${project.artifactId}</bomName>
                             <bomDescription>Lime Mojito OSS Standards Bill of Materials</bomDescription>
-                            <inheritFrom>true</inheritFrom>
+                            <inheritFrom>false</inheritFrom>
                             <reactorDependencies>REACTOR</reactorDependencies>
                             <transitiveDependencies>REACTOR</transitiveDependencies>
                             <useProjectParentAsParent>true</useProjectParentAsParent>
