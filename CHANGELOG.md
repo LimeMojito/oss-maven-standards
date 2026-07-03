@@ -1,3 +1,7 @@
+### 18.0.302
+- #136: Refined development library imports.
+- Updated Documentation for release build.
+
 ### 18.0.300
 - #136: Enhanced BOM generation for Maven Central compliance, optimized build triggers to focus on source changes, and refined release version management.
 - Updated versions and security patches.
