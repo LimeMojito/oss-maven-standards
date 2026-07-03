@@ -49,7 +49,7 @@
                             <bomDescription>Lime Mojito OSS Standards Bill of Materials</bomDescription>
                             <inheritFrom>false</inheritFrom>
                             <reactorDependencies>REACTOR</reactorDependencies>
-                            <transitiveDependencies>REACTOR</transitiveDependencies>
+                            <transitiveDependencies>NONE</transitiveDependencies>
                             <useProjectParentAsParent>true</useProjectParentAsParent>
                             <usePropertiesForVersion>true</usePropertiesForVersion>
                             <dependencyExclusions>
