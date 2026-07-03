@@ -43,15 +43,22 @@
                             <goal>build-bom</goal>
                         </goals>
                         <configuration>
+                            <attach>true</attach>
+                            <bomGroupId>>${project.groupId}</bomGroupId>
+                            <bomArtifactId>>${project.artifactId}</bomArtifactId>
                             <bomName>${project.artifactId}</bomName>
                             <bomDescription>Lime Mojito OSS Standards Bill of Materials</bomDescription>
-                            <includePoms>true</includePoms>
+                            <inheritFrom>true</inheritFrom>
+                            <reactorDependencies>REACTOR</reactorDependencies>
+                            <transitiveDependencies>REACTOR</transitiveDependencies>
+                            <useProjectParentAsParent>true</useProjectParentAsParent>
+                            <usePropertiesForVersion>true</usePropertiesForVersion>
                             <dependencyExclusions>
                                 <dependency>
                                     <groupId>com.limemojito.oss.standards</groupId>
                                     <artifactId>development-test</artifactId>
                                 </dependency>
-                               <dependency>
+                                <dependency>
                                     <groupId>com.limemojito.oss.standards.development-test</groupId>
                                     <artifactId>jar-lambda-poc</artifactId>
                                 </dependency>
@@ -60,6 +67,7 @@
                                     <artifactId>jar-lambda-poc-cdk</artifactId>
                                 </dependency>
                             </dependencyExclusions>
+                            <usePropertiesForVersion>true</usePropertiesForVersion>
                         </configuration>
                     </execution>
                 </executions>

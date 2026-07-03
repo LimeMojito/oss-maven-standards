@@ -57,11 +57,6 @@ jobs:
         if: steps.changed.outputs.changed == 'true'
         uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-docker@master
 
-      - name: Update Library Versions
-        if: steps.changed.outputs.changed == 'true'
-        id: update_versions
-        uses: LimeMojito/oss-maven-standards/.github/actions/maven-version-update@master
-
       - name: Calculate Current Project Version
         if: steps.changed.outputs.changed == 'true'
         id: current_version
@@ -72,13 +67,6 @@ jobs:
         uses: LimeMojito/oss-maven-standards/.github/actions/maven-incremental-build@master
         with:
           signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
-
-      - name: Push any changes
-        if:  steps.changed.outputs.changed == 'true' && steps.update_versions.outputs.has_changes == 'true'
-        shell: bash
-        run: |
-          echo "Pushing changes to calling branch."
-          BRANCH=$(git branch --show-current) && [ -n "$BRANCH" ] && git push
 
       - name: Version ${{steps.current_version.outputs.maven-version-number}}
         if:  steps.changed.outputs.changed == 'true'

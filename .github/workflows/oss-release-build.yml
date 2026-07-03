@@ -68,11 +68,6 @@ jobs:
         if: steps.changed.outputs.changed == 'true'
         uses: LimeMojito/oss-maven-standards/.github/actions/maven-version-update@master
 
-      - name: Calculate Release Version
-        id: git_release_version
-        if: steps.changed.outputs.changed == 'true'
-        uses: LimeMojito/oss-maven-standards/.github/actions/calculate-build-version@master
-
       - name: Maven Release Build
         id: maven-release-build
         if: steps.changed.outputs.changed == 'true'
@@ -89,7 +84,7 @@ jobs:
           agent-token: ${{ secrets.LIME_CODE_AGENT_JUNIE_TOKEN }}
           github-token: ${{ secrets.LIME_CODE_AGENT_GITHUB_TOKEN }}
           prompt: |
-            Using the version number ${{steps.git_release_version.outputs.build-version}}, update CHANGELOG.md to 
+            Using the version number ${{steps.maven-release-build.outputs.release-version}}, update CHANGELOG.md to 
             summarize the git commits since the last release tag, where the last release tag is the top most heading of 
             changes in the current CHANGELOG.md.
             
@@ -119,7 +114,6 @@ jobs:
           git add .
           git commit -S -m "Updated Documentation for release build."
           git push origin --quiet
-
 
       - name: Version ${{ steps.maven-release-build.outputs.release-version }}
         if: steps.changed.outputs.changed == 'true'
