@@ -35,10 +35,6 @@ jobs:
           central-key: ${{ secrets.LIME_CENTRAL_KEY }}
           localstack-token: ${{ secrets.LIME_LOCALSTACK_TOKEN }}
 
-      - name: Update Library Versions
-        id: update_versions
-        uses: LimeMojito/oss-maven-standards/.github/actions/maven-version-update@master
-
       - name: Calculate Current Project Version
         id: current_version
         uses: LimeMojito/oss-maven-standards/.github/actions/maven-version-number@master
@@ -47,13 +43,6 @@ jobs:
         uses: LimeMojito/oss-maven-standards/.github/actions/maven-incremental-build@master
         with:
           signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
-
-      - name: Push any changes
-        if: steps.update_versions.outputs.has_changes == 'true'
-        shell: bash
-        run: |
-          echo "Pushing changes to calling branch."
-          BRANCH=$(git branch --show-current) && [ -n "$BRANCH" ] && git push
 
       - name: Version ${{steps.current_version.outputs.maven-version-number}}
         shell: bash
