@@ -1,0 +1,40 @@
+name: Check Changes in Source
+description: Returns true if pom.xml or src directory has changes.
+outputs:
+  changed:
+    description: "True if changes were found in pom.xml or src directories."
+    value: ${{ steps.check.outputs.changed }}
+runs:
+  using: composite
+  steps:
+    - id: check
+      shell: bash
+      run: |
+        if [ "${{ github.event_name }}" == "pull_request" ]; then
+          DIFF_BASE="origin/${{ github.base_ref }}"
+        else
+          DIFF_BASE="${{ github.event.before }}"
+          if [ "$DIFF_BASE" == "0000000000000000000000000000000000000000" ] || [ -z "$DIFF_BASE" ]; then
+            DIFF_BASE="HEAD^"
+          fi
+        fi
+
+        if ! git rev-parse "$DIFF_BASE" >/dev/null 2>&1; then
+           echo "Warning: Could not parse $DIFF_BASE, falling back to default branch"
+           DEFAULT_BRANCH=$(git remote show origin | awk '/HEAD branch/ {print $NF}')
+           DIFF_BASE="origin/$DEFAULT_BRANCH"
+        fi
+        
+        if ! git rev-parse "$DIFF_BASE" >/dev/null 2>&1; then
+           echo "Warning: Could not parse $DIFF_BASE, falling back to HEAD"
+           DIFF_BASE="HEAD"
+        fi
+
+        echo "Comparing HEAD against $DIFF_BASE"
+        if git diff --name-only "$DIFF_BASE" HEAD | grep -E '(^|/)(pom\.xml$|src/)' > /dev/null; then
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "✅ Changes detected in pom.xml or src directory."
+        else
+          echo "changed=false" >> "$GITHUB_OUTPUT"
+          echo "❌ No changes detected in pom.xml or src directory."
+        fi

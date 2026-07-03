@@ -1,4 +1,11 @@
+### 18.0.294
+- #134: Enhanced release process robustness by implementing automated untagging on failure, adding safety checks for modified files, and refining documentation for better Maven Central visibility.
+- Updated versions and security patches.
+- Updated Documentation for release build.
+- Correct typo.
+
 ### 18.0.282
+- Added `check-changes` action to detect modifications in `pom.xml` or `src` directories.
 - #134: Fail release action if nothing to release.
 - #134: Adjust changelog for central unreleased versions.
 - #134: Updated release plugin arguments and addressed Maven Central release limit issues.
