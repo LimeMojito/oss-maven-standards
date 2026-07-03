@@ -29,6 +29,6 @@ runs:
           -Dgpg.keyname='${{inputs.code-signing-key-name}}' \
           -Pfast-build \
           -Dgib.disable \
-          --quiet -T 2C \
+          --quiet -T 4C \
           ${{ inputs.extra-mvn-options }} \
           install

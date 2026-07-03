@@ -22,40 +22,66 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Environment Setup
-        uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup@master
+      - name: Lime Setup Git
+        uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-git@master
         with:
-          aws-region: ${{ secrets.LIME_AWS_REGION }}
-          role-to-assume: ${{ secrets.LIME_AWS_ROLE_ARN }}
-          code-signing-key: ${{ secrets.LIME_SIGNING_KEY }}
-          code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
           git-access-key: ${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}
           git-signing-key: ${{ secrets.LIME_BUILD_AGENT_GIT_SIGNING_KEY }}
+          git-id-email: "build@limemojito.com"
+          git-id-name: "Lime Build Agent"
+
+      - name: Check source changes
+        id: changed
+        uses: LimeMojito/oss-maven-standards/.github/actions/check-changes-in-source@master
+
+      - name: Lime Setup Java
+        if: steps.changed.outputs.changed == 'true'
+        uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-java@master
+        with:
+          code-signing-key: ${{ secrets.LIME_SIGNING_KEY }}
+          code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
           central-id: ${{ secrets.LIME_CENTRAL_ID}}
           central-key: ${{ secrets.LIME_CENTRAL_KEY }}
           localstack-token: ${{ secrets.LIME_LOCALSTACK_TOKEN }}
+          git-access-id: 'Lime-Build-Agent'
+          git-access-key: ${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}
+
+      - name: Lime Setup AWS
+        if: steps.changed.outputs.changed == 'true'
+        uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-aws@master
+        with:
+          aws-region: ${{ secrets.LIME_AWS_REGION }}
+          role-to-assume: ${{ secrets.LIME_AWS_ROLE_ARN }}
+
+      - name: Lime Setup Docker
+        if: steps.changed.outputs.changed == 'true'
+        uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-docker@master
 
       - name: Update Library Versions
+        if: steps.changed.outputs.changed == 'true'
         id: update_versions
         uses: LimeMojito/oss-maven-standards/.github/actions/maven-version-update@master
 
       - name: Calculate Current Project Version
+        if: steps.changed.outputs.changed == 'true'
         id: current_version
         uses: LimeMojito/oss-maven-standards/.github/actions/maven-version-number@master
 
       - name: Maven Incremental Module Build
+        if: steps.changed.outputs.changed == 'true'
         uses: LimeMojito/oss-maven-standards/.github/actions/maven-incremental-build@master
         with:
           signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
 
       - name: Push any changes
-        if: steps.update_versions.outputs.has_changes == 'true'
+        if:  steps.changed.outputs.changed == 'true' && steps.update_versions.outputs.has_changes == 'true'
         shell: bash
         run: |
           echo "Pushing changes to calling branch."
           BRANCH=$(git branch --show-current) && [ -n "$BRANCH" ] && git push
 
       - name: Version ${{steps.current_version.outputs.maven-version-number}}
+        if:  steps.changed.outputs.changed == 'true'
         shell: bash
         run: |
           echo -e "\n\nFeature Build ${{steps.current_version.outputs.maven-version-number}} build ${{ github.run_number }}"

@@ -1,4 +1,5 @@
 ### 18.0.282
+- Added `check-changes` action to detect modifications in `pom.xml` or `src` directories.
 - #134: Fail release action if nothing to release.
 - #134: Adjust changelog for central unreleased versions.
 - #134: Updated release plugin arguments and addressed Maven Central release limit issues.

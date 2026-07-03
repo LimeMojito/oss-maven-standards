@@ -28,34 +28,61 @@ jobs:
       id-token: write
 
     steps:
-      - name: Environment Setup
-        uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup@master
+      - name: Lime Setup Git
+        uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-git@master
         with:
-          aws-region: ${{ secrets.LIME_AWS_REGION }}
-          role-to-assume: ${{ secrets.LIME_AWS_ROLE_ARN }}
-          code-signing-key: ${{ secrets.LIME_SIGNING_KEY }}
-          code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
           git-access-key: ${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}
           git-signing-key: ${{ secrets.LIME_BUILD_AGENT_GIT_SIGNING_KEY }}
+          git-id-email: "build@limemojito.com"
+          git-id-name: "Lime Build Agent"
+
+      - name: Check source changes
+        id: changed
+        uses: LimeMojito/oss-maven-standards/.github/actions/check-changes-in-source@master
+
+      - name: Lime Setup Java
+        if: steps.changed.outputs.changed == 'true'
+        uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-java@master
+        with:
+          code-signing-key: ${{ secrets.LIME_SIGNING_KEY }}
+          code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
           central-id: ${{ secrets.LIME_CENTRAL_ID}}
           central-key: ${{ secrets.LIME_CENTRAL_KEY }}
           localstack-token: ${{ secrets.LIME_LOCALSTACK_TOKEN }}
+          git-access-id: 'Lime-Build-Agent'
+          git-access-key: ${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}
+
+      - name: Lime Setup AWS
+        if: steps.changed.outputs.changed == 'true'
+        uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-aws@master
+        with:
+          aws-region: ${{ secrets.LIME_AWS_REGION }}
+          role-to-assume: ${{ secrets.LIME_AWS_ROLE_ARN }}
+
+      - name: Lime Setup Docker
+        if: steps.changed.outputs.changed == 'true'
+        uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-docker@master
+
 
       - name: Update Library Versions
+        if: steps.changed.outputs.changed == 'true'
         uses: LimeMojito/oss-maven-standards/.github/actions/maven-version-update@master
 
       - name: Calculate Release Version
         id: git_release_version
+        if: steps.changed.outputs.changed == 'true'
         uses: LimeMojito/oss-maven-standards/.github/actions/calculate-build-version@master
 
       - name: Maven Release Build
         id: maven-release-build
+        if: steps.changed.outputs.changed == 'true'
         uses: LimeMojito/oss-maven-standards/.github/actions/maven-release@master
         with:
           code-signing-key-name: Lime Mojito Pty Ltd
           code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
 
       - name: Update Documentation
+        if: steps.changed.outputs.changed == 'true'
         timeout-minutes: 8
         uses: LimeMojito/oss-maven-standards/.github/actions/invoke-agent@master
         with:
@@ -85,6 +112,7 @@ jobs:
             Do not commit these changes or make a pull request, leave the files edited in the version control workspace.
 
       - name: Commit Documentation updates
+        if: steps.changed.outputs.changed == 'true'
         shell: bash
         run: |
           echo "Committing Documentation updates."
@@ -92,8 +120,9 @@ jobs:
           git commit -S -m "Updated Documentation for release build."
           git push origin --quiet
 
-          
+
       - name: Version ${{ steps.maven-release-build.outputs.release-version }}
+        if: steps.changed.outputs.changed == 'true'
         shell: bash
         run: |
           echo "Release Version: ${{ steps.maven-release-build.outputs.release-version }}"
