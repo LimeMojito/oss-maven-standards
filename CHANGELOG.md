@@ -1,3 +1,6 @@
+### 18.0.307
+- #136: Remove github repository app from published BOM.
+
 ### 18.0.305
 - #136: Updated README.md to reflect the new release process and source change requirements.
 
