@@ -213,3 +213,57 @@ resources, etc, spin up as expected.
   ...
 </properties>
 ```
+---
+# Performing Incremental Builds and Releases
+Build system 18 introduces incremental feature builds and releases to Maven Central.  This is to improve build practices, support aligning private commercial builds to mono-repos for AI, and live with the soon-to-be introduced monthly release limits for open source on Maven Central (11/Aug/2026).
+
+We use the [multi-module-maven-release-plugin](https://github.com/danielflower/multi-module-maven-release-plugin) by @danielflower to manage incemental releases, where the system computes build numbers based on changes in  _per module tagging_.  This reduces our output to Maven Central to the minimal number of modules to keep montly releases under the ~80MB limit.  Note security library updates will generate **ALL** modules due to our centralized dependency management.  We have limited OSS deployments to 1 per month for this reason.
+
+Feature branch builds are using the [gitflow-incremental-builder](https://github.com/gitflow-incremental-builder) by @famod, activated by the maven profile ```-Pincremental```.  This plugin is configured to compare against the default branch of the repository (master/main) and only build those modules that have altered.
+
+Finally, we have also begun publishing a Bill Of Materials (BOM) style master dependency list as the modules will all begin to have their own independent version number lifecycles.  We use [bom-builder3](https://github.com/maveniverse/bom-builder-maven-plugin) by @maveniverse to automatically generate a BOM suitable for import.
+```xml
+<dependency>
+    <groupId>com.limemojito.oss.standards</groupId>
+    <artifactId>lime-oss-maven-standards-bom</artifactId>
+    <version>${oss-maven-standards-bom.version}</version>
+    <type>pom</type>
+    <scope>import</scope>
+</dependency>
+```
+
+## Recovering from a botched Maven Central Release
+
+If you have released a version of your library to Maven Central and it is broken, you can use the following steps to
+recover:
+
+1. Delete all tags from the repository associated with the build number.  This is to allow the release plugin to "redo" the altered version calculation from the previous successful release.
+2. If the error was a missed "publish" step in [maven central](https://central.sonatype.com/publishing/deployments).
+   1. Drop the failed deployment.
+   2. Perform a release build action.
+   3. Check the deployment in maven central, checking pom version numbers are aligned with released binaries on central.
+   4. publish the release at maven central.
+2. Else
+   1. Merge changes to main as per normal. 
+   2. Don't forget to pubilsh the deployment on maven central (assuming under monthly limits) at [maven central](https://central.sonatype.com/publishing/deployments) 
+                 
+## Doing development based on oss-maven-standards
+For doing development with Lime Mojito's ```oss-maven-standards```, we recomend two imports as below so you are aligned to our utilites AND their depdendencies.  Note that the two version numbers may be different.  If you are using our development POMs, you can do an automatic version update which will keep the properties in sync with the latest [see above](#update-all-library-versions-and-parent-dependencies).
+```xml
+<dependencyManagement>
+    <dependency>
+        <groupId>com.limemojito.oss.standards</groupId>
+        <artifactId>library</artifactId>
+        <version>${oss-maven-standards-library.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.limemojito.oss.standards</groupId>
+        <artifactId>lime-oss-maven-standards-bom</artifactId>
+        <version>${oss-maven-standards-bom.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+    </dependency>
+</dependencyManagement>
+```
