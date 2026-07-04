@@ -1,3 +1,6 @@
+### 18.0.305
+- #136: Updated README.md to reflect the new release process and source change requirements.
+
 ### 18.0.302
 - #136: Refined development library imports.
 - Updated Documentation for release build.
