@@ -231,6 +231,33 @@ Finally, we have also begun publishing a Bill Of Materials (BOM) style master de
     <scope>import</scope>
 </dependency>
 ```
+          
+## Keeping large applications OFF of Maven Central
+Due to the new upload restrictions, large applications should not be published to Maven Central.  To enable this we have to edit in two places for the cleanest builds:
+1. In ```lime-oss-maven-standards-bom/pom.xml``` we updated the BOM generator execution configuration to have dependency exclusions for the large artifacts so they don't appear in the published BOM.
+  ```xml
+    <dependencyExclusions>
+        <dependency>
+            <groupId>--groupid--</groupId>
+            <artifactId>--artifactId--</artifactId>
+        </dependency>
+    </dependencyExclusions>
+  ``` 
+2. In the ```pom.xml``` of the module itself we add an exckusion for the release plugin. 
+   ```xml
+    <build>
+     <plugins>
+         <plugin>
+             <!-- Do not upload large artifacts to central -->
+             <groupId>org.sonatype.central</groupId>
+             <artifactId>central-publishing-maven-plugin</artifactId>
+             <configuration>
+                 <skipPublishing>true</skipPublishing>
+             </configuration>
+         </plugin>
+     </plugins>
+     </build>
+   ``` 
 
 ## Recovering from a botched Maven Central Release
 

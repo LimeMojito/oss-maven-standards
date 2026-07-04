@@ -56,6 +56,14 @@
                             <dependencyExclusions>
                                 <dependency>
                                     <groupId>com.limemojito.oss.standards</groupId>
+                                    <artifactId>applications</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>com.limemojito.oss.github</groupId>
+                                    <artifactId>github-utilities</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>com.limemojito.oss.standards</groupId>
                                     <artifactId>development-test</artifactId>
                                 </dependency>
                                 <dependency>
