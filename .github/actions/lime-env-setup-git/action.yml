@@ -39,3 +39,8 @@ runs:
         git_config_global: true
         # not supported as at 2026-03-01
         git_push_gpgsign: false
+
+    - name: Rewrite GitHubUrl JGit (workaround for gitflow-incremental-builder plugin)
+      shell: bash
+      run: |
+        git config --global url."https://x-access-token:${{ inputs.git-access-key }}@github.com/".insteadOf "https://github.com/"

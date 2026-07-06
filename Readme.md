@@ -33,11 +33,12 @@ https://repo.maven.apache.org/maven2/com/limemojito/oss/standards/
 
 These profiles add capabilities to our builds or allow "quick checks" as wanted by the developer.
 
-| Profile    | Actions                                                                         |
-|------------|---------------------------------------------------------------------------------|
-|            | Perform a "merge" build.  Checks and installs suitable for a release candidate. |
-| fast-build | Quickly build the deliverables.  No deployments, checks, tests, etc.            |
-| release    | Perform a release build with all checks enabled and deployments.                |
+| Profile     | Actions                                                                         |
+|-------------|---------------------------------------------------------------------------------|
+|             | Perform a "merge" build.  Checks and installs suitable for a release candidate. |
+| fast-build  | Quickly build all the deliverables.  No deployments, checks, tests, etc.        |
+| incremental | Build only those moduiles changed from the default branch.                      |
+| release     | Perform a release build with all checks enabled and deployments.                |
 
            
 ---
@@ -221,7 +222,8 @@ Build system 18 introduces incremental feature builds and releases to Maven Cent
 
 We use the [multi-module-maven-release-plugin](https://github.com/danielflower/multi-module-maven-release-plugin) by @danielflower to manage incemental releases, where the system computes build numbers based on changes in  _per module tagging_.  This reduces our output to Maven Central to the minimal number of modules to keep montly releases under the ~80MB limit.  Note security library updates will generate **ALL** modules due to our centralized dependency management.  We have limited OSS deployments to 1 per month for this reason.
 
-Feature branch builds are using the [gitflow-incremental-builder](https://github.com/gitflow-incremental-builder) by @famod, activated by the maven profile ```-Pincremental```.  This plugin is configured to compare against the default branch of the repository (master/main) and only build those modules that have altered.
+Feature branch builds are using the [gitflow-incremental-builder](https://github.com/gitflow-incremental-builder) by @famod, activated by the maven profile ```-Pincremental```.  This plugin is configured to compare against the default branch of the repository (master/main) and only build those modules that have altered.  Note that git setup
+includes a URL rewrite to include the token for github so that authetication behaves.  See [Lime Git Action](.github/actions/lime-env-setup-git/action.yml)
           
 ## Keeping large applications OFF of Maven Central
 Due to the new upload restrictions, large applications should not be published to Maven Central.  To enable this we have to edit in two places for the cleanest builds:
