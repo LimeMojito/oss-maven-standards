@@ -3,6 +3,9 @@ outputs:
   build-version:
     description: 'The build version'
     value: ${{ steps.release_version.outputs.build-version }}
+  old-version:
+    description: 'The committed pom.xml version'
+    value: ${{ steps.release_version.outputs.old-version }}
 
 runs:
   using: composite
@@ -15,3 +18,4 @@ runs:
         currentVersion=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout )
         tagName="${currentVersion/-SNAPSHOT/}.${{ github.run_number }}"
         echo "build-version=$tagName" >> "$GITHUB_OUTPUT"
+        echo "old-version=$currentVersion" >> "$GITHUB_OUTPUT"

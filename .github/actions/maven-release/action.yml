@@ -17,13 +17,6 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Maven Fast Build
-      uses: LimeMojito/oss-maven-standards/.github/actions/maven-fast-build@master
-      with:
-        signing-passphrase: ${{ inputs.signing-passphrase }}
-        code-signing-key-name: ${{ inputs.code-signing-key-name }}
-        extra-mvn-options: ${{ inputs.extra-mvn-options }}
-
     - name: Calculate Release Version
       id: git_release_version
       uses: LimeMojito/oss-maven-standards/.github/actions/calculate-build-version@master
@@ -39,8 +32,8 @@ runs:
         mvn -B --color always --no-transfer-progress \
           -Dbuild.number=${{github.run_number}} \
           -Dgpg.keyname='${{inputs.code-signing-key-name}}' ${{ inputs.extra-mvn-options }} \
-          -Darguments="-B --color always --no-transfer-progress -Dbuild.number=${{github.run_number}} -Dgpg.keyname=\"${{inputs.code-signing-key-name}}\" ${{ inputs.extra-mvn-options }}" \
-          releaser:release
+          -P release \
+          deploy
 
     - name: Tag Release Version
       shell: bash
@@ -51,6 +44,11 @@ runs:
         git tag -s $tagName -m "[Release] $tagName"        
         git push origin "$tagName" --quiet
         echo "lime-release-version=$tagName" >> "$GITHUB_OUTPUT"
+
+    - name: Revert version change to ${{steps.git_release_version.outputs.old-version}}
+      shell: bash
+      run: |
+        mvn -B --color always --no-transfer-progress versions:set -DnewVersion=${{steps.git_release_version.outputs.old-version}}
 
     - name: Ensure No Git Changes Exist
       shell: bash
