@@ -444,6 +444,9 @@
               Note this profile may interfere with the Multi Module Maven Release plugin.  It is not enabled by default
               The disable-gib profile automatically disables this in Intellij.
              -->
+            <properties>
+                <lime.incremental>true</lime.incremental>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
