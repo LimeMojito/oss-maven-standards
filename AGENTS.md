@@ -24,6 +24,7 @@ This project is a collection of Maven POMs and modules that define development s
 - `jar-lambda-development/`: Standard for AWS Lambda (Spring Cloud Function) deployments.
 - `java-cdk-development/`: Standard for AWS CDK projects.
 - `utilities/`: Shared utility modules (JSON, AWS, Locking, Testing).
+- `docs/`: Core project documentation and standards.
 - `docs/ai/`: Documentation specifically for AI agent integration and setup.
 - `docs/ai/skills/`: Reusable process documentation and skill guides for agents.
 
