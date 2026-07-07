@@ -75,6 +75,7 @@
         <!-- Test the dev framework -->
         <module>development-test</module>
 
+        <!-- BOM generation for utilities -->
         <module>lime-oss-maven-standards-bom</module>
     </modules>
 
