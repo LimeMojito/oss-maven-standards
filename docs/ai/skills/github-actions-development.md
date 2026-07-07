@@ -30,7 +30,7 @@ GitHub Actions in this project are used for CI/CD, release management, and autom
 
 *   `maven-version-number`: Outputs `maven-version-number`.
 *   `check-changes-in-source`: Outputs `changed` (true/false).
-*   `maven-release`: Outputs `lime-release-version`.
+*   `maven-release`: Outputs `release-version`.
 
 ## Troubleshooting
 
