@@ -54,8 +54,6 @@
 
         <!-- Overridden by build server.  LOCAL is used for local builds. -->
         <build.number>LOCAL</build.number>
-        <releaser.arguments/>
-
     </properties>
 
     <modules>
