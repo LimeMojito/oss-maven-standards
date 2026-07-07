@@ -9,6 +9,9 @@ inputs:
   github-token:
     description: "Token to use with GitHub API."
     required: true
+  release-version:
+    description: "Version of the release."
+    required: true
 runs:
   using: composite
   steps:
@@ -19,7 +22,7 @@ runs:
         agent-token: ${{ inputs.agent-token }}
         github-token: ${{ inputs.github-token }}
         prompt: |
-          Using the version number ${{steps.maven-release-build.outputs.release-version}}, update CHANGELOG.md to 
+          Using the version number ${{ inputs.release-version }}, update CHANGELOG.md to 
           summarize the git commits since the last release tag, where the last release tag is the top most heading of 
           changes in the current CHANGELOG.md.
 

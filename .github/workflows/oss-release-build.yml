@@ -82,6 +82,7 @@ jobs:
         with:
           agent-token: ${{ secrets.LIME_CODE_AGENT_JUNIE_TOKEN }}
           github-token: ${{ secrets.LIME_CODE_AGENT_GITHUB_TOKEN }}
+          release-version: ${{ steps.maven-release-build.outputs.release-version }}
 
       - name: Push source changes and release tag (${{ steps.maven-release-build.outputs.release-version }})
         if: steps.changed.outputs.changed == 'true'
