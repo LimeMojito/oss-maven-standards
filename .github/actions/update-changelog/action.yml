@@ -1,0 +1,44 @@
+name: Update Changelog
+description: |
+  Uses AI to update the changelog based on the commits from the last release.  Recommended to run with a timeout (say 8
+  minutes) to give enough time for the AI to work.
+runs:
+  using: composite
+  steps:
+    - name: Update Documentation
+      if: steps.changed.outputs.changed == 'true'
+      uses: LimeMojito/oss-maven-standards/.github/actions/invoke-agent@master
+      with:
+        agent-token: ${{ secrets.LIME_CODE_AGENT_JUNIE_TOKEN }}
+        github-token: ${{ secrets.LIME_CODE_AGENT_GITHUB_TOKEN }}
+        prompt: |
+          Using the version number ${{steps.maven-release-build.outputs.release-version}}, update CHANGELOG.md to 
+          summarize the git commits since the last release tag, where the last release tag is the top most heading of 
+          changes in the current CHANGELOG.md.
+
+          In the summary that has been added perform the following;
+            - where there are multiple summary items containing related issues keys (#XXXXX or AAA-XXX format) group 
+              these items and summarize into one description of the changes per issue.
+            - where there are multiple summary items referring to version updates or pom updates, replace them with a 
+              single item that is "Updated versions and security patches."
+            - remove all summary items that contain any of the following
+              - [maven-release-plugin]
+              - [Release]
+              - [Development]
+              - [artifactory-release]
+              - updating poms
+            - Remove any summary items that refer to merges.
+
+          Add a heading of Latest Changes with content as a link to the CHANGELOG.md in the Readme.md file if it 
+          doesn't already exist.
+
+          Do not commit these changes or make a pull request, leave the files edited in the version control workspace.
+
+    - name: Commit Documentation updates
+      if: steps.changed.outputs.changed == 'true'
+      shell: bash
+      run: |
+        echo "Committing Documentation updates."
+        git add .
+        git commit -S -m "Updated Documentation for release build."
+        git push origin --quiet

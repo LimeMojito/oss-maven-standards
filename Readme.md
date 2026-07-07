@@ -18,6 +18,7 @@ This project is a collection of Maven POMs and modules that define development s
 * [Utilities](docs/utilities.md) - Shared utility modules and how to use them.
 * [AI Integration](docs/ai-integration.md) - Using AI in the build process.
 * [Latest Changes](CHANGELOG.md) - Summary of recent updates.
+* [Release Workflows](docs/release-workflows.md) - Explanations on the workflows for release types.
 
 ## Development
 
