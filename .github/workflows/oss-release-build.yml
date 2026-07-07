@@ -80,6 +80,9 @@ jobs:
         if: steps.changed.outputs.changed == 'true'
         uses: LimeMojito/oss-maven-standards/.github/actions/update-changelog@master
         timeout-minutes: 8
+        with:
+          agent-token: ${{ secrets.LIME_CODE_AGENT_JUNIE_TOKEN }}
+          github-token: ${{ secrets.LIME_CODE_AGENT_GITHUB_TOKEN }}
 
       - name: Version ${{ steps.maven-release-build.outputs.release-version }}
         if: steps.changed.outputs.changed == 'true'
