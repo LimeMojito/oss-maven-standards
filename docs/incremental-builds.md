@@ -1,8 +1,11 @@
 # Performing Incremental Builds and Releases
 Build system 18 introduces incremental feature builds and releases to Maven Central.  This is to improve build practices, support aligning private commercial builds to mono-repos for AI, and live with the soon-to-be introduced monthly release limits for open source on Maven Central (11/Aug/2026).
+                                                           
+## Release Builds
+Note that a release to maven central is *all* components for a version, rather than just those components that have changed.  The release build will test all components, and due to bill of materials (BOM) generation, we upload all relevant components to the framework.
 
-We use the [multi-module-maven-release-plugin](https://github.com/danielflower/multi-module-maven-release-plugin) by @danielflower to manage incemental releases, where the system computes build numbers based on changes in  _per module tagging_.  This reduces our output to Maven Central to the minimal number of modules to keep montly releases under the ~80MB limit.  Note security library updates will generate **ALL** modules due to our centralized dependency management.  We have limited OSS deployments to Maven Central to 300MB/Month.
-
+           
+# Feature Builds
 Feature branch builds are using the [gitflow-incremental-builder](https://github.com/gitflow-incremental-builder) by @famod, activated by the maven profile ```-Pincremental```.  This plugin is configured to compare against the default branch of the repository (master/main) and only build those modules that have altered.  Note that git setup
 includes a URL rewrite to include the token for github so that authetication behaves.  See [Lime Git Action](../.github/actions/lime-env-setup-git/action.yml)
           

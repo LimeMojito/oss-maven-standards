@@ -11,6 +11,7 @@ This index provides a map of all documentation and resources available for AI co
 - [GitHub Setup](02-github-setup.md): Configuration for GitHub Actions and agent triggers.
 - [Responding to Issues](03-responding-to-issues.md): How agents process issues and pull requests in this repo.
 - [Improving Code Coverage](skills/improving-code-coverage.md): Process for identifying and fixing coverage gaps.
+- [GitHub Actions Development](skills/github-actions-development.md): Guidelines for working with GitHub Actions and workflows.
 
 ## General Documentation
 - [Readme.md](../../Readme.md): Main project entry point and documentation index.
@@ -22,6 +23,7 @@ This index provides a map of all documentation and resources available for AI co
 - [Version Updates](../version-updates.md): Version management instructions.
 - [Incremental Builds and Releases](../incremental-builds.md): Release process details.
 - [Release Workflows](../release-workflows.md): Detailed flow of CI/CD release workflows.
+- [GitHub Actions Guide](../github-actions-guide.md): Guide on common GitHub Actions tasks and patterns.
 - [Utilities](../utilities.md): Shared utility modules and how to use them.
 - [Examples](../examples.md): Example configurations and use cases.
 - [CHANGELOG.md](../../CHANGELOG.md): History of changes and version updates.
