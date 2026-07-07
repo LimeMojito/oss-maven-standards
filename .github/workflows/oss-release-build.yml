@@ -52,6 +52,10 @@ jobs:
           git-access-id: 'Lime-Build-Agent'
           git-access-key: ${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}
 
+      - name: Update Library Versions
+        if: steps.changed.outputs.changed == 'true'
+        uses: LimeMojito/oss-maven-standards/.github/actions/maven-version-update@master
+
       - name: Lime Setup AWS
         if: steps.changed.outputs.changed == 'true'
         uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-aws@master
@@ -62,10 +66,6 @@ jobs:
       - name: Lime Setup Docker
         if: steps.changed.outputs.changed == 'true'
         uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-docker@master
-
-      - name: Update Library Versions
-        if: steps.changed.outputs.changed == 'true'
-        uses: LimeMojito/oss-maven-standards/.github/actions/maven-version-update@master
 
       - name: Maven Release Build
         id: maven-release-build
