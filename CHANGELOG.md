@@ -1,23 +1,8 @@
-### 18.0.307
-- #136: Remove github repository app from published BOM.
-
-### 18.0.305
-- #136: Updated README.md to reflect the new release process and source change requirements.
-
-### 18.0.302
-- #136: Refined development library imports.
-- Updated Documentation for release build.
-
 ### 18.0.300
 - #136: Enhanced BOM generation for Maven Central compliance, optimized build triggers to focus on source changes, and refined release version management.
-- Updated versions and security patches.
-- Updated Documentation for release build.
-
-### 18.0.294
 - #134: Enhanced release process robustness by implementing automated untagging on failure, adding safety checks for modified files, and refining documentation for better Maven Central visibility.
 - Updated versions and security patches.
 - Updated Documentation for release build.
-- Correct typo.
 
 ### 18.0.282
 - Added `check-changes` action to detect modifications in `pom.xml` or `src` directories.

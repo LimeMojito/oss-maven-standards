@@ -74,6 +74,8 @@
 
         <!-- Test the dev framework -->
         <module>development-test</module>
+
+        <module>lime-oss-maven-standards-bom</module>
     </modules>
 
     <licenses>
@@ -126,31 +128,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>com.github.danielflower.mavenplugins</groupId>
-                <artifactId>multi-module-maven-release-plugin</artifactId>
-                <configuration>
-                    <!-- Passed in on GitHub runner -->
-                    <!--suppress MavenModelInspection -->
-                    <buildNumber>${build.number}</buildNumber>
-                    <!-- only pay attention to pom.xml and src directories -->
-                    <requiredPaths>
-                        <requiredPath>pom.xml</requiredPath>
-                        <requiredPath>src</requiredPath>
-                    </requiredPaths>
-                    <goals>
-                        <goal>clean</goal>
-                        <goal>deploy</goal>
-                    </goals>
-                    <releaseProfiles>
-                        <releaseProfile>release</releaseProfile>
-                    </releaseProfiles>
-                    <!-- Do nothing if no changes, but fail build for alerting -->
-                    <noChangesAction>FailBuild</noChangesAction>
-                    <!-- needs to match token access in settings.xml -->
-                    <serverId>github-release</serverId>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
@@ -213,11 +190,6 @@
         </plugins>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>com.github.danielflower.mavenplugins</groupId>
-                    <artifactId>multi-module-maven-release-plugin</artifactId>
-                    <version>3.8.5</version>
-                </plugin>
                 <plugin>
                     <groupId>eu.maveniverse.maven.plugins</groupId>
                     <artifactId>bom-builder3</artifactId>
