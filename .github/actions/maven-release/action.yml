@@ -34,7 +34,7 @@ runs:
         mvn -B --color always --no-transfer-progress \
           -Dbuild.number=${{github.run_number}} \
           -Dgpg.keyname='${{inputs.code-signing-key-name}}' ${{ inputs.extra-mvn-options }} \
-          -Dgit.defaultBranch=$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')
+          -Dgit.defaultBranch=$(git remote show origin | sed -n '/HEAD branch/s/.*: //p') \
           -P release \
           deploy
 

@@ -84,6 +84,7 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
     <developers>
         <developer>
             <id>Lime Mojito Pty Ltd</id>
@@ -97,6 +98,7 @@
             </roles>
         </developer>
     </developers>
+
     <issueManagement>
         <system>GitHub</system>
         <url>${github.url}/issues</url>
