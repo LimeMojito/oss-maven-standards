@@ -1,3 +1,7 @@
+### 18.0.308
+- Refactored `Readme.md` to move detailed sections into the `docs/` directory for better maintainability and readability.
+- Updated documentation links and cross-references.
+
 ### 18.0.307
 - #136: Remove github repository app from published BOM.
 
