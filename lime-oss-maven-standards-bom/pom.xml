@@ -47,8 +47,6 @@
                                 </goals>
                                 <configuration>
                                     <attach>true</attach>
-                                    <!--<bomGroupId>>${project.groupId}</bomGroupId>
-                                    <bomArtifactId>${project.artifactId}</bomArtifactId>-->
                                     <bomName>${project.artifactId}</bomName>
                                     <bomDescription>Lime Mojito OSS Standards Bill of Materials</bomDescription>
                                     <inheritFrom>false</inheritFrom>
