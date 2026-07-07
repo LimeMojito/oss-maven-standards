@@ -21,5 +21,6 @@ This index provides a map of all documentation and resources available for AI co
 - [Maven Archetypes](../maven-archetypes.md): Supported module types.
 - [Version Updates](../version-updates.md): Version management instructions.
 - [Incremental Builds and Releases](../incremental-builds.md): Release process details.
+- [Utilities](../utilities.md): Shared utility modules and how to use them.
 - [Examples](../examples.md): Example configurations and use cases.
 - [CHANGELOG.md](../../CHANGELOG.md): History of changes and version updates.

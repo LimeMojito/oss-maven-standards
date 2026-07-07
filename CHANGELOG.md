@@ -1,3 +1,7 @@
+### 18.0.309
+- Added documentation for utility modules in `docs/utilities.md`.
+- Updated `Readme.md` and `docs/ai/INDEX.md` with links to utility documentation.
+
 ### 18.0.308
 - Refactored `Readme.md` to move detailed sections into the `docs/` directory for better maintainability and readability.
 - Updated documentation links and cross-references.
