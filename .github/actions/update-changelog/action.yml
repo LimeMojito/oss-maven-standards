@@ -48,4 +48,3 @@ runs:
         echo "Committing Documentation updates."
         git add .
         git commit -S -m "Updated Documentation for release build."
-        git push origin --quiet
