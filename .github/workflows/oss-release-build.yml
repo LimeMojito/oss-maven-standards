@@ -77,7 +77,6 @@ jobs:
           code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
 
       - name: Update Changelog
-        id: maven-release-build
         if: steps.changed.outputs.changed == 'true'
         uses: LimeMojito/oss-maven-standards/.github/actions/update-changelog@master
         timeout-minutes: 8
