@@ -1,4 +1,4 @@
-description: "Performs a build and maven deployment similar to a maven release with commits pushed at the end."
+description: "Performs a build and maven deployment similar to a maven release with commits."
 inputs:
   code-signing-key-name:
     description: 'Code signing GPG key name'
@@ -28,21 +28,22 @@ runs:
         # Needs to match github runner architecture.
         export DOCKER_DEFAULT_PLATFORM=linux/amd64
         export MAVEN_GPG_PASSPHRASE="${{ inputs.code-signing-passphrase }}"
-        # deploy to OSSRH, extra options twice to make sure passed through to release.  Note escaped quotes to arguments property.
+        # deploy to OSSRH.
+        mvn -B --color always --no-transfer-progress \
+          versions:set -DnewVersion=${{steps.git_release_version.outputs.build-version}}
         mvn -B --color always --no-transfer-progress \
           -Dbuild.number=${{github.run_number}} \
           -Dgpg.keyname='${{inputs.code-signing-key-name}}' ${{ inputs.extra-mvn-options }} \
           -P release \
           deploy
 
-    - name: Tag Release Version
+    - name: Tag Release Version ${{steps.git_release_version.outputs.build-version }}
       shell: bash
       run: |
         echo -e "Tag release version\n\n"
         tagName="${{steps.git_release_version.outputs.build-version }}"
         echo "Tagging repository with [$tagName]"
-        git tag -s $tagName -m "[Release] $tagName"        
-        git push origin "$tagName" --quiet
+        git tag -s $tagName -m "[Release] $tagName"
 
     - name: Revert version change to ${{steps.git_release_version.outputs.old-version}}
       shell: bash
