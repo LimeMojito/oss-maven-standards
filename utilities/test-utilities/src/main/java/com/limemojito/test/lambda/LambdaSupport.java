@@ -17,7 +17,6 @@
 
 package com.limemojito.test.lambda;
 
-import tools.jackson.core.type.TypeReference;
 import com.limemojito.test.jackson.JacksonSupport;
 import com.limemojito.test.s3.S3Support;
 import jakarta.annotation.PreDestroy;
@@ -33,6 +32,7 @@ import software.amazon.awssdk.services.lambda.LambdaClient;
 import software.amazon.awssdk.services.lambda.model.*;
 import software.amazon.awssdk.utils.IoUtils;
 import software.amazon.awssdk.utils.StringUtils;
+import tools.jackson.core.type.TypeReference;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -43,14 +43,13 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.awaitility.Durations.FIVE_HUNDRED_MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static software.amazon.awssdk.services.lambda.model.Runtime.JAVA25;
 import static software.amazon.awssdk.services.lambda.model.Runtime.NODEJS24_X;
 
@@ -139,6 +138,7 @@ public class LambdaSupport {
     /**
      * The Lambda function is identified by its name and Amazon Resource Name (ARN).
      * This class serves as a convenient way to handle and manipulate Lambda function details.
+     *
      * @param name the name of the Lambda function
      * @param arn  the Amazon Resource Name (ARN) of the Lambda function
      */
@@ -511,8 +511,9 @@ public class LambdaSupport {
      * @param state      state to wait for
      */
     public void waitForState(Lambda lambda, int maxSeconds, State state) {
-        Awaitility.waitAtMost(maxSeconds, TimeUnit.SECONDS)
-                  .pollInterval(FIVE_HUNDRED_MILLISECONDS)
+        final int pollSeconds = 3;
+        Awaitility.waitAtMost(maxSeconds, SECONDS)
+                  .pollInterval(pollSeconds, SECONDS)
                   .alias("%s did not reach state %s".formatted(lambda.name, state))
                   .until(() -> checkFailed(lambda, state));
     }
