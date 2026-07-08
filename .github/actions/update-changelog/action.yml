@@ -16,7 +16,6 @@ runs:
   using: composite
   steps:
     - name: Update Documentation
-      if: steps.changed.outputs.changed == 'true'
       uses: LimeMojito/oss-maven-standards/.github/actions/invoke-agent@master
       with:
         agent-token: ${{ inputs.agent-token }}
@@ -45,9 +44,8 @@ runs:
           Do not commit these changes or make a pull request, leave the files edited in the version control workspace.
 
     - name: Commit Documentation updates
-      if: steps.changed.outputs.changed == 'true'
       shell: bash
       run: |
-        echo "Committing Documentation updates."
+        echo "Committing Documentation updates for ${{ inputs.release-version }}."
         git add .
-        git commit -S -m "Updated Documentation for release build."
+        git commit -S -m "Updated Documentation for release build ${{ inputs.release-version }}."
