@@ -21,11 +21,16 @@ runs:
         agent-token: ${{ inputs.agent-token }}
         github-token: ${{ inputs.github-token }}
         prompt: |
-          Using the version number ${{ inputs.release-version }}, update or create ${{ GITHUB_WORKSPACE }}/CHANGELOG.md
+          Using the version number ${{ inputs.release-version }}, update ${{ GITHUB_WORKSPACE }}/CHANGELOG.md
           to summarize the git commits since the last release tag, where the last release tag is the top most heading of 
           changes in the current CHANGELOG.md.
+          
+          If there is no previous CHANGELOG.md file, create one at ${{ GITHUB_WORKSPACE }}/CHANGELOG.md. Create a new
+          heading for the version number ${{ inputs.release-version }}.  Underneath it summarize the modules
+          in this project that have been added with a description of the changes.
 
           In the summary that has been added perform the following;
+            - summarize the modules in this project that have been added with a description of the changes.
             - where there are multiple summary items containing related issues keys (#XXXXX or AAA-XXX format) group 
               these items and summarize into one description of the changes per issue.
             - where there are multiple summary items referring to version updates or pom updates, replace them with a 
