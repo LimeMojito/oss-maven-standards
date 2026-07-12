@@ -52,5 +52,5 @@ runs:
       shell: bash
       run: |
         echo "Committing Documentation updates for ${{ inputs.release-version }}."
-        git add CHANGELOG.md
+        git add .
         git commit -S -m "Updated Documentation for release build ${{ inputs.release-version }}."
