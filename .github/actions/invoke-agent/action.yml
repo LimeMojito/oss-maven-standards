@@ -21,7 +21,7 @@ runs:
       id: auth_check
       uses: GuillaumeFalourd/github-team-members@v1
       env:
-        GITHUB_TOKEN: ${{ inputs.github-token }}
+        GH_TOKEN: ${{ inputs.github-token }}
       with:
         org_slug: LimeMojito
         team_slug: developers
