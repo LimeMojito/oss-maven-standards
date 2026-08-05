@@ -9,9 +9,11 @@ inputs:
     description: Markdown prompt to invoke agent with.
     required: true
   agent-token:
-    description: The api key to use agent with
+    description: The AI api key to use agent with
     required: true
-
+  github-token:
+    description: The git credentials to operate with
+    required: true
 runs:
   using: composite
   steps:
@@ -21,7 +23,7 @@ runs:
       with:
         org_slug: LimeMojito
         team_slug: developers
-        token: ${{ inputs.agent-token }}
+        token: ${{ inputs.github-token }}
 
     - if: steps.auth_check.outputs.actor-belongs-team == 'true'
       run: echo "${{ github.actor }} belongs to Team"
