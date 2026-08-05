@@ -19,7 +19,7 @@ jobs:
         with:
           git-access-key: ${{ secrets.LIME_CODE_AGENT_GIT_KEY  }}
           git-signing-key: ${{ secrets.LIME_CODE_AGENT_GIT_SIGNING_KEY }}
-          git-id-name: "Lime Code Agent"
+          git-id-name: Lime-Code-Agent
           git-id-email: "developers@limemojito.com"
 
       - name: Environment Setup
