@@ -29,7 +29,7 @@ Customized junie workflow to reject non members invoking it.
        LimeCodeAgentRepoAccess | Grant access
     2. Approve
 5. Secrets and Variables | Actions |
-    1. LIME_CODE_AGENT_GITHUB_TOKEN
+    1. LIME_CODE_AGENT_GIT_KEY
     2. << set token value>>
     3. All Repositories
 

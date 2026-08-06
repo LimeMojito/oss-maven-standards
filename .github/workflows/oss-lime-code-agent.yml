@@ -47,7 +47,7 @@ jobs:
         with:
           org_slug: LimeMojito
           team_slug: developers
-          token: ${{ secrets.LIME_CODE_AGENT_GITHUB_TOKEN }}
+          token: ${{ secrets.LIME_CODE_AGENT_GIT_KEY }}
 
       - if: steps.auth_check.outputs.actor-belongs-team == 'true'
         run: echo "${{ github.actor }} belongs to Team"
