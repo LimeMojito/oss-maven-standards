@@ -24,6 +24,11 @@ inputs:
       Path of the user or organization project, e.g. "users/{username}/projects/{number}" or "orgs/{name}/projects/{number}"
     required: false
     default: ''
+  column:
+    description: |
+      Column to place task in on project
+    required: false
+    default: ''
 
 runs:
   using: composite
@@ -62,6 +67,7 @@ runs:
         token: ${{ inputs.issue-token }}
         assignees: ${{ steps.extract.outputs.assignees }}
         labels: ${{ steps.extract.outputs.labels }}
-        project-v2-path: ${{ inputs.project }}
         title: "${{ steps.extract.outputs.title }} ${{inputs.title-suffix}}"
         body: ${{ steps.extract.outputs.body }}
+        project-v2-path: ${{ inputs.project }}
+        column: ${{ inputs.column }}
