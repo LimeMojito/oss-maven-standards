@@ -47,6 +47,7 @@ runs:
           doesn't already exist.
 
           Do not commit these changes or make a pull request, leave the files edited in place.
+          Do not run any build commands such as mvn as this action is part of a build.
 
     - name: Commit Documentation updates
       shell: bash
