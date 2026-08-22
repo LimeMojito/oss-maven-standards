@@ -1,3 +1,12 @@
+### 18.0.348
+- #138: Refactored documentation into modular guides, overhauled the release process with BOM generation and automated changelog updates, optimized Docker caching, and enhanced lambda test utilities.
+- #136: Refined release process documentation, configured Git URL rewrites for build authentication, and removed obsolete BOM configurations.
+- Configured flatten-maven-plugin with fatjar mode to strip dependencies from Spring Boot deployment POMs.
+- Excluded large AWS SDK classes from JaCoCo code coverage.
+- Updated internal GitHub Actions workflows to use version references and refined AI agent action token configuration.
+- Updated versions and security patches.
+- Updated Documentation for release build.
+
 ### 18.0.300
 - #136: Enhanced BOM generation for Maven Central compliance, optimized build triggers to focus on source changes, and refined release version management.
 - #134: Enhanced release process robustness by implementing automated untagging on failure, adding safety checks for modified files, and refining documentation for better Maven Central visibility.

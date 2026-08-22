@@ -25,5 +25,5 @@ This project is a collection of Maven POMs and modules that define development s
 
 Refer to the [Agent Guidelines](AGENTS.md) for information on how to contribute to this project.
            
-## Change Log
+## Latest Changes
 * [CHANGELOG.md](CHANGELOG.md) - Detailed list of changes in each release.
