@@ -27,7 +27,7 @@ jobs:
           echo year=$(date +"%Y") >> "$GITHUB_OUTPUT"
 
       ################# CHORES ########################
-      - uses: LimeMojito/oss-maven-standards/.github/actions/create-issue-template@master
+      - uses: $/.github/actions/create-issue-template
         name: Update copyright (Jan)
         with:
           template-file: chore-copyright.md

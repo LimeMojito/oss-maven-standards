@@ -29,7 +29,7 @@ jobs:
 
     steps:
       - name: Lime Setup Git
-        uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-git@master
+        uses: $/.github/actions/lime-env-setup-git
         with:
           git-access-key: ${{ secrets.LIME_BUILD_AGENT_GIT_KEY }}
           git-signing-key: ${{ secrets.LIME_BUILD_AGENT_GIT_SIGNING_KEY }}
@@ -38,11 +38,11 @@ jobs:
 
       - name: Check source changes
         id: changed
-        uses: LimeMojito/oss-maven-standards/.github/actions/check-changes-in-source@master
+        uses: $/.github/actions/check-changes-in-source
 
       - name: Lime Setup Java
         if: steps.changed.outputs.changed == 'true'
-        uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-java@master
+        uses: $/.github/actions/lime-env-setup-java
         with:
           code-signing-key: ${{ secrets.LIME_SIGNING_KEY }}
           code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
@@ -54,30 +54,30 @@ jobs:
 
       - name: Update Library Versions
         if: steps.changed.outputs.changed == 'true'
-        uses: LimeMojito/oss-maven-standards/.github/actions/maven-version-update@master
+        uses: $/.github/actions/maven-version-update
 
       - name: Lime Setup AWS
         if: steps.changed.outputs.changed == 'true'
-        uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-aws@master
+        uses: $/.github/actions/lime-env-setup-aws
         with:
           aws-region: ${{ secrets.LIME_AWS_REGION }}
           role-to-assume: ${{ secrets.LIME_AWS_ROLE_ARN }}
 
       - name: Lime Setup Docker
         if: steps.changed.outputs.changed == 'true'
-        uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-docker@master
+        uses: $/.github/actions/lime-env-setup-docker
 
       - name: Maven Release Build
         id: maven-release-build
         if: steps.changed.outputs.changed == 'true'
-        uses: LimeMojito/oss-maven-standards/.github/actions/maven-release@master
+        uses: $/.github/actions/maven-release
         with:
           code-signing-key-name: Lime Mojito Pty Ltd
           code-signing-passphrase: ${{ secrets.LIME_SIGNING_PASSPHRASE }}
 
       - name: Update Changelog for ${{ steps.maven-release-build.outputs.release-version }}
         if: steps.changed.outputs.changed == 'true'
-        uses: LimeMojito/oss-maven-standards/.github/actions/update-changelog@master
+        uses: $/.github/actions/update-changelog
         timeout-minutes: 8
         with:
           agent-token: ${{ secrets.LIME_CODE_AGENT_JUNIE_TOKEN }}

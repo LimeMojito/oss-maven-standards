@@ -59,7 +59,7 @@ jobs:
 
       - name: Lime Environment Setup
         if: steps.auth_check.outputs.actor-belongs-team == 'true'
-        uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup@master
+        uses: $/.github/actions/lime-env-setup
         with:
           git-access-key: ${{ secrets.LIME_CODE_AGENT_GIT_KEY }}
           git-signing-key: ${{ secrets.LIME_CODE_AGENT_GIT_SIGNING_KEY }}

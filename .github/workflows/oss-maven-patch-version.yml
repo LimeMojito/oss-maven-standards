@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-24.04-arm
     steps:
       - name: Lime Setup Git (Code Agent)
-        uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-git@master
+        uses: $/.github/actions/lime-env-setup-git
         with:
           git-access-key: ${{ secrets.LIME_CODE_AGENT_GIT_KEY  }}
           git-signing-key: ${{ secrets.LIME_CODE_AGENT_GIT_SIGNING_KEY }}
@@ -23,7 +23,7 @@ jobs:
           git-id-email: "developers@limemojito.com"
 
       - name: Environment Setup
-        uses: LimeMojito/oss-maven-standards/.github/actions/lime-env-setup-java@master
+        uses: $/.github/actions/lime-env-setup-java
         with:
           git-access-key: ${{ secrets.LIME_CODE_AGENT_GIT_KEY  }}
           git-access-id: Lime-Code-Agent
@@ -35,7 +35,7 @@ jobs:
 
       - name: Update Versions
         id: update_versions
-        uses: LimeMojito/oss-maven-standards/.github/actions/maven-version-update@master
+        uses: $/.github/actions/maven-version-update
 
       - name: Push any changes
         if: steps.update_versions.outputs.has_changes == 'true'
