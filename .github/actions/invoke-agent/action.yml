@@ -20,8 +20,6 @@ runs:
     - name: allowed-user-check
       id: auth_check
       uses: GuillaumeFalourd/github-team-members@v1
-      env:
-        GH_TOKEN: ${{ inputs.github-token }}
       with:
         org_slug: LimeMojito
         team_slug: developers
