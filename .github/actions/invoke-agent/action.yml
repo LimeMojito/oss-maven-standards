@@ -19,22 +19,23 @@ runs:
   steps:
     - name: allowed-user-check
       id: auth_check
-      uses: GuillaumeFalourd/github-team-members@v1
+      uses: marcocarvalho/team-membership@v3
       with:
-        org_slug: LimeMojito
-        team_slug: developers
-        token: ${{ inputs.github-token }}
+        username: ${{ github.actor }}
+        organization: LimeMojito
+        team: developers
+        GITHUB_TOKEN: ${{ inputs.github-token }}
 
-    - if: steps.auth_check.outputs.actor-belongs-team == 'true'
+    - if: steps.auth_check.outputs.isTeamMember == 'true'
       run: echo "${{ github.actor }} belongs to Team"
       shell: bash
 
-    - if: steps.auth_check.outputs.actor-belongs-team == 'false'
+    - if: steps.auth_check.outputs.isTeamMember == 'false'
       run: echo "${{ github.actor }} doesn't belong to Team"
       shell: bash
 
     - name: Install Junie CLI Windows
-      if: runner.os == 'Windows' && steps.auth_check.outputs.actor-belongs-team == 'true'
+      if: runner.os == 'Windows' && steps.auth_check.outputs.isTeamMember == 'true'
       shell: pwsh
       run: |
         if (!(Get-Command junie -ErrorAction SilentlyContinue)) {
@@ -50,7 +51,7 @@ runs:
         }
 
     - name: Invoke Junie Windows
-      if: runner.os == 'Windows' && steps.auth_check.outputs.actor-belongs-team == 'true'
+      if: runner.os == 'Windows' && steps.auth_check.outputs.isTeamMember == 'true'
       shell: pwsh
       run: |
         $env:JUNIE_API_KEY='${{ inputs.agent-token }}'
@@ -60,7 +61,7 @@ runs:
         $prompt | junie
 
     - name: Install Junie CLI Unix
-      if: (runner.os == 'Linux' || runner.os == 'macOS') && steps.auth_check.outputs.actor-belongs-team == 'true'
+      if: (runner.os == 'Linux' || runner.os == 'macOS') && steps.auth_check.outputs.isTeamMember == 'true'
       shell: bash
       run: |
         if ! command -v junie &> /dev/null
@@ -69,7 +70,7 @@ runs:
         fi
 
     - name: Invoke Junie Unix
-      if: (runner.os == 'Linux' || runner.os == 'macOS') && steps.auth_check.outputs.actor-belongs-team == 'true'
+      if: (runner.os == 'Linux' || runner.os == 'macOS') && steps.auth_check.outputs.isTeamMember == 'true'
       shell: bash
       run: |
         export JUNIE_API_KEY=${{ inputs.agent-token }}
