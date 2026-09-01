@@ -1,3 +1,8 @@
+### 18.0.353
+- Updated `invoke-agent` GitHub action to use `tspascoal/get-user-teams-membership` for team membership verification.
+- Updated versions and security patches.
+- Updated Documentation for release build.
+
 ### 18.0.348
 - #138: Refactored documentation into modular guides, overhauled the release process with BOM generation and automated changelog updates, optimized Docker caching, and enhanced lambda test utilities.
 - #136: Refined release process documentation, configured Git URL rewrites for build authentication, and removed obsolete BOM configurations.
