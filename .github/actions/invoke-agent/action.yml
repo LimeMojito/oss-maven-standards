@@ -19,7 +19,7 @@ runs:
   steps:
     - name: allowed-user-check
       id: auth_check
-      uses: marcocarvalho/team-membership@v3
+      uses: tspascoal/get-user-teams-membership@v4
       with:
         username: ${{ github.actor }}
         organization: LimeMojito
