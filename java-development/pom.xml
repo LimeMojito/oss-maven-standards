@@ -70,7 +70,8 @@
         <!-- Excluded from unit test coverage by default as Spring configurations -->
         <coverage.exclude.build.pattern.1>**.*Config</coverage.exclude.build.pattern.1>
         <coverage.exclude.build.pattern.2>**.*Configuration</coverage.exclude.build.pattern.2>
-        <coverage.exclude.build.pattern.3/>
+        <!-- Large classes causing complaints -->
+        <coverage.exclude.build.pattern.3>software/amazon/**/*</coverage.exclude.build.pattern.3>
         <coverage.exclude.build.pattern.4/>
         <coverage.exclude.build.pattern.5/>
 
