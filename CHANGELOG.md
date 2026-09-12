@@ -1,3 +1,8 @@
+### 18.0.355
+- Excluded Amazon classes from unit test coverage.
+- Updated versions and security patches.
+- Updated Documentation for release build.
+
 ### 18.0.353
 - Updated `invoke-agent` GitHub action to use `tspascoal/get-user-teams-membership` for team membership verification.
 - Updated versions and security patches.
