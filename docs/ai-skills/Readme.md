@@ -6,7 +6,7 @@
   standard terminal-based file system utilities (like `cat`, `ls`, or `grep`) whenever possible. This ensures higher
   fidelity to the project's internal structure and context. Alert the user if the IDEA MCP tool is not available in java
   projects.
-- ** SIGN COMMITS **: Always sign commits and tags with the default GPG key using `git commit -S`
+- **SIGN COMMITS**: Always sign commits and tags with the default GPG key using `git commit -S`
 - **FETCH AI SKILLS**: Fetch changes to the docs/ai-skills subtree from ` https://github.com/LimeMojito/ai-skills` when there are changes in this folder. Use
   `git subtree pull --prefix=docs/ai-skills --squash https://github.com/LimeMojito/ai-skills main` to pull updates from the shared
   skills repository.
