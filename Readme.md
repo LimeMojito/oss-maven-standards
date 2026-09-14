@@ -7,19 +7,19 @@ This project is a collection of Maven POMs and modules that define development s
 
 ## Documentation
 
-* [Build Charter](docs/build-charter.md) - Our core principles for the build process.
-* [Open Source Standards](docs/oss-standards.md) - Information about our standards and where to find them.
-* [Maven Profiles](docs/maven-profiles.md) - Capability profiles for developer builds.
+* [Build Charter](docs/ai-skills/standards/00-build-charter.md) - Our core principles for the build process.
+* [Open Source Standards](docs/ai-skills/standards/08-oss-maven-build-standards.md) - Information about our standards and where to find them.
+* [Maven Profiles](docs/ai-skills/skills/maven-profiles.md) - Capability profiles for developer builds.
 * [Maintainable Maven Projects](docs/maintainable-projects.md) - How our POM model works.
-* [Maven Archetypes](docs/maven-archetypes.md) - Supported module types.
-* [Version Updates](docs/version-updates.md) - How we manage dependency and plugin versions.
-* [Incremental Builds and Releases](docs/incremental-builds.md) - Managing incremental feature builds and releases.
+* [Maven Archetypes](docs/ai-skills/standards/07-oss-maven-archetypes.md) - Supported module types.
+* [Version Updates](docs/ai-skills/standards/09-version-updates.md) - How we manage dependency and plugin versions.
+* [Incremental Builds and Releases](docs/ai-skills/standards/06-maven-incremental-builds.md) - Managing incremental feature builds and releases.
 * [Examples](docs/examples.md) - Example POM configurations and common use cases.
-* [Utilities](docs/utilities.md) - Shared utility modules and how to use them.
-* [AI Integration](docs/ai-integration.md) - Using AI in the build process.
+* [Utilities](docs/ai-skills/standards/10-useful-test-utilities.md) - Shared utility modules and how to use them.
+* [AI Integration](docs/ai-skills/Readme.md) - Using AI in the build process.
 * [Latest Changes](CHANGELOG.md) - Summary of recent updates.
 * [Release Workflows](docs/release-workflows.md) - Explanations on the workflows for release types.
-* [GitHub Actions Guide](docs/github-actions-guide.md) - Guide on common GitHub Actions tasks and patterns.
+* [GitHub Actions Guide](docs/ai-skills/standards/05-github-actions-guide.md) - Guide on common GitHub Actions tasks and patterns.
 
 ## Development
 

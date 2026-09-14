@@ -7,11 +7,11 @@ Note that a release to maven central is *all* components for a version, rather t
            
 # Feature Builds
 Feature branch builds are using the [gitflow-incremental-builder](https://github.com/gitflow-incremental-builder) by @famod, activated by the maven profile ```-Pincremental```.  This plugin is configured to compare against the default branch of the repository (master/main) and only build those modules that have altered.  Note that git setup
-includes a URL rewrite to include the token for github so that authetication behaves.  See [Lime Git Action](../.github/actions/lime-env-setup-git/action.yml)
+includes a URL rewrite to include the token for github so that authetication behaves.  See [Lime Git Action](../../../.github/actions/lime-env-setup-git/action.yml)
           
 ## Keeping large applications OFF of Maven Central
 Due to the new upload restrictions, large applications should not be published to Maven Central.  To enable this we have to edit in two places for the cleanest builds:
-1. In ```lime-oss-maven-standards-bom/pom.xml``` we updated the BOM generator execution configuration to have dependency exclusions for the large artifacts so they don't appear in the published BOM.
+1. In ```../../../lime-oss-maven-standards-bom/pom.xml``` we updated the BOM generator execution configuration to have dependency exclusions for the large artifacts so they don't appear in the published BOM.
   ```xml
     <dependencyExclusions>
         <dependency>
@@ -20,7 +20,7 @@ Due to the new upload restrictions, large applications should not be published t
         </dependency>
     </dependencyExclusions>
   ``` 
-2. In the ```pom.xml``` of the module itself we add an exckusion for the release plugin. 
+2. In the ```../../../pom.xml``` of the module itself we add an exckusion for the release plugin. 
    ```xml
     <build>
      <plugins>
@@ -53,7 +53,7 @@ recover:
    2. Don't forget to publish the deployment on maven central (assuming under monthly limits) at [maven central](https://central.sonatype.com/publishing/deployments) 
                  
 ## Doing development based on oss-maven-standards
-For doing development with Lime Mojito's ```oss-maven-standards```, we recomend imports as below so you are aligned to our depdendencies.  Utilities will need to be imported on a one per one basis as version numbers are no longer "batched" and we don't have a good method for incremental automated BOM generation yet.  If you are using our development POMs, you can do an automatic version update which will keep the properties in sync with the latest [see version updates](version-updates.md#update-all-library-versions-and-parent-dependencies).
+For doing development with Lime Mojito's ```oss-maven-standards```, we recomend imports as below so you are aligned to our depdendencies.  Utilities will need to be imported on a one per one basis as version numbers are no longer "batched" and we don't have a good method for incremental automated BOM generation yet.  If you are using our development POMs, you can do an automatic version update which will keep the properties in sync with the latest [see version updates](09-version-updates.md#update-all-library-versions-and-parent-dependencies).
 
 ```xml
 <dependencyManagement>

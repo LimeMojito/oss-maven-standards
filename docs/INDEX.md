@@ -1,0 +1,14 @@
+## Open Source Standards
+- [Readme.md](../Readme.md): Main project entry point and documentation index.
+- [Build Charter](ai-skills/standards/00-build-charter.md): Our core principles for the build process.
+- [Open Source Standards](ai-skills/standards/08-oss-maven-build-standards.md): Information about our standards.
+- [Maven Profiles](ai-skills/skills/maven-profiles.md): Capability profiles for developer builds.
+- [Maintainable Maven Projects](./maintainable-projects.md): How our POM model works.
+- [Maven Archetypes](ai-skills/standards/07-oss-maven-archetypes.md): Supported module types.
+- [Version Updates](ai-skills/standards/09-version-updates.md): Version management instructions.
+- [Incremental Builds and Releases](ai-skills/standards/06-maven-incremental-builds.md): Java Maven Release process details.
+- [Release Workflows](./release-workflows.md): Detailed flow of CI/CD release workflows.
+- [GitHub Actions Guide](ai-skills/standards/05-github-actions-guide.md): Guide on common GitHub Actions tasks and patterns.
+- [Utilities](ai-skills/standards/10-useful-test-utilities.md): Shared utility modules and how to use them.
+- [Examples](./examples.md): Example configurations and use cases.
+- [CHANGELOG.md](../CHANGELOG.md): History of changes and version updates.
