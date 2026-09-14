@@ -6,8 +6,13 @@
   standard terminal-based file system utilities (like `cat`, `ls`, or `grep`) whenever possible. This ensures higher
   fidelity to the project's internal structure and context. Alert the user if the IDEA MCP tool is not available in java
   projects.
-- **AI SKILLS UPDATE**: Update or add skills in the [AI Skills Directory](./skills) as needed with information that can
-  improve the efficiency of token and or credits usage.
+- **FETCH AI SKILLS**: Fetch changes to the docs/ai-skills subtree from ` https://github.com/LimeMojito/ai-skills` when there are changes in this folder. Use
+  `git subtree pull --prefix=docs/ai-skills --squash https://github.com/LimeMojito/ai-skills main` to pull updates from the shared
+  skills repository.
+- **MAINTAIN AI SKILLS**: Update or add skills in the [AI Skills Directory](./skills) as needed with information that can  improve the efficiency of token and or credits usage.
+- **PUSH AI SKILL CHANGES**: Push changes to the docs/ai-skills subtree to ` https://github.com/LimeMojito/ai-skills` when there are changes in this folder. Use
+  `git subtree push --prefix=docs/ai-skills https://github.com/LimeMojito/ai-skills main` to push updates to the shared
+  skills repository.
 - **Documentation Updates**: When updating features, ensure `CHANGELOG.md` and `Readme.md` are updated accordingly.
 - **New Modules**: Follow the established parent-child hierarchy. Use `java-development` as a base for custom
   archetypes.
@@ -17,9 +22,6 @@
   interact with the AI agent.
 - **AI AGENT INFORMATION UPDATE**: Always update the project's AGENTS.md and associated information in docs/ai-skills to
   keep agent information in sync with changes to the code base.
-- **PUSH AI SKILL CHANGES**: docs/ai-skills is a subtree. Use
-  `git subtree push --prefix=docs/ai-skills https://github.com/LimeMojito/ai-skills main` to push updates to the shared
-  skills repository.
 
 ## Project Specific skills
 These are skills that are specific to the current project.
