@@ -1,3 +1,9 @@
+### 18.0.359
+- Refactored shared documentation into the `docs/ai-skills` git subtree.
+- Updated `docs/ai-skills/Readme.md` with fetch/push subtree directives and commit signing instructions.
+- Updated versions and security patches.
+- Updated Documentation for release build.
+
 ### 18.0.355
 - Excluded Amazon classes from unit test coverage.
 - Updated versions and security patches.
