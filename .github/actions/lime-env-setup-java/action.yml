@@ -47,6 +47,9 @@ runs:
                <id>central</id>
                <username>${{ inputs.central-id }}</username>
                <password>${{ inputs.central-key }}</password>
+               <repositoryOrigins>
+                 <repositoryOrigin>https://central.sonatype.com</repositoryOrigin>
+               </repositoryOrigins>
              </server>
              <server>
                <id>github-release</id>
