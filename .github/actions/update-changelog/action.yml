@@ -48,6 +48,8 @@ runs:
 
           Do not commit these changes or make a pull request, leave the files edited in place.
           Do not run any build commands such as mvn as this action is part of a build.
+          Delete any downloaded utilities and or scripts that you may have created in the source base as part of 
+          completing this task.
 
     - name: Commit Documentation updates
       shell: bash
