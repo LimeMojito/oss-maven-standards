@@ -6,7 +6,7 @@ This project is a collection of Maven POMs and modules that define development s
 * [AGENTS.md](AGENTS.md) - Guidelines for contributing to this project.
 
 ## Documentation
-
+* [Project Context](docs/project-context.md)
 * [Build Charter](docs/ai-skills/standards/00-build-charter.md) - Our core principles for the build process.
 * [Open Source Standards](docs/ai-skills/standards/08-oss-maven-build-standards.md) - Information about our standards and where to find them.
 * [Maven Profiles](docs/ai-skills/skills/maven-profiles.md) - Capability profiles for developer builds.

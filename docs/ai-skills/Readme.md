@@ -27,7 +27,7 @@
 ## Project Specific skills
 These are skills that are specific to the current project.
 
-- [Project Context.md](../../project-context.md)
+- [Project Context.md](../project-context.md)
 - [CHANGELOG.md](../../CHANGELOG.md): History of changes and version updates for this project.
 
 ## Lime Mojito General Skills
