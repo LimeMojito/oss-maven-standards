@@ -126,6 +126,11 @@
                 </executions>
             </plugin>
             <plugin>
+                <!-- If assemblies are used, it must happen AFTER repackage. -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
                 <configuration>
