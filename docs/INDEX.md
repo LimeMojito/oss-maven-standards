@@ -12,3 +12,4 @@
 - [Utilities](ai-skills/standards/10-useful-test-utilities.md): Shared utility modules and how to use them.
 - [Examples](./examples.md): Example configurations and use cases.
 - [CHANGELOG.md](../CHANGELOG.md): History of changes and version updates.
+- [Using SubTrees for AI skills](ai-skills/Readme.md): How to setup public AI skills.
