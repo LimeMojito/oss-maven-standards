@@ -1,3 +1,12 @@
+### 18.0.367
+- Enabled forking in the Maven compiler plugin for improved debug output in `java-development`.
+- Configured assembly plugin execution in `spring-boot-development` to ensure package manipulation occurs after Spring Boot repackaging.
+- Added AI agent and skills setup documentation, introduced `docs/project-context.md`, and linked to public AI skills setup.
+- Fixed repository origin configuration in GitHub Actions for Maven Central deployments with Maven 3.10+.
+- Added directive to delete downloaded utilities or scripts during changelog updates.
+- Updated versions and security patches.
+- Updated Documentation for release build.
+
 ### 18.0.359
 - Refactored shared documentation into the `docs/ai-skills` git subtree.
 - Updated `docs/ai-skills/Readme.md` with fetch/push subtree directives and commit signing instructions.
