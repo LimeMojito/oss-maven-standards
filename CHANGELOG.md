@@ -1,3 +1,10 @@
+### 18.0.371
+- Created the build output directory before compilation in `java-development` to support the forked compiler.
+- Disabled integration tests in `github-utilities` to prevent the Spring Boot stop goal from running.
+- Clarified changelog automation directives for avoiding commits and builds and cleaning up downloaded tools and scripts.
+- Updated release documentation for 18.0.367.
+- Updated versions and security patches.
+
 ### 18.0.367
 - Enabled forking in the Maven compiler plugin for improved debug output in `java-development`.
 - Configured assembly plugin execution in `spring-boot-development` to ensure package manipulation occurs after Spring Boot repackaging.
