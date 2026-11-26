@@ -226,6 +226,19 @@
                             </configuration>
                         </execution>
                         <execution>
+                            <id>validate-build-directory</id>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <phase>process-sources</phase>
+                            <configuration>
+                                <target>
+                                    <!-- As forked compiler goes looking for it in test compile -->
+                                    <mkdir dir="${project.build.outputDirectory}"/>
+                                </target>
+                            </configuration>
+                        </execution>
+                        <execution>
                             <id>docker-up-unit-test</id>
                             <!--
                              NOTE THAT LIFECYCLE CHECKS IN DOCKER COMPOSE FILES ARE REQUIRED
