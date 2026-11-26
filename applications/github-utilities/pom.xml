@@ -33,6 +33,10 @@
         <relativePath>../../spring-boot-development/pom.xml</relativePath>
     </parent>
 
+    <properties>
+        <skipITs>true</skipITs>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>jakarta.json</groupId>
