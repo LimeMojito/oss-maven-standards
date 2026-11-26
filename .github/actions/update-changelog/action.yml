@@ -21,6 +21,13 @@ runs:
         agent-token: ${{ inputs.agent-token }}
         github-token: ${{ inputs.github-token }}
         prompt: |
+          # Directives
+          - Do not commit these changes or make a pull request, leave the files edited in place.
+          - Do not run any build commands such as mvn as this action is part of a build.
+          - At the end of the task, delete any downloaded utilities and scripts that you may have created as part of 
+          completing this task.
+
+          # Task
           Using the version number ${{ inputs.release-version }}, update ${{ github.workspace }}/CHANGELOG.md
           to summarize the git commits since the last release tag, where the last release tag is the top most heading of 
           changes in the current CHANGELOG.md.
@@ -45,12 +52,6 @@ runs:
 
           Add a heading of Latest Changes with content as a link to the CHANGELOG.md in the Readme.md file if it 
           doesn't already exist.
-
-          Do not commit these changes or make a pull request, leave the files edited in place.
-          Do not run any build commands such as mvn as this action is part of a build.
-          Delete any downloaded utilities and or scripts that you may have created in the source base as part of 
-          completing this task.
-
     - name: Commit Documentation updates
       shell: bash
       run: |
